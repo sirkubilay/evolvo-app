@@ -799,6 +799,15 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
         return;
       }
 
+      // 🔥 İŞTE YENİ EKLENEN KISIM: KELİME TEKRARI KONTROLÜ 🔥
+      if (history.includes(currentGuess)) {
+        showFeedback("Bu kelimeyi zaten kullandın!", "error");
+        playErrorSound();
+        setRowAnimation('shake');
+        setTimeout(() => setRowAnimation(null), 500);
+        return;
+      }
+
       setIsLoading(true);
       const isValid = await checkTDK(currentGuess);
       setIsLoading(false);
@@ -1105,6 +1114,14 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
           setTimeout(() => setRowAnimation(null), 500);
           return;
         }
+      }
+
+      // 🔥 İŞTE YENİ EKLENEN KISIM: MEYDAN OKUMADA KELİME TEKRARI KONTROLÜ 🔥
+      if (history.includes(currentGuess)) {
+        showFeedback("Bu kelimeyi zaten kullandın!", "error");
+        setRowAnimation('shake');
+        setTimeout(() => setRowAnimation(null), 500);
+        return;
       }
 
       setIsLoading(true);
