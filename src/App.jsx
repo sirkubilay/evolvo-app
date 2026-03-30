@@ -519,7 +519,7 @@ const App = () => {
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={currentColors} stats={stats} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={currentColors} />
-      <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={currentColors} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
+    <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={currentColors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
       {globalDefinitionModal}
       <UniqueNameModal 
         isOpen={showUniqueNameModal} 
@@ -881,7 +881,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={colors} />
-      <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
+    <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
 
       <div className={`flex-none z-20 ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'}`}>
          <header className={`px-4 py-3 flex items-center justify-between border-b ${theme.panelBorder} ${settings.darkMode ? 'bg-black/95' : 'bg-[#001f3f]/95'} backdrop-blur-md`}>
@@ -939,7 +939,10 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
                <div key={idx} className="relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto">
                   <div className={`flex rounded-xl overflow-hidden shadow-sm border-2 ${idx === 0 ? 'border-blue-800' : 'border-green-800'} z-10`}>
                      {word.split('').map((char, i) => (
-                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'}`}>
+                        <div key={i} 
+                             className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'} ${idx === history.length - 1 && idx !== 0 ? 'animate-flip-letter opacity-0' : ''}`}
+                             style={idx === history.length - 1 && idx !== 0 ? { animationDelay: `${i * 150}ms` } : {}}
+                        >
                            {char}
                         </div>
                      ))}
@@ -1173,7 +1176,10 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
                <div key={idx} className="relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto animate-in fade-in slide-in-from-bottom-2">
                   <div className={`flex rounded-xl overflow-hidden shadow-lg z-10 ${idx === 0 ? 'border-2 border-blue-500 shadow-blue-500/30' : 'border-2 border-green-500 shadow-green-500/30'}`}>
                      {word.split('').map((char, i) => (
-                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'}`}>
+                        <div key={i} 
+                             className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'} ${idx === history.length - 1 && idx !== 0 ? 'animate-flip-letter opacity-0' : ''}`}
+                             style={idx === history.length - 1 && idx !== 0 ? { animationDelay: `${i * 150}ms` } : {}}
+                        >
                            {char}
                         </div>
                      ))}
@@ -1263,6 +1269,8 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
         .shadow-blue-500\\/30 { box-shadow: 0 0 20px 2px rgba(59, 130, 246, 0.3); }
         .shadow-green-500\\/30 { box-shadow: 0 0 20px 2px rgba(34, 197, 94, 0.3); }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } .animate-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes flip-letter { 0% { transform: rotateX(-90deg); opacity: 0; } 100% { transform: rotateX(0); opacity: 1; } }
+        .animate-flip-letter { animation: flip-letter 0.5s ease-out forwards; backface-visibility: hidden; }
         .scrollbar-thin::-webkit-scrollbar { width: 4px; }
         .scrollbar-thumb-white\\/10::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; }
       `}</style>
@@ -1302,12 +1310,26 @@ const AchievementsModal = ({ isOpen, onClose, theme, colors }) => {
   );
 };
 
-const AvatarModal = ({ isOpen, onClose, onSelect, theme, colors }) => {
+const AvatarModal = ({ isOpen, onClose, onSelect, theme, colors, userAvatar, username }) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-[250] flex items-center justify-center p-6 bg-black/70 backdrop-blur-md" onClick={onClose}>
       <div className={`${theme.panel} w-full max-w-sm rounded-[2rem] p-6 border border-white/10 text-white shadow-2xl flex flex-col max-h-[80vh]`} onClick={e => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-6"><h2 className="text-xl font-bold">Avatarını Seç</h2><button onClick={onClose} className="transition-colors hover:text-red-500"><X size={24} /></button></div>
+        <div className="flex justify-between items-center mb-4">
+           <h2 className="text-xl font-black italic">Profil & Avatar</h2>
+           <button onClick={onClose} className="transition-colors hover:text-red-500"><X size={24} /></button>
+        </div>
+        
+        {/* YENİ EKLENEN KİMLİK KARTI KISMI */}
+        {username && userAvatar && (
+           <div className="flex flex-col items-center justify-center bg-black/20 rounded-2xl p-4 mb-6 border border-white/5 shadow-inner">
+              <div className="text-5xl mb-2 drop-shadow-lg">{userAvatar.icon}</div>
+              <span className="text-[10px] uppercase font-bold opacity-50 tracking-widest mb-1">Mevcut İsmin</span>
+              <span className="font-black text-xl text-green-400 break-all text-center">{username}</span>
+           </div>
+        )}
+
+        <h3 className="text-xs font-bold opacity-50 uppercase tracking-widest mb-3">Yeni Avatar Seç</h3>
         <div className="grid grid-cols-4 gap-4 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-white/20">
           {AVATARS.map((av) => (
             <button key={av.id} onClick={() => onSelect(av)} className="aspect-square flex items-center justify-center bg-white/5 rounded-2xl hover:bg-white/20 hover:scale-110 transition-all border border-transparent hover:border-green-500 text-3xl shadow-inner">{av.icon}</button>
