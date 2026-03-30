@@ -1225,11 +1225,14 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
 
             {history.map((word, idx) => (
                <div key={idx} className="relative flex items-center justify-center w-fit mx-auto">
-                  <div className="flex gap-1 sm:gap-1.5 z-10">
+                  <div className="flex gap-1 sm:gap-1.5 z-10" style={{ perspective: '1000px' }}>
                      {word.split('').map((char, i) => (
                         <div key={i} 
-                             className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white shadow-sm' : 'bg-green-600 border-green-700 text-white shadow-sm'} ${idx === history.length - 1 && idx !== 0 ? 'animate-flip-letter' : ''}`}
-                             style={idx === history.length - 1 && idx !== 0 ? { animationDelay: `${i * 150}ms` } : {}}
+                             className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white shadow-sm' : 'bg-green-600 border-green-700 text-white shadow-sm'}`}
+                             style={idx === history.length - 1 && idx !== 0 ? { 
+                               animation: `flip-letter 0.5s ease-out both`, 
+                               animationDelay: `${i * 150}ms` 
+                             } : {}}
                         >
                            {char}
                         </div>
@@ -1243,11 +1246,15 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
 
             {!isGameOver && (
                <div className={`relative flex items-center justify-center w-fit mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
-                  <div className="flex gap-1 sm:gap-1.5 z-10">
+                  <div className="flex gap-1 sm:gap-1.5 z-10" style={{ perspective: '1000px' }}>
                      {[...Array(wordLength)].map((_, i) => (
                         <div key={i} 
-                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'} ${winningRowAnimation ? 'animate-flip-correct shadow-green-500/30 shadow-lg' : 'shadow-inner'}`}
-                          style={winningRowAnimation ? { animationDelay: `${i * 150}ms` } : {}}
+                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : (winningRowAnimation ? 'bg-green-600 border-green-700 text-white shadow-green-500/30 shadow-lg' : 'bg-white/5 border-white/10 shadow-inner')}`}
+                          style={winningRowAnimation ? { 
+                            animation: `flip-correct 0.6s ease-in-out forwards`,
+                            animationDelay: `${i * 150}ms`,
+                            backfaceVisibility: 'hidden'
+                          } : {}}
                         >
                            {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : (
                               currentGuess[i] ? currentGuess[i] : (i === currentGuess.length ? <span className="animate-pulse opacity-50 font-light text-2xl md:text-3xl">|</span> : "")
