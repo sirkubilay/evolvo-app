@@ -796,20 +796,24 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
       }
 
       const newHistory = [...history, currentGuess];
-      setHistory(newHistory);
-      setCurrentGuess("");
 
       if (currentGuess === puzzleData.target) {
         playSuccessSound();
         setWinningRowAnimation(true);
+        
         setTimeout(() => {
           setWinningRowAnimation(false);
-          setHistory(newHistory); // ARTIK GEÇMİŞE EKLEYEBİLİRİZ
+          setHistory(newHistory); 
           setCurrentGuess("");
-          calculateAndFinish(newHistory, true); // VE ŞİMDİ OYUNU RESMEN BİTİRİP MODALI GÖSTEREBİLİRİZ
+          calculateAndFinish(newHistory, true); 
         }, 1500);
-      } else if (newHistory.length - 1 >= maxMoves) {
-        calculateAndFinish(newHistory, false);
+      } else {
+        setHistory(newHistory);
+        setCurrentGuess("");
+        
+        if (newHistory.length - 1 >= maxMoves) {
+          calculateAndFinish(newHistory, false);
+        }
       }
 
     } else if (key === 'Delete' || key === 'Backspace') {
@@ -1091,6 +1095,7 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
 
       if (!isValid) {
         showFeedback("Geçersiz Kelime", "error");
+        playErrorSound();
         setRowAnimation('shake');
         setTimeout(() => setRowAnimation(null), 500);
         return;
