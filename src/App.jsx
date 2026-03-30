@@ -165,7 +165,7 @@ const COLOR_BLIND_THEME = {
 
 const firebaseConfig = {
   apiKey: "AIzaSyAV9IqH01Msun0mlLdl0ALnhuzWCgnfuhk",
-  authDomain: "tr.evolvogame.com",
+  authDomain: "evolvogame-21a23.firebaseapp.com",
   projectId: "evolvogame-21a23",
   storageBucket: "evolvogame-21a23.firebasestorage.app",
   messagingSenderId: "64945678615",
