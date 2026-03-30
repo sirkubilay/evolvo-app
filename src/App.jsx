@@ -885,9 +885,9 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
 
       <div className={`flex-none z-20 ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'}`}>
          <header className={`px-4 py-3 flex items-center justify-between border-b ${theme.panelBorder} ${settings.darkMode ? 'bg-black/95' : 'bg-[#001f3f]/95'} backdrop-blur-md`}>
-            <div onClick={() => toggleModal('avatar', true)} className={`flex items-center gap-2 ${settings.darkMode ? 'bg-gray-800' : 'bg-white/10'} px-3 py-1.5 rounded-full cursor-pointer hover:opacity-80 transition-opacity`}>
-               <div className="text-xl flex items-center justify-center">{userAvatar.icon}</div>
-               <span className="font-bold text-xs">{username}</span>
+            <div onClick={() => toggleModal('avatar', true)} className={`flex items-center gap-1 sm:gap-2 ${settings.darkMode ? 'bg-gray-800' : 'bg-white/10'} px-2 sm:px-3 py-1.5 rounded-full cursor-pointer hover:opacity-80 transition-opacity max-w-[110px] sm:max-w-[200px]`}>
+               <div className="text-lg sm:text-xl flex items-center justify-center flex-shrink-0">{userAvatar.icon}</div>
+               <span className="font-bold text-[10px] sm:text-xs truncate">{username}</span>
             </div>
             
             <div onClick={onBack} className="cursor-pointer transform hover:scale-105 transition-transform absolute left-1/2 -translate-x-1/2">
@@ -936,28 +936,29 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
       <main className="flex-1 overflow-y-auto px-4 w-full flex flex-col items-center relative">
          <div className="max-w-md w-full space-y-1.5 pb-60 pt-2 flex flex-col"> 
             {history.map((word, idx) => (
-               <div key={idx} className="flex items-center justify-center gap-2">
-                  <div className={`flex rounded-xl overflow-hidden shadow-sm border-2 ${idx === 0 ? 'border-blue-800' : 'border-green-800'}`}>
+               <div key={idx} className="relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto">
+                  <div className={`flex rounded-xl overflow-hidden shadow-sm border-2 ${idx === 0 ? 'border-blue-800' : 'border-green-800'} z-10`}>
                      {word.split('').map((char, i) => (
-                        <div key={i} className={`w-14 h-14 flex items-center justify-center text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'}`}>
+                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'}`}>
                            {char}
                         </div>
                      ))}
                   </div>
-                  <button onClick={() => handleDictClick(word)} className={`p-2 rounded-lg opacity-40 hover:opacity-100 transition-opacity ${theme.emptyCell}`} title="Anlamını Gör"><Book size={16} /></button>
+                  <button onClick={() => handleDictClick(word)} className={`absolute left-full ml-1 sm:ml-2 p-1.5 sm:p-2 rounded-lg opacity-40 hover:opacity-100 transition-opacity ${theme.emptyCell}`} title="Anlamını Gör"><Book size={16} /></button>
                </div>
             ))}
 
             {!isGameOver && (
-               <div className={`flex items-center justify-center gap-2 transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
-                  <div className={`flex rounded-xl overflow-hidden border-2 shadow-inner ${rowAnimation === 'shake' ? colors.errorBorder : 'border-white/20'}`}>
+               <div className={`relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
+                  <div className={`flex rounded-xl overflow-hidden border-2 shadow-inner ${rowAnimation === 'shake' ? colors.errorBorder : 'border-white/20'} z-10`}>
                      {[...Array(wordLength)].map((_, i) => (
-                        <div key={i} className={`w-14 h-14 flex items-center justify-center text-xl font-black border-r-2 last:border-r-0 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}>
-                           {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : currentGuess[i] || ""}
+                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}>
+                           {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : (
+                              currentGuess[i] ? currentGuess[i] : (i === currentGuess.length ? <span className="animate-pulse opacity-50 font-light text-2xl md:text-3xl">|</span> : "")
+                           )}
                         </div>
                      ))}
                   </div>
-                  <div className="p-2 opacity-0"><Book size={16} /></div>
                </div>
             )}
 
@@ -1004,12 +1005,12 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
            <div className="max-w-xl mx-auto space-y-1">
               {keyboardRows.map((row, i) => (
                  <div key={i} className="flex justify-center gap-1">
-                    {row.map(key => (
-                       <button key={key} onClick={() => handleKeyPress(key === 'Enter' ? 'Enter' : key === 'Backspace' ? 'Backspace' : key)} className={`h-9 flex-1 rounded-md font-bold text-sm md:text-base transition-colors ${key === 'Enter' ? `px-3 ${colors.btnPrimary}` : key === 'Ö' || key === 'Ç' ? 'flex-[0.8]' : ''} ${key !== 'Enter' ? `${theme.key} ${theme.keyText} hover:brightness-110 active:scale-95` : ''}`}>{key}</button>
-                    ))}
-                    {i === 2 && (
-                       <button key="backspace" onClick={() => handleKeyPress('Backspace')} className="h-9 px-4 bg-red-900/40 text-red-100 rounded-md flex items-center justify-center hover:bg-red-900/60 transition-colors"><Delete size={20} /></button>
-                    )}
+                   {row.map(key => (
+                     <button key={key} onClick={() => handleKeyPress(key === 'Enter' ? 'Enter' : key === 'Backspace' ? 'Backspace' : key)} className={`h-11 md:h-12 flex-1 rounded-md font-bold text-sm md:text-base transition-colors shadow-sm ${key === 'Enter' ? `px-2 md:px-3 ${colors.btnPrimary}` : key === 'Ö' || key === 'Ç' ? 'flex-[0.8]' : ''} ${key !== 'Enter' ? `${theme.key} ${theme.keyText} hover:brightness-110 active:scale-95` : ''}`}>{key}</button>
+                  ))}
+                  {i === 2 && (
+                     <button key="backspace" onClick={() => handleKeyPress('Backspace')} className="h-11 md:h-12 px-3 md:px-4 bg-red-900/50 text-red-100 rounded-md flex items-center justify-center hover:bg-red-900/70 transition-colors active:scale-95 shadow-sm"><Delete size={20} /></button>
+                  )}
                  </div>
               ))}
            </div>
@@ -1169,30 +1170,31 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
             </div>
 
             {history.map((word, idx) => (
-               <div key={idx} className="flex items-center justify-center gap-2 animate-in fade-in slide-in-from-bottom-2">
-                  <div className={`flex rounded-xl overflow-hidden shadow-lg ${idx === 0 ? 'border-2 border-blue-500 shadow-blue-500/30' : 'border-2 border-green-500 shadow-green-500/30'}`}>
+               <div key={idx} className="relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto animate-in fade-in slide-in-from-bottom-2">
+                  <div className={`flex rounded-xl overflow-hidden shadow-lg z-10 ${idx === 0 ? 'border-2 border-blue-500 shadow-blue-500/30' : 'border-2 border-green-500 shadow-green-500/30'}`}>
                      {word.split('').map((char, i) => (
-                        <div key={i} className={`w-14 h-14 flex items-center justify-center text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'}`}>
+                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white' : 'bg-green-600 border-green-700 text-white'}`}>
                            {char}
                         </div>
                      ))}
                   </div>
-                  <button onClick={() => toggleModal('definition', word)} className={`p-2 rounded-lg opacity-40 hover:opacity-100 hover:bg-white/10 transition-all ${theme.emptyCell}`} title="Anlamını Gör">
-                      <Book size={18} />
+                  <button onClick={() => toggleModal('definition', word)} className={`absolute left-full ml-1 sm:ml-2 p-1.5 sm:p-2 rounded-lg opacity-40 hover:opacity-100 hover:bg-white/10 transition-all ${theme.emptyCell}`} title="Anlamını Gör">
+                     <Book size={18} />
                   </button>
                </div>
             ))}
 
             {!finalizeOpen && (
-               <div className={`flex justify-center items-center gap-2 transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
-                  <div className={`flex rounded-xl overflow-hidden border-2 shadow-inner ${rowAnimation === 'shake' ? colors.errorBorder : 'border-white/20'}`}>
+               <div className={`relative flex justify-center items-center w-full max-w-[260px] sm:max-w-xs mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
+                  <div className={`flex rounded-xl overflow-hidden border-2 shadow-inner z-10 ${rowAnimation === 'shake' ? colors.errorBorder : 'border-white/20'}`}>
                      {[...Array(wordLength)].map((_, i) => (
-                        <div key={i} className={`w-14 h-14 flex items-center justify-center text-xl font-black border-r-2 last:border-r-0 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}>
-                           {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : currentGuess[i] || ""}
+                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}>
+                           {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : (
+                              currentGuess[i] ? currentGuess[i] : (i === currentGuess.length ? <span className="animate-pulse opacity-50 font-light text-2xl md:text-3xl">|</span> : "")
+                           )}
                         </div>
                      ))}
                   </div>
-                  <div className="p-2 opacity-0 pointer-events-none"><Book size={18} /></div>
                </div>
             )}
 
@@ -1209,10 +1211,10 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
             {keyboardRows.map((row, i) => (
                <div key={i} className="flex justify-center gap-1">
                   {row.map(key => (
-                     <button key={key} onClick={() => handleKeyPress(key === 'Enter' ? 'Enter' : key === 'Backspace' ? 'Backspace' : key)} className={`h-11 md:h-12 flex-1 rounded-md font-bold text-sm md:text-base transition-colors shadow-md ${key === 'Enter' ? `px-3 ${colors.btnPrimary}` : key === 'Ö' || key === 'Ç' ? 'flex-[0.8]' : ''} ${key !== 'Enter' ? `${theme.key} ${theme.keyText} hover:brightness-110 active:scale-95` : ''}`}>{key}</button>
+                     <button key={key} onClick={() => handleKeyPress(key === 'Enter' ? 'Enter' : key === 'Backspace' ? 'Backspace' : key)} className={`h-11 md:h-12 flex-1 rounded-md font-bold text-sm md:text-base transition-colors shadow-sm ${key === 'Enter' ? `px-2 md:px-3 ${colors.btnPrimary}` : key === 'Ö' || key === 'Ç' ? 'flex-[0.8]' : ''} ${key !== 'Enter' ? `${theme.key} ${theme.keyText} hover:brightness-110 active:scale-95` : ''}`}>{key}</button>
                   ))}
                   {i === 2 && (
-                     <button key="backspace" onClick={() => handleKeyPress('Backspace')} className="h-11 md:h-12 px-5 bg-red-900/50 text-red-100 rounded-md flex items-center justify-center hover:bg-red-900/80 transition-colors active:scale-95 shadow-md"><Delete size={20} /></button>
+                     <button key="backspace" onClick={() => handleKeyPress('Backspace')} className="h-11 md:h-12 px-3 md:px-4 bg-red-900/50 text-red-100 rounded-md flex items-center justify-center hover:bg-red-900/70 transition-colors active:scale-95 shadow-sm"><Delete size={20} /></button>
                   )}
                </div>
             ))}
