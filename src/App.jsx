@@ -81,7 +81,7 @@ const AVATARS = [
   { id: 27, icon: '🦋', label: 'Kelebek' },
   { id: 28, icon: '🍄', label: 'Mantar' },
   { id: 29, icon: '🍕', label: 'Pizza' },
-  { id: 30, icon: 'soccer', label: 'Futbol' },
+  { id: 30, icon: '⚽', label: 'Futbol' },
 ];
 
 const ADJECTIVES = ["Hızlı", "Cesur", "Bilge", "Çılgın", "Gizemli", "Zehirli", "Vahşi", "Gölge", "Parlak", "Buzlu", "Ateşli", "Sessiz", "Kayıp", "Efsane", "Yırtıcı", "Demir", "Çelik", "Uçan", "Altın", "Bordo"];
@@ -611,6 +611,7 @@ const App = () => {
 const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onStartCustomGame, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData }) => {
   const [history, setHistory] = useState([puzzleData.start]);
   const [currentGuess, setCurrentGuess] = useState("");
+  const [winningRowAnimation, setWinningRowAnimation] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isWon, setIsWon] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -799,7 +800,14 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
       setCurrentGuess("");
 
       if (currentGuess === puzzleData.target) {
-        calculateAndFinish(newHistory, true);
+        playSuccessSound();
+        setWinningRowAnimation(true);
+        setTimeout(() => {
+          setWinningRowAnimation(false);
+          setHistory(newHistory); // ARTIK GEÇMİŞE EKLEYEBİLİRİZ
+          setCurrentGuess("");
+          calculateAndFinish(newHistory, true); // VE ŞİMDİ OYUNU RESMEN BİTİRİP MODALI GÖSTEREBİLİRİZ
+        }, 1500);
       } else if (newHistory.length - 1 >= maxMoves) {
         calculateAndFinish(newHistory, false);
       }
@@ -953,9 +961,16 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
 
             {!isGameOver && (
                <div className={`relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
-                  <div className={`flex rounded-xl overflow-hidden border-2 shadow-inner ${rowAnimation === 'shake' ? colors.errorBorder : 'border-white/20'} z-10`}>
+                  <div className={`flex rounded-xl overflow-hidden border-2 shadow-inner ${rowAnimation === 'shake' ? colors.errorBorder : 'border-white/20'} z-10 ${winningRowAnimation ? 'shadow-green-500/20 shadow-xl' : ''}`}>
                      {[...Array(wordLength)].map((_, i) => (
-                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}>
+                        <div key={i} 
+                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}
+                          style={winningRowAnimation ? { 
+                            animation: `flip-correct 0.6s ease-in-out forwards`,
+                            animationDelay: `${i * 150}ms`, // HARF SIRASIYLA Flip
+                            backfaceVisibility: 'hidden'
+                          } : {}}
+                        >
                            {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : (
                               currentGuess[i] ? currentGuess[i] : (i === currentGuess.length ? <span className="animate-pulse opacity-50 font-light text-2xl md:text-3xl">|</span> : "")
                            )}
@@ -1269,8 +1284,13 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
         .shadow-blue-500\\/30 { box-shadow: 0 0 20px 2px rgba(59, 130, 246, 0.3); }
         .shadow-green-500\\/30 { box-shadow: 0 0 20px 2px rgba(34, 197, 94, 0.3); }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } .animate-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        
         @keyframes flip-letter { 0% { transform: rotateX(-90deg); opacity: 0; } 100% { transform: rotateX(0); opacity: 1; } }
         .animate-flip-letter { animation: flip-letter 0.5s ease-out forwards; backface-visibility: hidden; }
+        
+        @keyframes flip-correct { 0% { transform: rotateX(0deg); background-color: white; color: black;} 50% { transform: rotateX(-90deg); background-color: white; color: black; } 100% { transform: rotateX(0deg); background-color: #16a34a; color: white;} }
+        .animate-flip-correct { animation: flip-correct 0.6s ease-in-out forwards; backface-visibility: hidden; }
+        
         .scrollbar-thin::-webkit-scrollbar { width: 4px; }
         .scrollbar-thumb-white\\/10::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; }
       `}</style>
