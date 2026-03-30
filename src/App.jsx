@@ -81,7 +81,7 @@ const AVATARS = [
   { id: 27, icon: '🦋', label: 'Kelebek' },
   { id: 28, icon: '🍄', label: 'Mantar' },
   { id: 29, icon: '🍕', label: 'Pizza' },
-  { id: 30, icon: '⚽', label: 'Futbol' },
+  { id: 30, icon: '⚽', label: 'Futbol' }, // DÜZELTİLDİ!
 ];
 
 const ADJECTIVES = ["Hızlı", "Cesur", "Bilge", "Çılgın", "Gizemli", "Zehirli", "Vahşi", "Gölge", "Parlak", "Buzlu", "Ateşli", "Sessiz", "Kayıp", "Efsane", "Yırtıcı", "Demir", "Çelik", "Uçan", "Altın", "Bordo"];
@@ -168,7 +168,6 @@ const App = () => {
     }
   });
   const [userAvatar, setUserAvatar] = useState(AVATARS[0]);
-  const [showNameModal, setShowNameModal] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [colorBlindMode, setColorBlindMode] = useState(false);
   const [sozlukSeti, setSozlukSeti] = useState(new Set());
@@ -177,37 +176,31 @@ const App = () => {
   const [activePuzzle, setActivePuzzle] = useState(null); 
   const [isPuzzleLoading, setIsPuzzleLoading] = useState(true); 
   const [user, setUser] = useState(null);
+  const [showUniqueNameModal, setShowUniqueNameModal] = useState(false);
+  const [tempUser, setTempUser] = useState(null); 
+  
   useEffect(() => {
     const auth = getAuth();
-    
-    // Firebase'de oturum durumu değiştiğinde (veya sayfa ilk açıldığında) burası tetiklenir
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Adamın arka planda oturumu zaten açıkmış!
         setUser(currentUser);
-        
-        // Veritabanından adamın kendi ismini çekelim
         const db = getFirestore(app);
         const userDocRef = doc(db, 'users', currentUser.uid);
         try {
           const userDocSnap = await getDoc(userDocRef);
           if (userDocSnap.exists() && userDocSnap.data().username) {
-             setUsername(userDocSnap.data().username); // Özel ismini ekrana bas!
+             setUsername(userDocSnap.data().username);
           }
         } catch (e) {
            console.error("Otomatik giriş sırasında isim çekilemedi:", e);
         }
       } else {
-        // Adam giriş yapmamış veya çıkış yapmış, misafir olarak kalsın
         setUser(null);
       }
     });
-
-    // Sayfa kapanırsa dinleyiciyi durdur
     return () => unsubscribe();
   }, []);
-  const [showUniqueNameModal, setShowUniqueNameModal] = useState(false);
-  const [tempUser, setTempUser] = useState(null); 
+  
   const [stats, setStats] = useState(() => {
     try {
       const savedStats = localStorage.getItem('evolvo_stats');
@@ -218,6 +211,7 @@ const App = () => {
       return { played: 0, wins: 0, currentStreak: 0, maxStreak: 0, dictionaryLookups: 0, hintsUsed: 0 };
     }
   });
+  
   const [modalState, setModalState] = useState({
     leaderboard: false, howToPlay: false, calendar: false, stats: false, achievements: false, definition: null, avatar: false, challenge: false, privacy: false, contact: false
   });
@@ -519,7 +513,7 @@ const App = () => {
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={currentColors} stats={stats} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={currentColors} />
-    <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={currentColors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
+      <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={currentColors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
       {globalDefinitionModal}
       <UniqueNameModal 
         isOpen={showUniqueNameModal} 
@@ -621,11 +615,14 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [scoreDetails, setScoreDetails] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
-  const playSuccessSound = () => { try { new Audio('/success.mp3').play(); } catch(e){} };
-  const playErrorSound = () => { try { new Audio('/error.mp3').play(); } catch(e){} };
+  
+  const playSuccessSound = () => { try { new Audio('/success.mp3').play().catch(e=>console.log(e)); } catch(e){} };
+  const playErrorSound = () => { try { new Audio('/error.mp3').play().catch(e=>console.log(e)); } catch(e){} };
+  
   const wordLength = puzzleData.start.length;
   const maxMoves = puzzleData.maxMoves || (puzzleData.optimalSteps ? puzzleData.optimalSteps + 5 : 15);
   const { executeRecaptcha } = useGoogleReCaptcha();
+  
   const [timer, setTimer] = useState(() => {
     const savedTime = localStorage.getItem(`evolvo_timer_${puzzleData.date}`);
     return savedTime ? parseInt(savedTime, 10) : 0;
@@ -656,7 +653,8 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
     return diff === 1;
   };
 
- const calculateAndFinish = async (finalHistory, didWin) => {
+  // skipSound parametresi eklendi (ikinci kez çalmaması için)
+  const calculateAndFinish = async (finalHistory, didWin, skipSound = false) => {
     localStorage.removeItem(`evolvo_timer_${puzzleData.date}`);
     setIsGameOver(true);
     setIsWon(didWin);
@@ -679,7 +677,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
         score = Math.max(0, Math.floor(weightedScore - penalty));
         
         showFeedback("TEBRİKLER!", "success");
-        playSuccessSound(); 
+        if(!skipSound) playSuccessSound(); 
 
         try {
           if (!executeRecaptcha) {
@@ -744,7 +742,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
       showFeedback("İpucu Kullanıldı (-150 Puan)", "success");
 
       if (upperHintWord === puzzleData.target) {
-        calculateAndFinish(newHistory, true);
+        calculateAndFinish(newHistory, true, false);
       }
     } catch (error) {
       console.error("İpucu alınamadı:", error);
@@ -755,7 +753,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
   };
 
   const handleKeyPress = useCallback(async (key) => {
-    if (isGameOver || isLoading) return;
+    if (isGameOver || isLoading || winningRowAnimation) return;
 
     if (key === 'Enter') {
       if (currentGuess.length !== wordLength) {
@@ -795,6 +793,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
         return;
       }
 
+      // --- İŞTE O KUSURSUZ GECİKMELİ KISIM ---
       const newHistory = [...history, currentGuess];
 
       if (currentGuess === puzzleData.target) {
@@ -805,7 +804,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
           setWinningRowAnimation(false);
           setHistory(newHistory); 
           setCurrentGuess("");
-          calculateAndFinish(newHistory, true); 
+          calculateAndFinish(newHistory, true, true); // true = sesi tekrar çalma
         }, 1500);
       } else {
         setHistory(newHistory);
@@ -834,7 +833,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
     } else if (currentGuess.length < wordLength && /^[A-ZÇĞİÖŞÜ]$/.test(key)) {
       setCurrentGuess(p => p + key);
     }
-  }, [currentGuess, history, isGameOver, isLoading, lockedIndices, maxMoves, timer, hintsLeft, wordLength]);
+  }, [currentGuess, history, isGameOver, isLoading, winningRowAnimation, lockedIndices, maxMoves, timer, hintsLeft, wordLength]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -893,7 +892,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={colors} />
-    <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
+      <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
 
       <div className={`flex-none z-20 ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'}`}>
          <header className={`px-4 py-3 flex items-center justify-between border-b ${theme.panelBorder} ${settings.darkMode ? 'bg-black/95' : 'bg-[#001f3f]/95'} backdrop-blur-md`}>
@@ -971,7 +970,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
                           className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black border-r-2 last:border-r-0 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}
                           style={winningRowAnimation ? { 
                             animation: `flip-correct 0.6s ease-in-out forwards`,
-                            animationDelay: `${i * 150}ms`, // HARF SIRASIYLA Flip
+                            animationDelay: `${i * 150}ms`,
                             backfaceVisibility: 'hidden'
                           } : {}}
                         >
@@ -1038,7 +1037,6 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
            </div>
         </div>
       )}
-      <style>{`@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } .animate-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }`}</style>
     </div>
   );
 };
@@ -1095,7 +1093,6 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
 
       if (!isValid) {
         showFeedback("Geçersiz Kelime", "error");
-        playErrorSound();
         setRowAnimation('shake');
         setTimeout(() => setRowAnimation(null), 500);
         return;
@@ -1293,7 +1290,12 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
         @keyframes flip-letter { 0% { transform: rotateX(-90deg); opacity: 0; } 100% { transform: rotateX(0); opacity: 1; } }
         .animate-flip-letter { animation: flip-letter 0.5s ease-out forwards; backface-visibility: hidden; }
         
-        @keyframes flip-correct { 0% { transform: rotateX(0deg); background-color: white; color: black;} 50% { transform: rotateX(-90deg); background-color: white; color: black; } 100% { transform: rotateX(0deg); background-color: #16a34a; color: white;} }
+        @keyframes flip-correct { 
+           0% { transform: rotateX(0deg); background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: white;} 
+           50% { transform: rotateX(-90deg); background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: white; } 
+           50.1% { transform: rotateX(-90deg); background-color: #16a34a; border-color: #166534; color: white; }
+           100% { transform: rotateX(0deg); background-color: #16a34a; border-color: #166534; color: white; } 
+        }
         .animate-flip-correct { animation: flip-correct 0.6s ease-in-out forwards; backface-visibility: hidden; }
         
         .scrollbar-thin::-webkit-scrollbar { width: 4px; }
@@ -1345,7 +1347,6 @@ const AvatarModal = ({ isOpen, onClose, onSelect, theme, colors, userAvatar, use
            <button onClick={onClose} className="transition-colors hover:text-red-500"><X size={24} /></button>
         </div>
         
-        {/* YENİ EKLENEN KİMLİK KARTI KISMI */}
         {username && userAvatar && (
            <div className="flex flex-col items-center justify-center bg-black/20 rounded-2xl p-4 mb-6 border border-white/5 shadow-inner">
               <div className="text-5xl mb-2 drop-shadow-lg">{userAvatar.icon}</div>
