@@ -1024,7 +1024,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
                   <div className="flex gap-1 sm:gap-1.5 z-10">
                      {[...Array(wordLength)].map((_, i) => (
                         <div key={i} 
-                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'} ${winningRowAnimation ? 'animate-flip-correct shadow-green-500/30 shadow-lg' : 'shadow-inner'}`}
+                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${winningRowAnimation ? 'animate-flip-correct shadow-green-500/30 shadow-lg' : (rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10 shadow-inner')}`}
                           style={winningRowAnimation ? { animationDelay: `${i * 150}ms` } : {}}
                         >
                            {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : (
@@ -1305,10 +1305,28 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
             {keyboardRows.map((row, i) => (
                <div key={i} className="flex justify-center gap-1">
                   {row.map(key => (
-                     <button key={key} onClick={() => handleKeyPress(key === 'Enter' ? 'Enter' : key === 'Backspace' ? 'Backspace' : key)} className={`h-11 md:h-12 flex-1 rounded-md font-bold text-sm md:text-base transition-colors shadow-sm ${key === 'Enter' ? `px-2 md:px-3 ${colors.btnPrimary}` : key === 'Ö' || key === 'Ç' ? 'flex-[0.8]' : ''} ${key !== 'Enter' ? `${theme.key} ${theme.keyText} hover:brightness-110 active:scale-95` : ''}`}>{key}</button>
+                     <button 
+                        key={key} 
+                        onPointerDown={(e) => { 
+                           e.preventDefault(); 
+                           handleKeyPress(key === 'Enter' ? 'Enter' : key === 'Backspace' ? 'Backspace' : key); 
+                        }} 
+                        className={`h-11 md:h-12 flex-1 rounded-md font-bold text-sm md:text-base transition-colors shadow-sm ${key === 'Enter' ? `px-2 md:px-3 ${colors.btnPrimary}` : key === 'Ö' || key === 'Ç' ? 'flex-[0.8]' : ''} ${key !== 'Enter' ? `${theme.key} ${theme.keyText} hover:brightness-110 active:scale-95` : ''}`}
+                     >
+                        {key}
+                     </button>
                   ))}
                   {i === 2 && (
-                     <button key="backspace" onClick={() => handleKeyPress('Backspace')} className="h-11 md:h-12 px-3 md:px-4 bg-red-900/50 text-red-100 rounded-md flex items-center justify-center hover:bg-red-900/70 transition-colors active:scale-95 shadow-sm"><Delete size={20} /></button>
+                     <button 
+                        key="backspace" 
+                        onPointerDown={(e) => { 
+                           e.preventDefault(); 
+                           handleKeyPress('Backspace'); 
+                        }} 
+                        className="h-11 md:h-12 px-3 md:px-4 bg-red-900/50 text-red-100 rounded-md flex items-center justify-center hover:bg-red-900/70 transition-colors active:scale-95 shadow-sm"
+                     >
+                        <Delete size={20} />
+                     </button>
                   )}
                </div>
             ))}
