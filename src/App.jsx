@@ -975,7 +975,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
       <main className="flex-1 overflow-y-auto px-4 w-full flex flex-col items-center relative">
          <div className="max-w-md w-full space-y-1.5 pb-60 pt-2 flex flex-col"> 
             {history.map((word, idx) => (
-               <div key={idx} className="relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto">
+               <div key={idx} className="relative flex items-center justify-center w-fit mx-auto">
                   <div className="flex gap-1 sm:gap-1.5 z-10">
                      {word.split('').map((char, i) => (
                         <div key={i} 
@@ -986,21 +986,19 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
                         </div>
                      ))}
                   </div>
-                  <button onClick={() => handleDictClick(word)} className={`absolute left-full ml-1 sm:ml-2 p-1.5 sm:p-2 rounded-lg opacity-40 hover:opacity-100 transition-opacity ${theme.emptyCell}`} title="Anlamını Gör"><Book size={16} /></button>
+                  <div className="absolute left-full ml-2 z-20 flex items-center h-full">
+                     <button onClick={() => handleDictClick(word)} className={`p-2 rounded-lg opacity-40 hover:opacity-100 transition-opacity ${theme.emptyCell}`} title="Anlamını Gör"><Book size={16} /></button>
+                  </div>
                </div>
             ))}
 
             {!isGameOver && (
-               <div className={`relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
+               <div className={`relative flex items-center justify-center w-fit mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
                   <div className="flex gap-1 sm:gap-1.5 z-10">
                      {[...Array(wordLength)].map((_, i) => (
                         <div key={i} 
-                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'} ${winningRowAnimation ? 'shadow-green-500/30 shadow-lg' : 'shadow-inner'}`}
-                          style={winningRowAnimation ? { 
-                            animation: `flip-correct 0.6s ease-in-out forwards`,
-                            animationDelay: `${i * 150}ms`,
-                            backfaceVisibility: 'hidden'
-                          } : {}}
+                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'} ${winningRowAnimation ? 'animate-flip-correct shadow-green-500/30 shadow-lg' : 'shadow-inner'}`}
+                          style={winningRowAnimation ? { animationDelay: `${i * 150}ms` } : {}}
                         >
                            {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : (
                               currentGuess[i] ? currentGuess[i] : (i === currentGuess.length ? <span className="animate-pulse opacity-50 font-light text-2xl md:text-3xl">|</span> : "")
@@ -1226,28 +1224,31 @@ const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
             </div>
 
             {history.map((word, idx) => (
-               <div key={idx} className="relative flex items-center justify-center w-full max-w-[260px] sm:max-w-xs mx-auto animate-in fade-in slide-in-from-bottom-2">
+               <div key={idx} className="relative flex items-center justify-center w-fit mx-auto">
                   <div className="flex gap-1 sm:gap-1.5 z-10">
                      {word.split('').map((char, i) => (
                         <div key={i} 
-                             className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${idx === 0 ? 'bg-blue-600 border-blue-500 text-white shadow-blue-500/30 shadow-lg' : 'bg-green-600 border-green-500 text-white shadow-green-500/30 shadow-lg'} ${idx === history.length - 1 && idx !== 0 ? 'animate-flip-letter' : ''}`}
+                             className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${idx === 0 ? 'bg-blue-600 border-blue-700 text-white shadow-sm' : 'bg-green-600 border-green-700 text-white shadow-sm'} ${idx === history.length - 1 && idx !== 0 ? 'animate-flip-letter' : ''}`}
                              style={idx === history.length - 1 && idx !== 0 ? { animationDelay: `${i * 150}ms` } : {}}
                         >
                            {char}
                         </div>
                      ))}
                   </div>
-                  <button onClick={() => toggleModal('definition', word)} className={`absolute left-full ml-1 sm:ml-2 p-1.5 sm:p-2 rounded-lg opacity-40 hover:opacity-100 hover:bg-white/10 transition-all ${theme.emptyCell}`} title="Anlamını Gör">
-                     <Book size={18} />
-                  </button>
+                  <div className="absolute left-full ml-2 z-20 flex items-center h-full">
+                     <button onClick={() => handleDictClick(word)} className={`p-2 rounded-lg opacity-40 hover:opacity-100 transition-opacity ${theme.emptyCell}`} title="Anlamını Gör"><Book size={16} /></button>
+                  </div>
                </div>
             ))}
 
-            {!finalizeOpen && (
-               <div className={`relative flex justify-center items-center w-full max-w-[260px] sm:max-w-xs mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
+            {!isGameOver && (
+               <div className={`relative flex items-center justify-center w-fit mx-auto transition-transform ${rowAnimation === 'shake' ? 'animate-shake' : ''}`}>
                   <div className="flex gap-1 sm:gap-1.5 z-10">
                      {[...Array(wordLength)].map((_, i) => (
-                        <div key={i} className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 shadow-inner ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'}`}>
+                        <div key={i} 
+                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-lg md:text-xl font-black rounded-lg border-2 ${rowAnimation === 'shake' ? colors.errorBg + ' ' + colors.errorBorder : 'bg-white/5 border-white/10'} ${winningRowAnimation ? 'animate-flip-correct shadow-green-500/30 shadow-lg' : 'shadow-inner'}`}
+                          style={winningRowAnimation ? { animationDelay: `${i * 150}ms` } : {}}
+                        >
                            {isLoading && i === Math.floor(wordLength/2) ? <Loader2 className="animate-spin text-green-500" /> : (
                               currentGuess[i] ? currentGuess[i] : (i === currentGuess.length ? <span className="animate-pulse opacity-50 font-light text-2xl md:text-3xl">|</span> : "")
                            )}
