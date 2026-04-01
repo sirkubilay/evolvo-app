@@ -700,10 +700,19 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
   useEffect(() => {
     const today = new Date().toLocaleDateString('tr-TR');
     const playStatus = localStorage.getItem(`evolvo_played_${today}`);
+    const savedStatsStr = localStorage.getItem(`evolvo_today_stats_${today}`);
     
     if (playStatus) {
-      setIsGameOver(true); // Oynadıysa klavyeyi kilitle
-      setIsWon(playStatus === 'won'); // Eğer 'won' yazıyorsa kazanma ekranını, 'lost' yazıyorsa kaybetme ekranını göster!
+      setIsGameOver(true);
+      setIsWon(playStatus === 'won');
+      
+      // Kaydettiğimiz puanları ekrana geri basıyoruz!
+      if (savedStatsStr) {
+        const stats = JSON.parse(savedStatsStr);
+        setScoreDetails({ total: stats.score, penalty: stats.hintsUsed * 150 });
+        setTimer(stats.timer);
+        setHintsLeft(3 - stats.hintsUsed); 
+      }
     }
   }, []);
   // skipSound parametresi eklendi (ikinci kez çalmaması için)
@@ -715,6 +724,12 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
     // 🔥 İŞTE BURASI: Oyun bittiği an (kazansa da kaybetse de) tarayıcıya not düşüyoruz!
     const today = new Date().toLocaleDateString('tr-TR');
     localStorage.setItem(`evolvo_played_${today}`, didWin ? 'won' : 'lost');
+    const todayStats = {
+  score: score,
+  timer: timer,
+  hintsUsed: hintsUsed
+};
+localStorage.setItem(`evolvo_today_stats_${today}`, JSON.stringify(todayStats));
     
     let score = 0;
     const hintsUsed = 3 - hintsLeft;
