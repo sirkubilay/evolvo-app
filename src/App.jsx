@@ -315,7 +315,7 @@ const App = () => {
           const dbUsername = userDocSnap.data().username;
           setUser(loggedInUser);
           setUsername(dbUsername);
-          showFeedback(`Tekrar hoş geldin, efsane ${dbUsername}!`, "success");
+          showFeedback(`Tekrar hoş geldin, ${dbUsername}!`, "success");
           setCurrentPage('game');
         } else {
           setTempUser(loggedInUser); 
@@ -699,10 +699,11 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
   };
   useEffect(() => {
     const today = new Date().toLocaleDateString('tr-TR');
-    const isPlayedToday = localStorage.getItem(`evolvo_played_${today}`);
+    const playStatus = localStorage.getItem(`evolvo_played_${today}`);
     
-    if (isPlayedToday === 'true') {
-      setIsGameOver(true); // Oynadıysa direkt klavyeyi kilitle
+    if (playStatus) {
+      setIsGameOver(true); // Oynadıysa klavyeyi kilitle
+      setIsWon(playStatus === 'won'); // Eğer 'won' yazıyorsa kazanma ekranını, 'lost' yazıyorsa kaybetme ekranını göster!
     }
   }, []);
   // skipSound parametresi eklendi (ikinci kez çalmaması için)
@@ -713,7 +714,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
     
     // 🔥 İŞTE BURASI: Oyun bittiği an (kazansa da kaybetse de) tarayıcıya not düşüyoruz!
     const today = new Date().toLocaleDateString('tr-TR');
-    localStorage.setItem(`evolvo_played_${today}`, 'true');
+    localStorage.setItem(`evolvo_played_${today}`, didWin ? 'won' : 'lost');
     
     let score = 0;
     const hintsUsed = 3 - hintsLeft;
