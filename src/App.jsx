@@ -700,18 +700,21 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
   useEffect(() => {
     const today = new Date().toLocaleDateString('tr-TR');
     const playStatus = localStorage.getItem(`evolvo_played_${today}`);
-    const savedStatsStr = localStorage.getItem(`evolvo_today_stats_${today}`);
-    
+
     if (playStatus) {
       setIsGameOver(true);
       setIsWon(playStatus === 'won');
-      
-      // Kaydettiğimiz puanları ekrana geri basıyoruz!
+
+      const savedStatsStr = localStorage.getItem("evolvo_last_stats");
       if (savedStatsStr) {
         const stats = JSON.parse(savedStatsStr);
-        setScoreDetails({ total: stats.score, penalty: stats.hintsUsed * 150 });
-        setTimer(stats.timer);
-        setHintsLeft(3 - stats.hintsUsed); 
+        
+        // React'ın sıfırlama kodlarıyla kapışmamak için 0.1 saniye bekleyip puanı ekrana ÇAKIYORUZ!
+        setTimeout(() => {
+          setScoreDetails({ total: stats.score, penalty: stats.hintsUsed * 150 });
+          setTimer(stats.timer);
+          setHintsLeft(3 - stats.hintsUsed);
+        }, 100); 
       }
     }
   }, []);
@@ -780,7 +783,8 @@ localStorage.setItem(`evolvo_today_stats_${today}`, JSON.stringify(todayStats));
         showFeedback("Hakkınız bitti", "error");
         playErrorSound(); 
     }
-
+    const finalStats = { score: score, timer: timer, hintsUsed: hintsUsed };
+localStorage.setItem("evolvo_last_stats", JSON.stringify(finalStats));  
     setScoreDetails({ total: score, penalty: hintsUsed * 150 });
     updateStats('game_end', { win: didWin, hints: hintsUsed, score: score });
   };
