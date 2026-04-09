@@ -697,13 +697,19 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
     for (let i = 0; i < w1.length; i++) if (w1[i] !== w2[i]) diff++;
     return diff === 1;
   };
-  useEffect(() => {
+useEffect(() => {
     const today = new Date().toLocaleDateString('tr-TR');
     const playStatus = localStorage.getItem(`evolvo_played_${today}`);
 
     if (playStatus) {
       setIsGameOver(true);
       setIsWon(playStatus === 'won');
+
+      // YENİ EKLENEN KISIM: Tarayıcıdan kelime geçmişini çekip tabloya dolduruyoruz
+      const savedHistoryStr = localStorage.getItem(`evolvo_history_${today}`);
+      if (savedHistoryStr) {
+        setHistory(JSON.parse(savedHistoryStr));
+      }
 
       const savedStatsStr = localStorage.getItem("evolvo_last_stats");
       if (savedStatsStr) {
@@ -779,7 +785,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
     // 3. DÜZELTME: LocalStorage kayıt işlemlerini, puanlar hesaplandıktan SONRA yapıyoruz.
     const today = new Date().toLocaleDateString('tr-TR');
     localStorage.setItem(`evolvo_played_${today}`, didWin ? 'won' : 'lost');
-    
+    localStorage.setItem(`evolvo_history_${today}`, JSON.stringify(finalHistory));
     const todayStats = {
       score: score,
       timer: timer,
