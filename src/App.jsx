@@ -724,16 +724,7 @@ const GamePage = ({ onBack, username, userAvatar, setUserAvatar, theme, colors, 
     setIsGameOver(true);
     setIsWon(didWin);
     
-    // 🔥 İŞTE BURASI: Oyun bittiği an (kazansa da kaybetse de) tarayıcıya not düşüyoruz!
-    const today = new Date().toLocaleDateString('tr-TR');
-    localStorage.setItem(`evolvo_played_${today}`, didWin ? 'won' : 'lost');
-    const todayStats = {
-  score: score,
-  timer: timer,
-  hintsUsed: hintsUsed
-};
-localStorage.setItem(`evolvo_today_stats_${today}`, JSON.stringify(todayStats));
-    
+    // 1. DÜZELTME: Değişkenleri ve hesaplamaları EN ÜSTE aldık ki kod patlamasın.
     let score = 0;
     const hintsUsed = 3 - hintsLeft;
 
@@ -759,7 +750,7 @@ localStorage.setItem(`evolvo_today_stats_${today}`, JSON.stringify(todayStats));
                console.error("reCAPTCHA henüz yüklenmedi!");
                return;
            }
-           const recaptchaToken = await executeRecaptcha("saveScore")
+           const recaptchaToken = await executeRecaptcha("saveScore");
            const guvenliGecmis = finalHistory.map(kelime => kelime.toLocaleLowerCase('tr-TR'));
            const functions = getFunctions(getApp(), 'europe-west1');
            const saveScoreFn = httpsCallable(functions, 'saveScore');
@@ -772,6 +763,7 @@ localStorage.setItem(`evolvo_today_stats_${today}`, JSON.stringify(todayStats));
              dateString: puzzleData.date,
              avatar: userAvatar.icon,          
              hintsUsed: hintsUsed,
+             score: score, // 2. DÜZELTME: Firebase'e giden objeye 'score' parametresini ekledik!
              recaptchaToken: recaptchaToken 
            });
            showFeedback("Skor Liderlik Tablosuna Kaydedildi! 🏆", "success");
@@ -783,8 +775,20 @@ localStorage.setItem(`evolvo_today_stats_${today}`, JSON.stringify(todayStats));
         showFeedback("Hakkınız bitti", "error");
         playErrorSound(); 
     }
+
+    // 3. DÜZELTME: LocalStorage kayıt işlemlerini, puanlar hesaplandıktan SONRA yapıyoruz.
+    const today = new Date().toLocaleDateString('tr-TR');
+    localStorage.setItem(`evolvo_played_${today}`, didWin ? 'won' : 'lost');
+    
+    const todayStats = {
+      score: score,
+      timer: timer,
+      hintsUsed: hintsUsed
+    };
+    localStorage.setItem(`evolvo_today_stats_${today}`, JSON.stringify(todayStats));
+    
     const finalStats = { score: score, timer: timer, hintsUsed: hintsUsed };
-localStorage.setItem("evolvo_last_stats", JSON.stringify(finalStats));  
+    localStorage.setItem("evolvo_last_stats", JSON.stringify(finalStats));  
     setScoreDetails({ total: score, penalty: hintsUsed * 150 });
     updateStats('game_end', { win: didWin, hints: hintsUsed, score: score });
   };
