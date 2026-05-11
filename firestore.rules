@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 'puzzles' (Bulmacalar):
+    // Herkes (giriş yapmayanlar dahil) okuyabilir.
+    // HİÇ KİMSE (admin dışında) yazamaz veya silemez.
+    match /puzzles/{puzzleId} {
+      allow read: if true;
+      allow write: if false; // Sadece sunucu (functions) yazabilir
+    }
+
+    // 'scores' (Skorlar):
+    // Herkes okuyabilir (liderlik tablosu için).
+    // Sadece giriş yapmış kullanıcı, KENDİ UID'si ile eşleşen YENİ bir skor oluşturabilir.
+    // Hiç kimse skoru GÜNCELLEYEMEZ veya SİLEMEZ.
+    match /scores/{scoreId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
+      allow update, delete: if false;
+    }
+
+    // 'leaderboards' (Haftalık/Aylık Toplamlar):
+    // Herkes okuyabilir.
+    // HİÇ KİMSE (admin dışında) yazamaz.
+    match /leaderboards/{periodId}/players/{playerId} {
+      allow read: if true;
+      allow write: if false; // Sadece sunucu (saveScore) yazabilir
+    }
+
+    // 'users' (Kullanıcı Nickname'leri):
+    // Bir kullanıcı sadece KENDİ belgesini okuyabilir veya güncelleyebilir.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

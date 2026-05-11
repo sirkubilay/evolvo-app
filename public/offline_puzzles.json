@@ -1,0 +1,7880 @@
+{
+  "4": [
+    {
+      "start": "AŞMA",
+      "target": "EMME",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AŞMA",
+        "AMMA",
+        "AMME",
+        "EMME"
+      ]
+    },
+    {
+      "start": "DAİM",
+      "target": "NAİL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DAİM",
+        "KAİM",
+        "KAİL",
+        "NAİL"
+      ]
+    },
+    {
+      "start": "TELA",
+      "target": "BABA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TELA",
+        "BELA",
+        "BALA",
+        "BABA"
+      ]
+    },
+    {
+      "start": "DEFO",
+      "target": "PENA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DEFO",
+        "DEFA",
+        "SEFA",
+        "SENA",
+        "PENA"
+      ]
+    },
+    {
+      "start": "MARN",
+      "target": "PAŞA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MARN",
+        "MARK",
+        "PARK",
+        "PARA",
+        "PAŞA"
+      ]
+    },
+    {
+      "start": "MUTA",
+      "target": "BALA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MUTA",
+        "META",
+        "BETA",
+        "BELA",
+        "BALA"
+      ]
+    },
+    {
+      "start": "EKİN",
+      "target": "ALIN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "EKİN",
+        "EMİN",
+        "AMİN",
+        "AYİN",
+        "AYIN",
+        "ALIN"
+      ]
+    },
+    {
+      "start": "ÖKSE",
+      "target": "AZMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÖKSE",
+        "AKSE",
+        "AKÇE",
+        "AKÇA",
+        "AKMA",
+        "AZMA"
+      ]
+    },
+    {
+      "start": "İBDA",
+      "target": "RAŞE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "İBDA",
+        "İBRA",
+        "İBRE",
+        "İARE",
+        "İAŞE",
+        "RAŞE"
+      ]
+    },
+    {
+      "start": "VANA",
+      "target": "KUUT",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "VANA",
+        "KANA",
+        "KANT",
+        "KUNT",
+        "KUUT"
+      ]
+    },
+    {
+      "start": "BAKİ",
+      "target": "CANA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BAKİ",
+        "BANİ",
+        "CANİ",
+        "CANA"
+      ]
+    },
+    {
+      "start": "GİŞE",
+      "target": "ÇENE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GİŞE",
+        "GİNE",
+        "ÇİNE",
+        "ÇENE"
+      ]
+    },
+    {
+      "start": "SOPA",
+      "target": "BOZA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SOPA",
+        "SOYA",
+        "BOYA",
+        "BOZA"
+      ]
+    },
+    {
+      "start": "DEPO",
+      "target": "MERİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DEPO",
+        "DEFO",
+        "DEFİ",
+        "DERİ",
+        "MERİ"
+      ]
+    },
+    {
+      "start": "AMMA",
+      "target": "AYRI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AMMA",
+        "AYMA",
+        "AYLA",
+        "AYLI",
+        "AYRI"
+      ]
+    },
+    {
+      "start": "DAHA",
+      "target": "LİGA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DAHA",
+        "DAVA",
+        "LAVA",
+        "LİVA",
+        "LİGA"
+      ]
+    },
+    {
+      "start": "GAZİ",
+      "target": "SAĞI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GAZİ",
+        "MAZİ",
+        "MAZI",
+        "BAZI",
+        "BAĞI",
+        "SAĞI"
+      ]
+    },
+    {
+      "start": "UZUN",
+      "target": "USUL",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "UZUN",
+        "UÇUN",
+        "UÇUK",
+        "UFUK",
+        "UFUL",
+        "USUL"
+      ]
+    },
+    {
+      "start": "PİPO",
+      "target": "İARE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "PİPO",
+        "PİKO",
+        "PİKE",
+        "PİRE",
+        "PARE",
+        "İARE"
+      ]
+    },
+    {
+      "start": "ÇABA",
+      "target": "BURS",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "ÇABA",
+        "BABA",
+        "BARA",
+        "BURA",
+        "BURS"
+      ]
+    },
+    {
+      "start": "ESMA",
+      "target": "OLTA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ESMA",
+        "ELMA",
+        "OLMA",
+        "OLTA"
+      ]
+    },
+    {
+      "start": "ŞAMA",
+      "target": "PAPA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ŞAMA",
+        "LAMA",
+        "LAPA",
+        "PAPA"
+      ]
+    },
+    {
+      "start": "DONE",
+      "target": "DİSK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DONE",
+        "DİNE",
+        "DİNK",
+        "DİSK"
+      ]
+    },
+    {
+      "start": "HAYA",
+      "target": "KONİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "HAYA",
+        "KAYA",
+        "KANA",
+        "KANİ",
+        "KONİ"
+      ]
+    },
+    {
+      "start": "İÇİN",
+      "target": "İVAZ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İÇİN",
+        "İZİN",
+        "İZAN",
+        "İZAZ",
+        "İVAZ"
+      ]
+    },
+    {
+      "start": "PUNT",
+      "target": "HANİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "PUNT",
+        "KUNT",
+        "KANT",
+        "KANİ",
+        "HANİ"
+      ]
+    },
+    {
+      "start": "JALE",
+      "target": "GARD",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "JALE",
+        "HALE",
+        "HARE",
+        "HARP",
+        "GARP",
+        "GARD"
+      ]
+    },
+    {
+      "start": "ÂDEM",
+      "target": "ACİL",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÂDEM",
+        "ADEM",
+        "ALEM",
+        "ALİM",
+        "ALİL",
+        "ACİL"
+      ]
+    },
+    {
+      "start": "GREK",
+      "target": "FRİZ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GREK",
+        "EREK",
+        "ERİK",
+        "BRİK",
+        "BRİZ",
+        "FRİZ"
+      ]
+    },
+    {
+      "start": "SURE",
+      "target": "NİNE",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "SURE",
+        "SERE",
+        "NERE",
+        "NENE",
+        "NİNE"
+      ]
+    },
+    {
+      "start": "ACEM",
+      "target": "AKİM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ACEM",
+        "ALEM",
+        "ALİM",
+        "AKİM"
+      ]
+    },
+    {
+      "start": "DEFA",
+      "target": "FEDA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DEFA",
+        "SEFA",
+        "SEDA",
+        "FEDA"
+      ]
+    },
+    {
+      "start": "ÜNİK",
+      "target": "ENEZ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÜNİK",
+        "ENİK",
+        "ENEK",
+        "ENEZ"
+      ]
+    },
+    {
+      "start": "MENİ",
+      "target": "KOMİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MENİ",
+        "MANİ",
+        "KANİ",
+        "KONİ",
+        "KOMİ"
+      ]
+    },
+    {
+      "start": "ÂDEM",
+      "target": "AKIN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÂDEM",
+        "ADEM",
+        "ADIM",
+        "AKIM",
+        "AKIN"
+      ]
+    },
+    {
+      "start": "VANA",
+      "target": "HALT",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "VANA",
+        "BANA",
+        "BALA",
+        "HALA",
+        "HALT"
+      ]
+    },
+    {
+      "start": "SARİ",
+      "target": "GÜME",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SARİ",
+        "KARİ",
+        "KARE",
+        "KÜRE",
+        "GÜRE",
+        "GÜME"
+      ]
+    },
+    {
+      "start": "EMİN",
+      "target": "ARAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "EMİN",
+        "AMİN",
+        "AYİN",
+        "AYAN",
+        "AYAK",
+        "ARAK"
+      ]
+    },
+    {
+      "start": "ÜNİK",
+      "target": "İZİN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÜNİK",
+        "ENİK",
+        "ERİK",
+        "ERİN",
+        "İRİN",
+        "İZİN"
+      ]
+    },
+    {
+      "start": "BİDE",
+      "target": "VAHİ",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "BİDE",
+        "BADE",
+        "VADE",
+        "VADİ",
+        "VAHİ"
+      ]
+    },
+    {
+      "start": "KIĞI",
+      "target": "KISA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KIĞI",
+        "KIYI",
+        "KIYA",
+        "KISA"
+      ]
+    },
+    {
+      "start": "GAYR",
+      "target": "LALE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GAYR",
+        "GAYE",
+        "GALE",
+        "LALE"
+      ]
+    },
+    {
+      "start": "KÖLE",
+      "target": "FEKE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KÖLE",
+        "KELE",
+        "KEKE",
+        "FEKE"
+      ]
+    },
+    {
+      "start": "DİYE",
+      "target": "BEZE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DİYE",
+        "DİZE",
+        "RİZE",
+        "REZE",
+        "BEZE"
+      ]
+    },
+    {
+      "start": "FAAL",
+      "target": "SAİR",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "FAAL",
+        "FAİL",
+        "FAİK",
+        "SAİK",
+        "SAİR"
+      ]
+    },
+    {
+      "start": "KOKA",
+      "target": "ÇAĞA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KOKA",
+        "KAKA",
+        "KABA",
+        "ÇABA",
+        "ÇAĞA"
+      ]
+    },
+    {
+      "start": "AKMA",
+      "target": "OLGU",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "AKMA",
+        "ALMA",
+        "OLMA",
+        "OLTA",
+        "OLTU",
+        "OLGU"
+      ]
+    },
+    {
+      "start": "ÇIRA",
+      "target": "SOTE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇIRA",
+        "SIRA",
+        "SIMA",
+        "SOMA",
+        "SOTA",
+        "SOTE"
+      ]
+    },
+    {
+      "start": "MORS",
+      "target": "KEFE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MORS",
+        "MARS",
+        "KARS",
+        "KARE",
+        "KERE",
+        "KEFE"
+      ]
+    },
+    {
+      "start": "ROBA",
+      "target": "MAZI",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "ROBA",
+        "ROZA",
+        "BOZA",
+        "BAZA",
+        "BAZI",
+        "MAZI"
+      ]
+    },
+    {
+      "start": "EĞİN",
+      "target": "EŞEK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "EĞİN",
+        "EĞİK",
+        "EŞİK",
+        "EŞEK"
+      ]
+    },
+    {
+      "start": "TANI",
+      "target": "BATI",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TANI",
+        "KANI",
+        "KATI",
+        "BATI"
+      ]
+    },
+    {
+      "start": "İRAP",
+      "target": "İVAZ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İRAP",
+        "İCAP",
+        "İCAZ",
+        "İVAZ"
+      ]
+    },
+    {
+      "start": "YEKE",
+      "target": "GÜCE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "YEKE",
+        "YELE",
+        "GELE",
+        "GECE",
+        "GÜCE"
+      ]
+    },
+    {
+      "start": "HAVA",
+      "target": "FOŞA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "HAVA",
+        "FAVA",
+        "FAÇA",
+        "FOÇA",
+        "FOŞA"
+      ]
+    },
+    {
+      "start": "DEHA",
+      "target": "HORA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DEHA",
+        "DAHA",
+        "DARA",
+        "HARA",
+        "HORA"
+      ]
+    },
+    {
+      "start": "İDOL",
+      "target": "AFİS",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "İDOL",
+        "İDİL",
+        "ADİL",
+        "AKİL",
+        "AKİS",
+        "AFİS"
+      ]
+    },
+    {
+      "start": "RİKA",
+      "target": "SADE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "RİKA",
+        "LİKA",
+        "LAKA",
+        "SAKA",
+        "SAKE",
+        "SADE"
+      ]
+    },
+    {
+      "start": "VOLT",
+      "target": "TEPİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "VOLT",
+        "VOLİ",
+        "VALİ",
+        "TALİ",
+        "TAPİ",
+        "TEPİ"
+      ]
+    },
+    {
+      "start": "KABA",
+      "target": "TERK",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "KABA",
+        "KARA",
+        "KARE",
+        "KERE",
+        "TERE",
+        "TERK"
+      ]
+    },
+    {
+      "start": "İCAZ",
+      "target": "APAZ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İCAZ",
+        "İVAZ",
+        "AVAZ",
+        "APAZ"
+      ]
+    },
+    {
+      "start": "AVAL",
+      "target": "EMEL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AVAL",
+        "AMAL",
+        "AMEL",
+        "EMEL"
+      ]
+    },
+    {
+      "start": "HIRS",
+      "target": "HATA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "HIRS",
+        "HARS",
+        "HARA",
+        "HATA"
+      ]
+    },
+    {
+      "start": "AMİL",
+      "target": "İÇİM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AMİL",
+        "ALİL",
+        "ALİM",
+        "İLİM",
+        "İÇİM"
+      ]
+    },
+    {
+      "start": "AYRI",
+      "target": "AZMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AYRI",
+        "AYLI",
+        "AYLA",
+        "AYMA",
+        "AZMA"
+      ]
+    },
+    {
+      "start": "MARN",
+      "target": "KAPI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MARN",
+        "MARS",
+        "KARS",
+        "KARI",
+        "KAPI"
+      ]
+    },
+    {
+      "start": "KÜME",
+      "target": "FERÇ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KÜME",
+        "KEME",
+        "DEME",
+        "DERE",
+        "DERÇ",
+        "FERÇ"
+      ]
+    },
+    {
+      "start": "TABL",
+      "target": "REMİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TABL",
+        "TABİ",
+        "SABİ",
+        "SAMİ",
+        "RAMİ",
+        "REMİ"
+      ]
+    },
+    {
+      "start": "ZİLE",
+      "target": "VEBA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ZİLE",
+        "HİLE",
+        "HELE",
+        "HELA",
+        "HEBA",
+        "VEBA"
+      ]
+    },
+    {
+      "start": "ÂLEM",
+      "target": "KLİP",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "ÂLEM",
+        "ELEM",
+        "ELİM",
+        "ELİK",
+        "KLİK",
+        "KLİP"
+      ]
+    },
+    {
+      "start": "ASİL",
+      "target": "AVAM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ASİL",
+        "ASAL",
+        "AVAL",
+        "AVAM"
+      ]
+    },
+    {
+      "start": "FEVT",
+      "target": "SENE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "FEVT",
+        "FENT",
+        "SENT",
+        "SENE"
+      ]
+    },
+    {
+      "start": "KASA",
+      "target": "BİNA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KASA",
+        "KANA",
+        "BANA",
+        "BİNA"
+      ]
+    },
+    {
+      "start": "NİYE",
+      "target": "KULE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "NİYE",
+        "BİYE",
+        "BİLE",
+        "KİLE",
+        "KULE"
+      ]
+    },
+    {
+      "start": "EMİŞ",
+      "target": "STEN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "EMİŞ",
+        "EMİN",
+        "EMEN",
+        "ETEN",
+        "STEN"
+      ]
+    },
+    {
+      "start": "GERİ",
+      "target": "KARA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GERİ",
+        "BERİ",
+        "BARİ",
+        "KARİ",
+        "KARA"
+      ]
+    },
+    {
+      "start": "GARP",
+      "target": "PUPA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GARP",
+        "DARP",
+        "DARA",
+        "PARA",
+        "PAPA",
+        "PUPA"
+      ]
+    },
+    {
+      "start": "BUUT",
+      "target": "KOKA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BUUT",
+        "KUUT",
+        "KURT",
+        "KURA",
+        "KUKA",
+        "KOKA"
+      ]
+    },
+    {
+      "start": "AHİT",
+      "target": "ELEK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "AHİT",
+        "AKİT",
+        "EKİT",
+        "ELİT",
+        "ELİK",
+        "ELEK"
+      ]
+    },
+    {
+      "start": "ÂDEM",
+      "target": "OCAK",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "ÂDEM",
+        "ADEM",
+        "ADAM",
+        "ADAK",
+        "ODAK",
+        "OCAK"
+      ]
+    },
+    {
+      "start": "BARI",
+      "target": "KORT",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BARI",
+        "KARI",
+        "KART",
+        "KORT"
+      ]
+    },
+    {
+      "start": "MAMA",
+      "target": "VENA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MAMA",
+        "MANA",
+        "VANA",
+        "VENA"
+      ]
+    },
+    {
+      "start": "ELCİ",
+      "target": "EKSİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ELCİ",
+        "ELLİ",
+        "EKLİ",
+        "EKSİ"
+      ]
+    },
+    {
+      "start": "YÖRE",
+      "target": "FÜZE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "YÖRE",
+        "TÖRE",
+        "TÜRE",
+        "TÜZE",
+        "FÜZE"
+      ]
+    },
+    {
+      "start": "ÖĞÜT",
+      "target": "ÖREN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÖĞÜT",
+        "ÖZÜT",
+        "ÖZET",
+        "ÖZEN",
+        "ÖREN"
+      ]
+    },
+    {
+      "start": "MAKİ",
+      "target": "DİRİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MAKİ",
+        "BAKİ",
+        "BARİ",
+        "BİRİ",
+        "DİRİ"
+      ]
+    },
+    {
+      "start": "ROKA",
+      "target": "SEME",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ROKA",
+        "KOKA",
+        "KEKA",
+        "KEKE",
+        "KEME",
+        "SEME"
+      ]
+    },
+    {
+      "start": "ZATİ",
+      "target": "LOCA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ZATİ",
+        "PATİ",
+        "PATA",
+        "LATA",
+        "LOTA",
+        "LOCA"
+      ]
+    },
+    {
+      "start": "GÜDÜ",
+      "target": "GALE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GÜDÜ",
+        "GÜCÜ",
+        "GÜCE",
+        "GECE",
+        "GELE",
+        "GALE"
+      ]
+    },
+    {
+      "start": "ERİN",
+      "target": "İNAT",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "ERİN",
+        "İRİN",
+        "İZİN",
+        "İZAN",
+        "İNAN",
+        "İNAT"
+      ]
+    },
+    {
+      "start": "BİRA",
+      "target": "SORU",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BİRA",
+        "BORA",
+        "BORU",
+        "SORU"
+      ]
+    },
+    {
+      "start": "BAĞI",
+      "target": "BERİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BAĞI",
+        "BARI",
+        "BARİ",
+        "BERİ"
+      ]
+    },
+    {
+      "start": "DENİ",
+      "target": "BESİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DENİ",
+        "DELİ",
+        "BELİ",
+        "BESİ"
+      ]
+    },
+    {
+      "start": "AKİM",
+      "target": "EDEP",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AKİM",
+        "EKİM",
+        "EDİM",
+        "EDİP",
+        "EDEP"
+      ]
+    },
+    {
+      "start": "AMAN",
+      "target": "EKİM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AMAN",
+        "EMAN",
+        "EMİN",
+        "EKİN",
+        "EKİM"
+      ]
+    },
+    {
+      "start": "SAMİ",
+      "target": "İAŞE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SAMİ",
+        "RAMİ",
+        "RAŞİ",
+        "RAŞE",
+        "İAŞE"
+      ]
+    },
+    {
+      "start": "SAİK",
+      "target": "KAŞE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SAİK",
+        "FAİK",
+        "FARK",
+        "FARE",
+        "KARE",
+        "KAŞE"
+      ]
+    },
+    {
+      "start": "IĞIL",
+      "target": "ADAP",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "IĞIL",
+        "AĞIL",
+        "ADIL",
+        "ADIM",
+        "ADAM",
+        "ADAP"
+      ]
+    },
+    {
+      "start": "KÜPE",
+      "target": "BULA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KÜPE",
+        "KİPE",
+        "KİLE",
+        "KULE",
+        "KULA",
+        "BULA"
+      ]
+    },
+    {
+      "start": "AMİL",
+      "target": "UÇUŞ",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "AMİL",
+        "AMİT",
+        "AMUT",
+        "UMUT",
+        "UMUŞ",
+        "UÇUŞ"
+      ]
+    },
+    {
+      "start": "RATE",
+      "target": "İARE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "RATE",
+        "RAŞE",
+        "İAŞE",
+        "İARE"
+      ]
+    },
+    {
+      "start": "ARUZ",
+      "target": "AKIŞ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ARUZ",
+        "ARIZ",
+        "ARIŞ",
+        "AKIŞ"
+      ]
+    },
+    {
+      "start": "KETE",
+      "target": "DERT",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KETE",
+        "KERE",
+        "DERE",
+        "DERT"
+      ]
+    },
+    {
+      "start": "FİLE",
+      "target": "HARP",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "FİLE",
+        "HİLE",
+        "HALE",
+        "HARE",
+        "HARP"
+      ]
+    },
+    {
+      "start": "BERK",
+      "target": "PARA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BERK",
+        "BERİ",
+        "BARİ",
+        "BARA",
+        "PARA"
+      ]
+    },
+    {
+      "start": "AVAL",
+      "target": "ATEŞ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AVAL",
+        "AMAL",
+        "AMEL",
+        "ATEL",
+        "ATEŞ"
+      ]
+    },
+    {
+      "start": "ÇIĞA",
+      "target": "NEMF",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇIĞA",
+        "SIĞA",
+        "SIMA",
+        "SEMA",
+        "NEMA",
+        "NEMF"
+      ]
+    },
+    {
+      "start": "UZUN",
+      "target": "ULAM",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "UZUN",
+        "UÇUN",
+        "UÇUK",
+        "UÇAK",
+        "ULAK",
+        "ULAM"
+      ]
+    },
+    {
+      "start": "BADİ",
+      "target": "ROBA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BADİ",
+        "BABİ",
+        "SABİ",
+        "SABA",
+        "SOBA",
+        "ROBA"
+      ]
+    },
+    {
+      "start": "UFAK",
+      "target": "AÇIM",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "UFAK",
+        "AFAK",
+        "ADAK",
+        "ADAM",
+        "ADIM",
+        "AÇIM"
+      ]
+    },
+    {
+      "start": "AYIN",
+      "target": "ATIF",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AYIN",
+        "AYIK",
+        "ATIK",
+        "ATIF"
+      ]
+    },
+    {
+      "start": "BABİ",
+      "target": "SOBA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BABİ",
+        "SABİ",
+        "SABA",
+        "SOBA"
+      ]
+    },
+    {
+      "start": "YARA",
+      "target": "ŞAKİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "YARA",
+        "YAKA",
+        "ŞAKA",
+        "ŞAKİ"
+      ]
+    },
+    {
+      "start": "BETİ",
+      "target": "KANO",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BETİ",
+        "BATİ",
+        "KATİ",
+        "KANİ",
+        "KANO"
+      ]
+    },
+    {
+      "start": "EROS",
+      "target": "KLOŞ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "EROS",
+        "KROS",
+        "KRON",
+        "KLON",
+        "KLOŞ"
+      ]
+    },
+    {
+      "start": "ŞANS",
+      "target": "MALİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ŞANS",
+        "ŞANO",
+        "MANO",
+        "MANİ",
+        "MALİ"
+      ]
+    },
+    {
+      "start": "FEKE",
+      "target": "MAYA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "FEKE",
+        "KEKE",
+        "KEKA",
+        "KAKA",
+        "KAYA",
+        "MAYA"
+      ]
+    },
+    {
+      "start": "ÖPÜŞ",
+      "target": "DREN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÖPÜŞ",
+        "ÖRÜŞ",
+        "ÖRÜK",
+        "ÖREK",
+        "ÖREN",
+        "DREN"
+      ]
+    },
+    {
+      "start": "İPEK",
+      "target": "ONAR",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "İPEK",
+        "İNEK",
+        "İNAK",
+        "İNAT",
+        "ONAT",
+        "ONAR"
+      ]
+    },
+    {
+      "start": "ZİLE",
+      "target": "VEBA",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "ZİLE",
+        "HİLE",
+        "HELE",
+        "HELA",
+        "HEBA",
+        "VEBA"
+      ]
+    },
+    {
+      "start": "UÇLU",
+      "target": "OTÇU",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "UÇLU",
+        "UTLU",
+        "OTLU",
+        "OTÇU"
+      ]
+    },
+    {
+      "start": "İKAZ",
+      "target": "İLAM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İKAZ",
+        "İZAZ",
+        "İZAM",
+        "İLAM"
+      ]
+    },
+    {
+      "start": "REJİ",
+      "target": "GERİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "REJİ",
+        "REMİ",
+        "GEMİ",
+        "GERİ"
+      ]
+    },
+    {
+      "start": "ÖRÜM",
+      "target": "GREN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÖRÜM",
+        "ÖRÜK",
+        "ÖREK",
+        "GREK",
+        "GREN"
+      ]
+    },
+    {
+      "start": "İNDİ",
+      "target": "ÖNCÜ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İNDİ",
+        "İNCİ",
+        "İNCE",
+        "ÖNCE",
+        "ÖNCÜ"
+      ]
+    },
+    {
+      "start": "İĞCİ",
+      "target": "İVME",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İĞCİ",
+        "İNCİ",
+        "İNCE",
+        "İNME",
+        "İVME"
+      ]
+    },
+    {
+      "start": "VALS",
+      "target": "HEBA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "VALS",
+        "VALE",
+        "HALE",
+        "HELE",
+        "HELA",
+        "HEBA"
+      ]
+    },
+    {
+      "start": "SIPA",
+      "target": "SULU",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SIPA",
+        "SAPA",
+        "SANA",
+        "SUNA",
+        "SUNU",
+        "SULU"
+      ]
+    },
+    {
+      "start": "SUNİ",
+      "target": "MERT",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SUNİ",
+        "SİNİ",
+        "MİNİ",
+        "MENİ",
+        "MERİ",
+        "MERT"
+      ]
+    },
+    {
+      "start": "MUÇO",
+      "target": "BORA",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "MUÇO",
+        "MAÇO",
+        "MANO",
+        "MANA",
+        "BANA",
+        "BARA",
+        "BORA"
+      ]
+    },
+    {
+      "start": "ELİM",
+      "target": "AÇIM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ELİM",
+        "ALİM",
+        "ALIM",
+        "AÇIM"
+      ]
+    },
+    {
+      "start": "AĞDA",
+      "target": "UTMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AĞDA",
+        "AĞMA",
+        "ATMA",
+        "UTMA"
+      ]
+    },
+    {
+      "start": "LİKA",
+      "target": "YAYA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "LİKA",
+        "LAKA",
+        "YAKA",
+        "YAYA"
+      ]
+    },
+    {
+      "start": "PRİM",
+      "target": "AZİM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "PRİM",
+        "ERİM",
+        "EKİM",
+        "AKİM",
+        "AZİM"
+      ]
+    },
+    {
+      "start": "VADİ",
+      "target": "BİYE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "VADİ",
+        "BADİ",
+        "BADE",
+        "BİDE",
+        "BİYE"
+      ]
+    },
+    {
+      "start": "AGEL",
+      "target": "ÖREN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AGEL",
+        "AZEL",
+        "ÖZEL",
+        "ÖZEN",
+        "ÖREN"
+      ]
+    },
+    {
+      "start": "ÖDÜN",
+      "target": "ÖLET",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÖDÜN",
+        "ÖĞÜN",
+        "ÖĞÜT",
+        "ÖZÜT",
+        "ÖZET",
+        "ÖLET"
+      ]
+    },
+    {
+      "start": "MASK",
+      "target": "MUDİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MASK",
+        "MİSK",
+        "MİNK",
+        "MİNİ",
+        "MİDİ",
+        "MUDİ"
+      ]
+    },
+    {
+      "start": "ADEM",
+      "target": "ESİŞ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ADEM",
+        "ALEM",
+        "ELEM",
+        "ELİM",
+        "ESİM",
+        "ESİŞ"
+      ]
+    },
+    {
+      "start": "BLUZ",
+      "target": "EZAN",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "BLUZ",
+        "BLUM",
+        "ULUM",
+        "ULAM",
+        "ULAN",
+        "ELAN",
+        "EZAN"
+      ]
+    },
+    {
+      "start": "AZAP",
+      "target": "AVAZ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AZAP",
+        "ARAP",
+        "ARAZ",
+        "AVAZ"
+      ]
+    },
+    {
+      "start": "SUMA",
+      "target": "BANA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SUMA",
+        "SUNA",
+        "SANA",
+        "BANA"
+      ]
+    },
+    {
+      "start": "USLU",
+      "target": "OTÇU",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "USLU",
+        "UTLU",
+        "OTLU",
+        "OTÇU"
+      ]
+    },
+    {
+      "start": "MİDİ",
+      "target": "BALE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MİDİ",
+        "MİDE",
+        "BİDE",
+        "BADE",
+        "BALE"
+      ]
+    },
+    {
+      "start": "ASAL",
+      "target": "ENAM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ASAL",
+        "İSAL",
+        "İNAL",
+        "İNAM",
+        "ENAM"
+      ]
+    },
+    {
+      "start": "İLLÎ",
+      "target": "İNHA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İLLÎ",
+        "İLLA",
+        "İMLA",
+        "İMHA",
+        "İNHA"
+      ]
+    },
+    {
+      "start": "KEBE",
+      "target": "İĞNE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KEBE",
+        "KENE",
+        "NENE",
+        "NANE",
+        "İANE",
+        "İĞNE"
+      ]
+    },
+    {
+      "start": "SERE",
+      "target": "LİME",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SERE",
+        "KERE",
+        "KARE",
+        "KAME",
+        "LAME",
+        "LİME"
+      ]
+    },
+    {
+      "start": "LAVA",
+      "target": "BÖKE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "LAVA",
+        "SAVA",
+        "SAKA",
+        "SAKE",
+        "SÖKE",
+        "BÖKE"
+      ]
+    },
+    {
+      "start": "VAİZ",
+      "target": "DENK",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "VAİZ",
+        "FAİZ",
+        "FARZ",
+        "FERZ",
+        "DERZ",
+        "DERK",
+        "DENK"
+      ]
+    },
+    {
+      "start": "UTKU",
+      "target": "ONLU",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "UTKU",
+        "UTLU",
+        "OTLU",
+        "ONLU"
+      ]
+    },
+    {
+      "start": "ALÇI",
+      "target": "AYLA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ALÇI",
+        "ALLI",
+        "AYLI",
+        "AYLA"
+      ]
+    },
+    {
+      "start": "BİLE",
+      "target": "BARİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BİLE",
+        "BİLİ",
+        "BİRİ",
+        "BARİ"
+      ]
+    },
+    {
+      "start": "KÖŞE",
+      "target": "PAYE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KÖŞE",
+        "KAŞE",
+        "KARE",
+        "PARE",
+        "PAYE"
+      ]
+    },
+    {
+      "start": "CİMA",
+      "target": "MERA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "CİMA",
+        "SİMA",
+        "SEMA",
+        "SERA",
+        "MERA"
+      ]
+    },
+    {
+      "start": "AHİZ",
+      "target": "EMİK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AHİZ",
+        "AHİR",
+        "AMİR",
+        "EMİR",
+        "EMİK"
+      ]
+    },
+    {
+      "start": "AMİL",
+      "target": "UÇUŞ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "AMİL",
+        "AMİT",
+        "AMUT",
+        "UMUT",
+        "UMUŞ",
+        "UÇUŞ"
+      ]
+    },
+    {
+      "start": "MEKE",
+      "target": "MÜRT",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MEKE",
+        "KEKE",
+        "KERE",
+        "KÜRE",
+        "KÜRT",
+        "MÜRT"
+      ]
+    },
+    {
+      "start": "MİRA",
+      "target": "SIVI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MİRA",
+        "MERA",
+        "SERA",
+        "SIRA",
+        "SIVA",
+        "SIVI"
+      ]
+    },
+    {
+      "start": "FERÇ",
+      "target": "İĞNE",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "FERÇ",
+        "FERZ",
+        "FARZ",
+        "FARE",
+        "İARE",
+        "İANE",
+        "İĞNE"
+      ]
+    },
+    {
+      "start": "NEMA",
+      "target": "KUMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "NEMA",
+        "SEMA",
+        "SUMA",
+        "KUMA"
+      ]
+    },
+    {
+      "start": "ÜZGÜ",
+      "target": "İZGE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÜZGÜ",
+        "ÖZGÜ",
+        "ÖZGE",
+        "İZGE"
+      ]
+    },
+    {
+      "start": "AKAK",
+      "target": "AMAL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AKAK",
+        "AFAK",
+        "AFAL",
+        "AMAL"
+      ]
+    },
+    {
+      "start": "İMLA",
+      "target": "ÖLME",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İMLA",
+        "İLLA",
+        "İLLE",
+        "İLME",
+        "ÖLME"
+      ]
+    },
+    {
+      "start": "ATIF",
+      "target": "AFAT",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ATIF",
+        "ATIK",
+        "ATAK",
+        "AFAK",
+        "AFAT"
+      ]
+    },
+    {
+      "start": "ŞANO",
+      "target": "CAMİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ŞANO",
+        "KANO",
+        "KANİ",
+        "CANİ",
+        "CAMİ"
+      ]
+    },
+    {
+      "start": "DEVA",
+      "target": "BAKI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DEVA",
+        "DAVA",
+        "TAVA",
+        "TAKA",
+        "TAKI",
+        "BAKI"
+      ]
+    },
+    {
+      "start": "KORU",
+      "target": "MİNİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KORU",
+        "KONU",
+        "KONİ",
+        "KANİ",
+        "MANİ",
+        "MİNİ"
+      ]
+    },
+    {
+      "start": "TEMA",
+      "target": "CARİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TEMA",
+        "SEMA",
+        "SERA",
+        "SARA",
+        "SARİ",
+        "CARİ"
+      ]
+    },
+    {
+      "start": "BÖCÜ",
+      "target": "KENT",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "BÖCÜ",
+        "BÖLÜ",
+        "BÖLE",
+        "KÖLE",
+        "KELE",
+        "KENE",
+        "KENT"
+      ]
+    },
+    {
+      "start": "İPEK",
+      "target": "İLİM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İPEK",
+        "İLEK",
+        "İLİK",
+        "İLİM"
+      ]
+    },
+    {
+      "start": "KORE",
+      "target": "BARİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KORE",
+        "KARE",
+        "KARİ",
+        "BARİ"
+      ]
+    },
+    {
+      "start": "ADEM",
+      "target": "AKİM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ADEM",
+        "ALEM",
+        "ALİM",
+        "AKİM"
+      ]
+    },
+    {
+      "start": "URAN",
+      "target": "İHAM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "URAN",
+        "ULAN",
+        "İLAN",
+        "İLAM",
+        "İHAM"
+      ]
+    },
+    {
+      "start": "ÇAPA",
+      "target": "CUMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÇAPA",
+        "PAPA",
+        "PUPA",
+        "PUMA",
+        "CUMA"
+      ]
+    },
+    {
+      "start": "ALİL",
+      "target": "AVAM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ALİL",
+        "AMİL",
+        "AMAL",
+        "AVAL",
+        "AVAM"
+      ]
+    },
+    {
+      "start": "ÖZNE",
+      "target": "İLME",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÖZNE",
+        "ÖZGE",
+        "ÖRGE",
+        "ÖRME",
+        "ÖLME",
+        "İLME"
+      ]
+    },
+    {
+      "start": "NAME",
+      "target": "DEVA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "NAME",
+        "KAME",
+        "KEME",
+        "DEME",
+        "DEVE",
+        "DEVA"
+      ]
+    },
+    {
+      "start": "BETİ",
+      "target": "TAHT",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BETİ",
+        "BATİ",
+        "BANİ",
+        "BANT",
+        "BAHT",
+        "TAHT"
+      ]
+    },
+    {
+      "start": "AÇIM",
+      "target": "İCAT",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "AÇIM",
+        "ADIM",
+        "ADAM",
+        "İDAM",
+        "İNAM",
+        "İNAT",
+        "İCAT"
+      ]
+    },
+    {
+      "start": "ÖZGÜ",
+      "target": "İMGE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÖZGÜ",
+        "ÖZGE",
+        "İZGE",
+        "İMGE"
+      ]
+    },
+    {
+      "start": "İLAM",
+      "target": "AZİM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İLAM",
+        "İLİM",
+        "ALİM",
+        "AZİM"
+      ]
+    },
+    {
+      "start": "BALE",
+      "target": "SELE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BALE",
+        "GALE",
+        "GELE",
+        "SELE"
+      ]
+    },
+    {
+      "start": "MAPA",
+      "target": "SERİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MAPA",
+        "SAPA",
+        "SARA",
+        "SERA",
+        "SERİ"
+      ]
+    },
+    {
+      "start": "DAHA",
+      "target": "SEKİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DAHA",
+        "SAHA",
+        "SAKA",
+        "SAKİ",
+        "SEKİ"
+      ]
+    },
+    {
+      "start": "KANT",
+      "target": "BURA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KANT",
+        "BANT",
+        "BANA",
+        "BARA",
+        "BURA"
+      ]
+    },
+    {
+      "start": "ALIÇ",
+      "target": "ANAÇ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ALIÇ",
+        "ALIK",
+        "ARIK",
+        "ARAK",
+        "ARAÇ",
+        "ANAÇ"
+      ]
+    },
+    {
+      "start": "ATİK",
+      "target": "ADET",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ATİK",
+        "ATAK",
+        "ADAK",
+        "ADAM",
+        "ADEM",
+        "ADET"
+      ]
+    },
+    {
+      "start": "ŞALE",
+      "target": "BATI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ŞALE",
+        "BALE",
+        "BADE",
+        "BADİ",
+        "BATİ",
+        "BATI"
+      ]
+    },
+    {
+      "start": "KOCA",
+      "target": "GANG",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "KOCA",
+        "BOCA",
+        "BACA",
+        "BANA",
+        "DANA",
+        "DANG",
+        "GANG"
+      ]
+    },
+    {
+      "start": "ULAH",
+      "target": "KLON",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ULAH",
+        "ULAN",
+        "KLAN",
+        "KLON"
+      ]
+    },
+    {
+      "start": "CELP",
+      "target": "BESİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "CELP",
+        "CELİ",
+        "BELİ",
+        "BESİ"
+      ]
+    },
+    {
+      "start": "GAYE",
+      "target": "HALA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GAYE",
+        "GALE",
+        "HALE",
+        "HALA"
+      ]
+    },
+    {
+      "start": "GÜRE",
+      "target": "ÇENE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GÜRE",
+        "KÜRE",
+        "KERE",
+        "KENE",
+        "ÇENE"
+      ]
+    },
+    {
+      "start": "SURE",
+      "target": "NİNE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SURE",
+        "SERE",
+        "NERE",
+        "NENE",
+        "NİNE"
+      ]
+    },
+    {
+      "start": "BEZE",
+      "target": "GEZİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BEZE",
+        "BERE",
+        "BERİ",
+        "GERİ",
+        "GEZİ"
+      ]
+    },
+    {
+      "start": "EKİT",
+      "target": "AZIŞ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "EKİT",
+        "AKİT",
+        "AKİL",
+        "AKIL",
+        "AKIŞ",
+        "AZIŞ"
+      ]
+    },
+    {
+      "start": "PUNT",
+      "target": "GECE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "PUNT",
+        "KUNT",
+        "KENT",
+        "KENE",
+        "GENE",
+        "GECE"
+      ]
+    },
+    {
+      "start": "NİDA",
+      "target": "SERT",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "NİDA",
+        "VİDA",
+        "VEDA",
+        "SEDA",
+        "SERA",
+        "SERT"
+      ]
+    },
+    {
+      "start": "İCRA",
+      "target": "KADI",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "İCRA",
+        "İBRA",
+        "İBRE",
+        "İARE",
+        "KARE",
+        "KARI",
+        "KADI"
+      ]
+    }
+  ],
+  "5": [
+    {
+      "start": "MADDİ",
+      "target": "HANDE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MADDİ",
+        "MADDE",
+        "HADDE",
+        "HANDE"
+      ]
+    },
+    {
+      "start": "ANGIN",
+      "target": "ILGIM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ANGIN",
+        "ALGIN",
+        "ILGIN",
+        "ILGIM"
+      ]
+    },
+    {
+      "start": "AKLAN",
+      "target": "ANMAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AKLAN",
+        "AKMAN",
+        "AKMAK",
+        "ANMAK"
+      ]
+    },
+    {
+      "start": "KALCI",
+      "target": "YANGI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KALCI",
+        "SALCI",
+        "SANCI",
+        "YANCI",
+        "YANGI"
+      ]
+    },
+    {
+      "start": "MEZRU",
+      "target": "MATBU",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MEZRU",
+        "MEŞRU",
+        "MEŞBU",
+        "METBU",
+        "MATBU"
+      ]
+    },
+    {
+      "start": "BETİK",
+      "target": "SAFİR",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BETİK",
+        "SETİK",
+        "SETİR",
+        "SATİR",
+        "SAFİR"
+      ]
+    },
+    {
+      "start": "TARİH",
+      "target": "HAFİT",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TARİH",
+        "TALİH",
+        "TALİK",
+        "HALİK",
+        "HAFİK",
+        "HAFİT"
+      ]
+    },
+    {
+      "start": "TÜMEY",
+      "target": "SEHER",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TÜMEY",
+        "TÜMEN",
+        "SÜMEN",
+        "SEMEN",
+        "SEMER",
+        "SEHER"
+      ]
+    },
+    {
+      "start": "YUMRU",
+      "target": "HUYLU",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "YUMRU",
+        "KUMRU",
+        "KUMLU",
+        "MUMLU",
+        "MUYLU",
+        "HUYLU"
+      ]
+    },
+    {
+      "start": "LEÇEK",
+      "target": "ÇELEN",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "LEÇEK",
+        "GEÇEK",
+        "GEÇEN",
+        "ÇEÇEN",
+        "ÇELEN"
+      ]
+    },
+    {
+      "start": "İMALI",
+      "target": "İDAME",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İMALI",
+        "İMALE",
+        "İMAME",
+        "İDAME"
+      ]
+    },
+    {
+      "start": "YORUM",
+      "target": "COŞUŞ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "YORUM",
+        "CORUM",
+        "COŞUM",
+        "COŞUŞ"
+      ]
+    },
+    {
+      "start": "RADAR",
+      "target": "KARAY",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "RADAR",
+        "KADAR",
+        "KARAR",
+        "KARAY"
+      ]
+    },
+    {
+      "start": "HAŞİR",
+      "target": "YAZAR",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "HAŞİR",
+        "NAŞİR",
+        "NAZİR",
+        "NAZAR",
+        "YAZAR"
+      ]
+    },
+    {
+      "start": "ŞALAK",
+      "target": "KADIN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ŞALAK",
+        "KALAK",
+        "KALIK",
+        "KALIN",
+        "KADIN"
+      ]
+    },
+    {
+      "start": "GARBİ",
+      "target": "HEYBE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GARBİ",
+        "HARBİ",
+        "HARBE",
+        "HAYBE",
+        "HEYBE"
+      ]
+    },
+    {
+      "start": "EKSİK",
+      "target": "ERKİN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "EKSİK",
+        "EKSİN",
+        "EVSİN",
+        "EVGİN",
+        "ERGİN",
+        "ERKİN"
+      ]
+    },
+    {
+      "start": "PIRTI",
+      "target": "KARŞI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "PIRTI",
+        "PIRPI",
+        "ÇIRPI",
+        "ÇARPI",
+        "ÇARŞI",
+        "KARŞI"
+      ]
+    },
+    {
+      "start": "GÜLEÇ",
+      "target": "LÜMEN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GÜLEÇ",
+        "GÜVEÇ",
+        "GÜVEN",
+        "DÜVEN",
+        "DÜMEN",
+        "LÜMEN"
+      ]
+    },
+    {
+      "start": "HIZLA",
+      "target": "PISMA",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "HIZLA",
+        "HIZMA",
+        "KIZMA",
+        "KISMA",
+        "PISMA"
+      ]
+    },
+    {
+      "start": "NAMLI",
+      "target": "DALSI",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "NAMLI",
+        "DAMLI",
+        "DALLI",
+        "DALSI"
+      ]
+    },
+    {
+      "start": "İKİLİ",
+      "target": "EMİCİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İKİLİ",
+        "EKİLİ",
+        "EKİCİ",
+        "EMİCİ"
+      ]
+    },
+    {
+      "start": "ONSUZ",
+      "target": "OTÇUL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ONSUZ",
+        "OTSUZ",
+        "OTSUL",
+        "OTÇUL"
+      ]
+    },
+    {
+      "start": "SÜRAT",
+      "target": "ÇAKAL",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SÜRAT",
+        "SARAT",
+        "SAKAT",
+        "SAKAL",
+        "ÇAKAL"
+      ]
+    },
+    {
+      "start": "SOYMA",
+      "target": "YARDA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SOYMA",
+        "SAYMA",
+        "YAYMA",
+        "YARMA",
+        "YARDA"
+      ]
+    },
+    {
+      "start": "KILIÇ",
+      "target": "KAZAK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KILIÇ",
+        "KALIÇ",
+        "KALIK",
+        "KAZIK",
+        "KAZAK"
+      ]
+    },
+    {
+      "start": "BİRİM",
+      "target": "SİDİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BİRİM",
+        "BİLİM",
+        "BİLİŞ",
+        "SİLİŞ",
+        "SİLİK",
+        "SİDİK"
+      ]
+    },
+    {
+      "start": "ÇORAK",
+      "target": "BASIM",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇORAK",
+        "BORAK",
+        "BARAK",
+        "BASAK",
+        "BASIK",
+        "BASIM"
+      ]
+    },
+    {
+      "start": "SARAY",
+      "target": "YETİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SARAY",
+        "SARAK",
+        "SERAK",
+        "SERİK",
+        "SETİK",
+        "YETİK"
+      ]
+    },
+    {
+      "start": "SAKSI",
+      "target": "HAZCI",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "SAKSI",
+        "SAKLI",
+        "SAZLI",
+        "SAZCI",
+        "HAZCI"
+      ]
+    },
+    {
+      "start": "MADEN",
+      "target": "KADAR",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MADEN",
+        "MADER",
+        "KADER",
+        "KADAR"
+      ]
+    },
+    {
+      "start": "GÖZCÜ",
+      "target": "SÖZDE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GÖZCÜ",
+        "SÖZCÜ",
+        "SÖZCE",
+        "SÖZDE"
+      ]
+    },
+    {
+      "start": "ÇÖKME",
+      "target": "SÜVME",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÇÖKME",
+        "SÖKME",
+        "SÖVME",
+        "SÜVME"
+      ]
+    },
+    {
+      "start": "ÜRKEK",
+      "target": "ÖZDEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÜRKEK",
+        "ERKEK",
+        "ERDEK",
+        "ÖRDEK",
+        "ÖZDEK"
+      ]
+    },
+    {
+      "start": "ISLAK",
+      "target": "OKLUK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ISLAK",
+        "ITLAK",
+        "OTLAK",
+        "OTLUK",
+        "OKLUK"
+      ]
+    },
+    {
+      "start": "GÖYÜK",
+      "target": "GÜDÜL",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GÖYÜK",
+        "GÖLÜK",
+        "GÜLÜK",
+        "GÜDÜK",
+        "GÜDÜL"
+      ]
+    },
+    {
+      "start": "OTLUK",
+      "target": "ASMAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "OTLUK",
+        "OTLAK",
+        "OĞLAK",
+        "AĞLAK",
+        "AĞMAK",
+        "ASMAK"
+      ]
+    },
+    {
+      "start": "SARPA",
+      "target": "TAYGA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SARPA",
+        "SARMA",
+        "SAYMA",
+        "SAYFA",
+        "TAYFA",
+        "TAYGA"
+      ]
+    },
+    {
+      "start": "KUTNU",
+      "target": "TUZSU",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KUTNU",
+        "KUTLU",
+        "BUTLU",
+        "BUZLU",
+        "TUZLU",
+        "TUZSU"
+      ]
+    },
+    {
+      "start": "KAHIR",
+      "target": "NASİP",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "KAHIR",
+        "NAHIR",
+        "NASIR",
+        "NASİR",
+        "NASİP"
+      ]
+    },
+    {
+      "start": "ABACI",
+      "target": "ORALI",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ABACI",
+        "ARACI",
+        "ARALI",
+        "ORALI"
+      ]
+    },
+    {
+      "start": "PAPEL",
+      "target": "PİNES",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "PAPEL",
+        "PANEL",
+        "PİNEL",
+        "PİNES"
+      ]
+    },
+    {
+      "start": "AKSAM",
+      "target": "ALMAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AKSAM",
+        "AKSAK",
+        "AKMAK",
+        "ALMAK"
+      ]
+    },
+    {
+      "start": "BEZCİ",
+      "target": "SERVİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BEZCİ",
+        "BEZGİ",
+        "SEZGİ",
+        "SERGİ",
+        "SERVİ"
+      ]
+    },
+    {
+      "start": "FITIK",
+      "target": "YAZIK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "FITIK",
+        "KITIK",
+        "KATIK",
+        "YATIK",
+        "YAZIK"
+      ]
+    },
+    {
+      "start": "TENYA",
+      "target": "KOKMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TENYA",
+        "TONYA",
+        "KONYA",
+        "KONMA",
+        "KOKMA"
+      ]
+    },
+    {
+      "start": "KASNI",
+      "target": "SALGI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KASNI",
+        "KASLI",
+        "KAÇLI",
+        "SAÇLI",
+        "SALLI",
+        "SALGI"
+      ]
+    },
+    {
+      "start": "PERVA",
+      "target": "TÜRKİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "PERVA",
+        "PERMA",
+        "PERMİ",
+        "PERKİ",
+        "TERKİ",
+        "TÜRKİ"
+      ]
+    },
+    {
+      "start": "KİSVE",
+      "target": "KERTİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KİSVE",
+        "KİRVE",
+        "KİRDE",
+        "KERDE",
+        "KERTE",
+        "KERTİ"
+      ]
+    },
+    {
+      "start": "DÖVME",
+      "target": "GÜTME",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "DÖVME",
+        "DÖKME",
+        "DİKME",
+        "DİTME",
+        "GİTME",
+        "GÜTME"
+      ]
+    },
+    {
+      "start": "BRONZ",
+      "target": "TRANŞ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BRONZ",
+        "BRONŞ",
+        "BRANŞ",
+        "TRANŞ"
+      ]
+    },
+    {
+      "start": "DİLCE",
+      "target": "ÇİLLİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DİLCE",
+        "DİLCİ",
+        "DİLLİ",
+        "ÇİLLİ"
+      ]
+    },
+    {
+      "start": "YOLAK",
+      "target": "KABAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "YOLAK",
+        "YALAK",
+        "KALAK",
+        "KABAK"
+      ]
+    },
+    {
+      "start": "SELAM",
+      "target": "ŞAFAK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SELAM",
+        "SALAM",
+        "SALAK",
+        "ŞALAK",
+        "ŞAFAK"
+      ]
+    },
+    {
+      "start": "ARAMİ",
+      "target": "ONAMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ARAMİ",
+        "ARAMA",
+        "ATAMA",
+        "OTAMA",
+        "ONAMA"
+      ]
+    },
+    {
+      "start": "SAKSI",
+      "target": "HAZCI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SAKSI",
+        "SAKLI",
+        "SAZLI",
+        "SAZCI",
+        "HAZCI"
+      ]
+    },
+    {
+      "start": "ZEYİL",
+      "target": "KEMİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ZEYİL",
+        "ZELİL",
+        "DELİL",
+        "DELİK",
+        "KELİK",
+        "KEMİK"
+      ]
+    },
+    {
+      "start": "BARBA",
+      "target": "SALPA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BARBA",
+        "BARÇA",
+        "PARÇA",
+        "PARPA",
+        "SARPA",
+        "SALPA"
+      ]
+    },
+    {
+      "start": "TİLKİ",
+      "target": "BENGİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TİLKİ",
+        "SİLKİ",
+        "SİLGİ",
+        "BİLGİ",
+        "BELGİ",
+        "BENGİ"
+      ]
+    },
+    {
+      "start": "MUĞLA",
+      "target": "MUZSU",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "MUĞLA",
+        "TUĞLA",
+        "TUZLA",
+        "TUZLU",
+        "TUZSU",
+        "MUZSU"
+      ]
+    },
+    {
+      "start": "NEYSE",
+      "target": "ÇEMÇE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "NEYSE",
+        "NEMSE",
+        "NEMÇE",
+        "ÇEMÇE"
+      ]
+    },
+    {
+      "start": "KESKİ",
+      "target": "PERMİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KESKİ",
+        "KERKİ",
+        "PERKİ",
+        "PERMİ"
+      ]
+    },
+    {
+      "start": "SÜZÜŞ",
+      "target": "SÜREK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SÜZÜŞ",
+        "SÜZÜK",
+        "SÜZEK",
+        "SÜREK"
+      ]
+    },
+    {
+      "start": "DÜZEN",
+      "target": "SÜYEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DÜZEN",
+        "DÜMEN",
+        "SÜMEN",
+        "SÜMEK",
+        "SÜYEK"
+      ]
+    },
+    {
+      "start": "KUTUP",
+      "target": "KÜSUF",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KUTUP",
+        "KUTUR",
+        "KUSUR",
+        "KÜSUR",
+        "KÜSUF"
+      ]
+    },
+    {
+      "start": "ESMER",
+      "target": "İLMİK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ESMER",
+        "ESMEK",
+        "ELMEK",
+        "İLMEK",
+        "İLMİK"
+      ]
+    },
+    {
+      "start": "GEVEN",
+      "target": "SELİM",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GEVEN",
+        "GEREN",
+        "SEREN",
+        "SERİN",
+        "SERİM",
+        "SELİM"
+      ]
+    },
+    {
+      "start": "VARTO",
+      "target": "BANKA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "VARTO",
+        "VARTA",
+        "VARDA",
+        "BARDA",
+        "BARKA",
+        "BANKA"
+      ]
+    },
+    {
+      "start": "BASAR",
+      "target": "YUVAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BASAR",
+        "BATAR",
+        "BATAK",
+        "YATAK",
+        "YUTAK",
+        "YUVAK"
+      ]
+    },
+    {
+      "start": "ÇIKAK",
+      "target": "SANAL",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "ÇIKAK",
+        "ÇIKAR",
+        "ÇAKAR",
+        "SAKAR",
+        "SAKAL",
+        "SANAL"
+      ]
+    },
+    {
+      "start": "YETKE",
+      "target": "GEDME",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "YETKE",
+        "YETME",
+        "YEDME",
+        "GEDME"
+      ]
+    },
+    {
+      "start": "SENEK",
+      "target": "DÖLEK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SENEK",
+        "DENEK",
+        "DÖNEK",
+        "DÖLEK"
+      ]
+    },
+    {
+      "start": "TADIM",
+      "target": "SARIK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TADIM",
+        "TARIM",
+        "SARIM",
+        "SARIK"
+      ]
+    },
+    {
+      "start": "BAMYA",
+      "target": "ÇATMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BAMYA",
+        "BASYA",
+        "BASMA",
+        "BATMA",
+        "ÇATMA"
+      ]
+    },
+    {
+      "start": "METAN",
+      "target": "MOLAS",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "METAN",
+        "METAL",
+        "MELAL",
+        "MELAS",
+        "MOLAS"
+      ]
+    },
+    {
+      "start": "İHRAM",
+      "target": "İFRİT",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İHRAM",
+        "İHRAZ",
+        "İFRAZ",
+        "İFRAT",
+        "İFRİT"
+      ]
+    },
+    {
+      "start": "KANAL",
+      "target": "SINIK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KANAL",
+        "YANAL",
+        "YANAK",
+        "YANIK",
+        "SANIK",
+        "SINIK"
+      ]
+    },
+    {
+      "start": "KİNİK",
+      "target": "TEPİR",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KİNİK",
+        "KONİK",
+        "TONİK",
+        "TOPİK",
+        "TEPİK",
+        "TEPİR"
+      ]
+    },
+    {
+      "start": "CAMCI",
+      "target": "KARGA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "CAMCI",
+        "CAMLI",
+        "CARLI",
+        "KARLI",
+        "KARGI",
+        "KARGA"
+      ]
+    },
+    {
+      "start": "BARIŞ",
+      "target": "MARAZ",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "BARIŞ",
+        "YARIŞ",
+        "YARAŞ",
+        "TARAŞ",
+        "TARAZ",
+        "MARAZ"
+      ]
+    },
+    {
+      "start": "İTMAM",
+      "target": "İLHAN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İTMAM",
+        "İTHAM",
+        "İLHAM",
+        "İLHAN"
+      ]
+    },
+    {
+      "start": "SINMA",
+      "target": "YAĞMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SINMA",
+        "SANMA",
+        "YANMA",
+        "YAĞMA"
+      ]
+    },
+    {
+      "start": "SELİM",
+      "target": "DEVAM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SELİM",
+        "SEVİM",
+        "DEVİM",
+        "DEVAM"
+      ]
+    },
+    {
+      "start": "İZLEV",
+      "target": "EKLEM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İZLEV",
+        "İŞLEV",
+        "İŞLEM",
+        "EŞLEM",
+        "EKLEM"
+      ]
+    },
+    {
+      "start": "SULAK",
+      "target": "DURUŞ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SULAK",
+        "SULUK",
+        "DULUK",
+        "DURUK",
+        "DURUŞ"
+      ]
+    },
+    {
+      "start": "KAVAK",
+      "target": "SERİK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KAVAK",
+        "SAVAK",
+        "SARAK",
+        "SERAK",
+        "SERİK"
+      ]
+    },
+    {
+      "start": "JÜPON",
+      "target": "KAZAN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "JÜPON",
+        "JAPON",
+        "TAPON",
+        "TAPAN",
+        "KAPAN",
+        "KAZAN"
+      ]
+    },
+    {
+      "start": "BORDO",
+      "target": "MAÇKA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BORDO",
+        "BARDO",
+        "BARDA",
+        "MARDA",
+        "MARKA",
+        "MAÇKA"
+      ]
+    },
+    {
+      "start": "TUĞRA",
+      "target": "MUZSU",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TUĞRA",
+        "TUĞLA",
+        "TUZLA",
+        "TUZLU",
+        "TUZSU",
+        "MUZSU"
+      ]
+    },
+    {
+      "start": "LİTRE",
+      "target": "SÜTLÜ",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "LİTRE",
+        "KİTRE",
+        "KİTLE",
+        "KÜTLE",
+        "KÜTLÜ",
+        "SÜTLÜ"
+      ]
+    },
+    {
+      "start": "İHDAS",
+      "target": "İFLAH",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "İHDAS",
+        "İHLAS",
+        "İFLAS",
+        "İFLAH"
+      ]
+    },
+    {
+      "start": "ÇAKIR",
+      "target": "HAYIF",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÇAKIR",
+        "ÇAYIR",
+        "HAYIR",
+        "HAYIF"
+      ]
+    },
+    {
+      "start": "MEVUT",
+      "target": "RESUL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MEVUT",
+        "MESUT",
+        "MESUL",
+        "RESUL"
+      ]
+    },
+    {
+      "start": "YUMAK",
+      "target": "ÇALAR",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "YUMAK",
+        "YAMAK",
+        "YALAK",
+        "ÇALAK",
+        "ÇALAR"
+      ]
+    },
+    {
+      "start": "PİYAZ",
+      "target": "ŞAMAN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "PİYAZ",
+        "PİYAN",
+        "PAYAN",
+        "ŞAYAN",
+        "ŞAMAN"
+      ]
+    },
+    {
+      "start": "ÖZGÜN",
+      "target": "ERGİN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÖZGÜN",
+        "ÖRGÜN",
+        "ÖRGEN",
+        "ERGEN",
+        "ERGİN"
+      ]
+    },
+    {
+      "start": "DİKEÇ",
+      "target": "DEMEK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DİKEÇ",
+        "DİKEN",
+        "DİNEN",
+        "DİNEK",
+        "DENEK",
+        "DEMEK"
+      ]
+    },
+    {
+      "start": "DÖŞEM",
+      "target": "DEMEÇ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DÖŞEM",
+        "DÖNEM",
+        "DÖNEK",
+        "DENEK",
+        "DEMEK",
+        "DEMEÇ"
+      ]
+    },
+    {
+      "start": "DAMLA",
+      "target": "KAPLI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DAMLA",
+        "DAMLI",
+        "CAMLI",
+        "CANLI",
+        "KANLI",
+        "KAPLI"
+      ]
+    },
+    {
+      "start": "SARAY",
+      "target": "YETİK",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "SARAY",
+        "SARAK",
+        "SERAK",
+        "SERİK",
+        "SETİK",
+        "YETİK"
+      ]
+    },
+    {
+      "start": "KASIM",
+      "target": "ŞATIR",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KASIM",
+        "KATIM",
+        "KATIR",
+        "ŞATIR"
+      ]
+    },
+    {
+      "start": "SİLGİ",
+      "target": "BEZGİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SİLGİ",
+        "BİLGİ",
+        "BELGİ",
+        "BEZGİ"
+      ]
+    },
+    {
+      "start": "ISTAR",
+      "target": "AKTAŞ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ISTAR",
+        "ASTAR",
+        "AKTAR",
+        "AKTAŞ"
+      ]
+    },
+    {
+      "start": "BİTME",
+      "target": "SÜZME",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BİTME",
+        "DİTME",
+        "DİZME",
+        "DÜZME",
+        "SÜZME"
+      ]
+    },
+    {
+      "start": "NİPEL",
+      "target": "TEKER",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "NİPEL",
+        "NİKEL",
+        "TİKEL",
+        "TEKEL",
+        "TEKER"
+      ]
+    },
+    {
+      "start": "İLMİK",
+      "target": "ESLEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İLMİK",
+        "İLMEK",
+        "ELMEK",
+        "ESMEK",
+        "ESLEK"
+      ]
+    },
+    {
+      "start": "ÇAMUR",
+      "target": "SAĞIM",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇAMUR",
+        "SAMUR",
+        "SABUR",
+        "SABIR",
+        "SAĞIR",
+        "SAĞIM"
+      ]
+    },
+    {
+      "start": "HASIM",
+      "target": "SAKİN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "HASIM",
+        "TASIM",
+        "TAKIM",
+        "TAKİM",
+        "SAKİM",
+        "SAKİN"
+      ]
+    },
+    {
+      "start": "GADİR",
+      "target": "YAZIK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GADİR",
+        "NADİR",
+        "NAZİR",
+        "NAZIR",
+        "YAZIR",
+        "YAZIK"
+      ]
+    },
+    {
+      "start": "SAMUT",
+      "target": "VÜSAT",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "SAMUT",
+        "HAMUT",
+        "HASUT",
+        "HASAT",
+        "VASAT",
+        "VÜSAT"
+      ]
+    },
+    {
+      "start": "TEVEK",
+      "target": "GEREN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TEVEK",
+        "TEREK",
+        "GEREK",
+        "GEREN"
+      ]
+    },
+    {
+      "start": "YAKIT",
+      "target": "SAKAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "YAKIT",
+        "SAKIT",
+        "SAKAT",
+        "SAKAK"
+      ]
+    },
+    {
+      "start": "MALAK",
+      "target": "SUNAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MALAK",
+        "SALAK",
+        "SULAK",
+        "SUNAK"
+      ]
+    },
+    {
+      "start": "ÖLÇÜŞ",
+      "target": "ÖZGÜL",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÖLÇÜŞ",
+        "ÖLÇÜN",
+        "ÖLGÜN",
+        "ÖZGÜN",
+        "ÖZGÜL"
+      ]
+    },
+    {
+      "start": "YARIŞ",
+      "target": "HISIM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "YARIŞ",
+        "YARIM",
+        "HARIM",
+        "HASIM",
+        "HISIM"
+      ]
+    },
+    {
+      "start": "CACIK",
+      "target": "KIYIK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "CACIK",
+        "CICIK",
+        "CIZIK",
+        "KIZIK",
+        "KIYIK"
+      ]
+    },
+    {
+      "start": "DALGI",
+      "target": "ZARCI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DALGI",
+        "SALGI",
+        "SALCI",
+        "BALCI",
+        "BARCI",
+        "ZARCI"
+      ]
+    },
+    {
+      "start": "FAKÜL",
+      "target": "TEKER",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "FAKÜL",
+        "FEKÜL",
+        "ÇEKÜL",
+        "ÇEKEL",
+        "TEKEL",
+        "TEKER"
+      ]
+    },
+    {
+      "start": "MASAJ",
+      "target": "BADAL",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MASAJ",
+        "MASAL",
+        "YASAL",
+        "YANAL",
+        "BANAL",
+        "BADAL"
+      ]
+    },
+    {
+      "start": "GALAT",
+      "target": "HARİR",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "GALAT",
+        "HALAT",
+        "HASAT",
+        "HASAR",
+        "HARAR",
+        "HARİR"
+      ]
+    },
+    {
+      "start": "MANCA",
+      "target": "KATMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MANCA",
+        "KANCA",
+        "KANMA",
+        "KATMA"
+      ]
+    },
+    {
+      "start": "BARDA",
+      "target": "MARKE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BARDA",
+        "MARDA",
+        "MARKA",
+        "MARKE"
+      ]
+    },
+    {
+      "start": "KANTO",
+      "target": "MANGA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KANTO",
+        "MANTO",
+        "MANGO",
+        "MANGA"
+      ]
+    },
+    {
+      "start": "DEVRE",
+      "target": "GÜBRE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DEVRE",
+        "DEMRE",
+        "GEMRE",
+        "GEBRE",
+        "GÜBRE"
+      ]
+    },
+    {
+      "start": "TERZİ",
+      "target": "HEPSİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TERZİ",
+        "TEVZİ",
+        "TEVSİ",
+        "TEPSİ",
+        "HEPSİ"
+      ]
+    },
+    {
+      "start": "BİNEK",
+      "target": "DÖGER",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BİNEK",
+        "DİNEK",
+        "DÖNEK",
+        "DÖNER",
+        "DÖGER"
+      ]
+    },
+    {
+      "start": "KOVMA",
+      "target": "KIRCI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KOVMA",
+        "KOPMA",
+        "KIPMA",
+        "KIRMA",
+        "KIRCA",
+        "KIRCI"
+      ]
+    },
+    {
+      "start": "BOCUK",
+      "target": "BATİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BOCUK",
+        "BORUK",
+        "BORAK",
+        "BARAK",
+        "BATAK",
+        "BATİK"
+      ]
+    },
+    {
+      "start": "ERMİN",
+      "target": "ENSİZ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ERMİN",
+        "ERGİN",
+        "EVGİN",
+        "EVSİN",
+        "EVSİZ",
+        "ENSİZ"
+      ]
+    },
+    {
+      "start": "GÜLÜŞ",
+      "target": "KEPEK",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "GÜLÜŞ",
+        "GÜLÜK",
+        "GÖLÜK",
+        "KÖLÜK",
+        "KÖPÜK",
+        "KÖPEK",
+        "KEPEK"
+      ]
+    },
+    {
+      "start": "KÜSUF",
+      "target": "KUBUR",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KÜSUF",
+        "KÜSUR",
+        "KUSUR",
+        "KUBUR"
+      ]
+    },
+    {
+      "start": "KESİK",
+      "target": "KEREM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KESİK",
+        "KESİM",
+        "KERİM",
+        "KEREM"
+      ]
+    },
+    {
+      "start": "ACEZE",
+      "target": "UCUBE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ACEZE",
+        "ACUZE",
+        "ACUBE",
+        "UCUBE"
+      ]
+    },
+    {
+      "start": "ÇAPUL",
+      "target": "HAVUT",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÇAPUL",
+        "ÇAPUT",
+        "KAPUT",
+        "KAVUT",
+        "HAVUT"
+      ]
+    },
+    {
+      "start": "GONCA",
+      "target": "KANMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GONCA",
+        "YONCA",
+        "YONMA",
+        "KONMA",
+        "KANMA"
+      ]
+    },
+    {
+      "start": "TAYIN",
+      "target": "GALİP",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TAYIN",
+        "TAYİN",
+        "TAYİP",
+        "TALİP",
+        "GALİP"
+      ]
+    },
+    {
+      "start": "GÖRÜM",
+      "target": "GÜCÜK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GÖRÜM",
+        "GÖÇÜM",
+        "GÖÇÜK",
+        "GÖLÜK",
+        "GÜLÜK",
+        "GÜCÜK"
+      ]
+    },
+    {
+      "start": "ŞAMAN",
+      "target": "DARAŞ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ŞAMAN",
+        "KAMAN",
+        "KALAN",
+        "DALAN",
+        "DALAŞ",
+        "DARAŞ"
+      ]
+    },
+    {
+      "start": "ÇANCI",
+      "target": "TAKLA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇANCI",
+        "ÇANLI",
+        "ÇAVLI",
+        "TAVLI",
+        "TAVLA",
+        "TAKLA"
+      ]
+    },
+    {
+      "start": "YARAK",
+      "target": "RAKET",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "YARAK",
+        "SARAK",
+        "SAKAK",
+        "MAKAK",
+        "MAKAT",
+        "MAKET",
+        "RAKET"
+      ]
+    },
+    {
+      "start": "ANELE",
+      "target": "ACUZE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ANELE",
+        "ACELE",
+        "ACEZE",
+        "ACUZE"
+      ]
+    },
+    {
+      "start": "ENEZE",
+      "target": "ESAME",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ENEZE",
+        "ENEME",
+        "ESEME",
+        "ESAME"
+      ]
+    },
+    {
+      "start": "DÜZEM",
+      "target": "ÇİZİM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DÜZEM",
+        "DİZEM",
+        "DİZİM",
+        "ÇİZİM"
+      ]
+    },
+    {
+      "start": "TAFTA",
+      "target": "HAVSA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TAFTA",
+        "HAFTA",
+        "HASTA",
+        "HASSA",
+        "HAVSA"
+      ]
+    },
+    {
+      "start": "AĞRAZ",
+      "target": "İKRAR",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AĞRAZ",
+        "AHRAZ",
+        "İHRAZ",
+        "İKRAZ",
+        "İKRAR"
+      ]
+    },
+    {
+      "start": "KAZAK",
+      "target": "SUDAN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KAZAK",
+        "SAZAK",
+        "SADAK",
+        "SUDAK",
+        "SUDAN"
+      ]
+    },
+    {
+      "start": "KABUK",
+      "target": "KIYIM",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KABUK",
+        "KABAK",
+        "KAYAK",
+        "KIYAK",
+        "KIYIK",
+        "KIYIM"
+      ]
+    },
+    {
+      "start": "REVİR",
+      "target": "HATIR",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "REVİR",
+        "SEVİR",
+        "SETİR",
+        "SATİR",
+        "SATIR",
+        "HATIR"
+      ]
+    },
+    {
+      "start": "DÖVME",
+      "target": "GÜTME",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DÖVME",
+        "DÖKME",
+        "DİKME",
+        "DİTME",
+        "GİTME",
+        "GÜTME"
+      ]
+    },
+    {
+      "start": "EYLEM",
+      "target": "ÖVMEK",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "EYLEM",
+        "EŞLEM",
+        "EŞLEK",
+        "EŞMEK",
+        "ELMEK",
+        "ÖLMEK",
+        "ÖVMEK"
+      ]
+    },
+    {
+      "start": "ZEHİR",
+      "target": "LAHİT",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ZEHİR",
+        "ZAHİR",
+        "ZAHİT",
+        "LAHİT"
+      ]
+    },
+    {
+      "start": "BİRİM",
+      "target": "CİCİK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BİRİM",
+        "CİRİM",
+        "CİCİM",
+        "CİCİK"
+      ]
+    },
+    {
+      "start": "ESTER",
+      "target": "EKMEK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ESTER",
+        "ESMER",
+        "ESMEK",
+        "EKMEK"
+      ]
+    },
+    {
+      "start": "KELES",
+      "target": "BÖLEN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KELES",
+        "KELEK",
+        "BELEK",
+        "BELEN",
+        "BÖLEN"
+      ]
+    },
+    {
+      "start": "SEÇİŞ",
+      "target": "GİRİM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SEÇİŞ",
+        "GEÇİŞ",
+        "GERİŞ",
+        "GİRİŞ",
+        "GİRİM"
+      ]
+    },
+    {
+      "start": "KESEL",
+      "target": "KEYİF",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KESEL",
+        "KESEK",
+        "KESİK",
+        "KESİF",
+        "KEYİF"
+      ]
+    },
+    {
+      "start": "SELAM",
+      "target": "TACİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SELAM",
+        "SALAM",
+        "SALİM",
+        "TALİM",
+        "TALİK",
+        "TACİK"
+      ]
+    },
+    {
+      "start": "MUĞLA",
+      "target": "MUZSU",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MUĞLA",
+        "TUĞLA",
+        "TUZLA",
+        "TUZLU",
+        "TUZSU",
+        "MUZSU"
+      ]
+    },
+    {
+      "start": "RADAR",
+      "target": "HAZIR",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "RADAR",
+        "KADAR",
+        "KARAR",
+        "HARAR",
+        "HAZAR",
+        "HAZIR"
+      ]
+    },
+    {
+      "start": "TABLO",
+      "target": "SAZCI",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "TABLO",
+        "TABLA",
+        "TAVLA",
+        "SAVLA",
+        "SAVCA",
+        "SAVCI",
+        "SAZCI"
+      ]
+    },
+    {
+      "start": "HARBÎ",
+      "target": "HEYBE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "HARBÎ",
+        "HARBE",
+        "HAYBE",
+        "HEYBE"
+      ]
+    },
+    {
+      "start": "HATAY",
+      "target": "HALİÇ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "HATAY",
+        "HALAY",
+        "HALAÇ",
+        "HALİÇ"
+      ]
+    },
+    {
+      "start": "OLMAK",
+      "target": "AKMAN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "OLMAK",
+        "ALMAK",
+        "AKMAK",
+        "AKMAN"
+      ]
+    },
+    {
+      "start": "DAİMA",
+      "target": "ÇIKMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DAİMA",
+        "DALMA",
+        "ÇALMA",
+        "ÇAKMA",
+        "ÇIKMA"
+      ]
+    },
+    {
+      "start": "KAİDE",
+      "target": "KAPMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KAİDE",
+        "KAİME",
+        "KAYME",
+        "KAYMA",
+        "KAPMA"
+      ]
+    },
+    {
+      "start": "ÇİMEK",
+      "target": "BALET",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÇİMEK",
+        "ÇİLEK",
+        "BİLEK",
+        "BİLET",
+        "BALET"
+      ]
+    },
+    {
+      "start": "NİHAN",
+      "target": "PİKAJ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "NİHAN",
+        "NİSAN",
+        "NİSAP",
+        "NİKAP",
+        "PİKAP",
+        "PİKAJ"
+      ]
+    },
+    {
+      "start": "TAKVA",
+      "target": "BANKO",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TAKVA",
+        "TAKMA",
+        "BAKMA",
+        "BANMA",
+        "BANKA",
+        "BANKO"
+      ]
+    },
+    {
+      "start": "BEDEL",
+      "target": "ÇELİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BEDEL",
+        "BEDEN",
+        "BELEN",
+        "ÇELEN",
+        "ÇELEK",
+        "ÇELİK"
+      ]
+    },
+    {
+      "start": "VOKAL",
+      "target": "PAPAK",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "VOKAL",
+        "ÇOKAL",
+        "ÇAKAL",
+        "SAKAL",
+        "SAKAK",
+        "SAPAK",
+        "PAPAK"
+      ]
+    },
+    {
+      "start": "DİYAR",
+      "target": "CİDAL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DİYAR",
+        "DİDAR",
+        "CİDAR",
+        "CİDAL"
+      ]
+    },
+    {
+      "start": "HIŞIM",
+      "target": "HAZIR",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "HIŞIM",
+        "HIŞIR",
+        "HIZIR",
+        "HAZIR"
+      ]
+    },
+    {
+      "start": "KÂHİN",
+      "target": "DAHİL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KÂHİN",
+        "KÂHİL",
+        "DÂHİL",
+        "DAHİL"
+      ]
+    },
+    {
+      "start": "CEBİR",
+      "target": "NESİÇ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "CEBİR",
+        "KEBİR",
+        "KESİR",
+        "NESİR",
+        "NESİÇ"
+      ]
+    },
+    {
+      "start": "HIRLI",
+      "target": "BAŞLI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "HIRLI",
+        "HARLI",
+        "KARLI",
+        "KAŞLI",
+        "BAŞLI"
+      ]
+    },
+    {
+      "start": "FEVRİ",
+      "target": "DEVCE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "FEVRİ",
+        "ÇEVRİ",
+        "ÇEVRE",
+        "DEVRE",
+        "DEVCE"
+      ]
+    },
+    {
+      "start": "NAKIŞ",
+      "target": "YANAY",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "NAKIŞ",
+        "YAKIŞ",
+        "YANIŞ",
+        "YANIK",
+        "YANAK",
+        "YANAY"
+      ]
+    },
+    {
+      "start": "ÇİĞLİ",
+      "target": "FİNCE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇİĞLİ",
+        "ÇİNLİ",
+        "DİNLİ",
+        "DİNCİ",
+        "DİNCE",
+        "FİNCE"
+      ]
+    },
+    {
+      "start": "KIRAN",
+      "target": "YAVAN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KIRAN",
+        "KIZAN",
+        "KAZAN",
+        "HAZAN",
+        "HAVAN",
+        "YAVAN"
+      ]
+    },
+    {
+      "start": "ŞETİM",
+      "target": "ŞEBEK",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "ŞETİM",
+        "BETİM",
+        "BETİK",
+        "BELİK",
+        "BELEK",
+        "ŞELEK",
+        "ŞEBEK"
+      ]
+    },
+    {
+      "start": "TOYGA",
+      "target": "SAYFA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TOYGA",
+        "TAYGA",
+        "TAYFA",
+        "SAYFA"
+      ]
+    },
+    {
+      "start": "ANCAK",
+      "target": "ATMIK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ANCAK",
+        "ANMAK",
+        "ATMAK",
+        "ATMIK"
+      ]
+    },
+    {
+      "start": "GOLLÜ",
+      "target": "GÜRCÜ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GOLLÜ",
+        "GÜLLÜ",
+        "GÜLCÜ",
+        "GÜRCÜ"
+      ]
+    },
+    {
+      "start": "HATAY",
+      "target": "BATIK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "HATAY",
+        "YATAY",
+        "YATAK",
+        "BATAK",
+        "BATIK"
+      ]
+    },
+    {
+      "start": "TOPÇU",
+      "target": "TUZCU",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TOPÇU",
+        "TOPLU",
+        "TOZLU",
+        "TUZLU",
+        "TUZCU"
+      ]
+    },
+    {
+      "start": "MEVZİ",
+      "target": "DERBİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MEVZİ",
+        "TEVZİ",
+        "TERZİ",
+        "TERBİ",
+        "DERBİ"
+      ]
+    },
+    {
+      "start": "LERZE",
+      "target": "DÖNME",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "LERZE",
+        "GERZE",
+        "GERME",
+        "DERME",
+        "DENME",
+        "DÖNME"
+      ]
+    },
+    {
+      "start": "SEFER",
+      "target": "RESEN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SEFER",
+        "SEMER",
+        "KEMER",
+        "KESER",
+        "KESEN",
+        "RESEN"
+      ]
+    },
+    {
+      "start": "BÜTEY",
+      "target": "ŞİŞİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BÜTEY",
+        "BİTEY",
+        "BİTEK",
+        "BİŞEK",
+        "ŞİŞEK",
+        "ŞİŞİK"
+      ]
+    },
+    {
+      "start": "CACIK",
+      "target": "KAYIŞ",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "CACIK",
+        "CICIK",
+        "CIZIK",
+        "KIZIK",
+        "KAZIK",
+        "KAYIK",
+        "KAYIŞ"
+      ]
+    },
+    {
+      "start": "SIRMA",
+      "target": "KALMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SIRMA",
+        "KIRMA",
+        "KARMA",
+        "KALMA"
+      ]
+    },
+    {
+      "start": "ARGIT",
+      "target": "AYRIÇ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ARGIT",
+        "AYGIT",
+        "AYRIT",
+        "AYRIÇ"
+      ]
+    },
+    {
+      "start": "YETME",
+      "target": "BİLME",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "YETME",
+        "YİTME",
+        "BİTME",
+        "BİLME"
+      ]
+    },
+    {
+      "start": "ZANLI",
+      "target": "DALSI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ZANLI",
+        "SANLI",
+        "SALLI",
+        "DALLI",
+        "DALSI"
+      ]
+    },
+    {
+      "start": "İNTAK",
+      "target": "İHSAS",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İNTAK",
+        "İNTAN",
+        "İNSAN",
+        "İHSAN",
+        "İHSAS"
+      ]
+    },
+    {
+      "start": "FİBER",
+      "target": "BİTEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "FİBER",
+        "BİBER",
+        "BİNER",
+        "BİNEK",
+        "BİTEK"
+      ]
+    },
+    {
+      "start": "SULTA",
+      "target": "KOPMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SULTA",
+        "SALTA",
+        "SALMA",
+        "KALMA",
+        "KAPMA",
+        "KOPMA"
+      ]
+    },
+    {
+      "start": "ÇEKEK",
+      "target": "DEBİL",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇEKEK",
+        "ÇELEK",
+        "ÇELİK",
+        "DELİK",
+        "DELİL",
+        "DEBİL"
+      ]
+    },
+    {
+      "start": "MAFYA",
+      "target": "TATMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MAFYA",
+        "MALYA",
+        "KALYA",
+        "KALMA",
+        "KATMA",
+        "TATMA"
+      ]
+    },
+    {
+      "start": "BUĞRA",
+      "target": "BUTLU",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "BUĞRA",
+        "TUĞRA",
+        "TUĞLA",
+        "TUZLA",
+        "BUZLA",
+        "BUZLU",
+        "BUTLU"
+      ]
+    }
+  ],
+  "6": [
+    {
+      "start": "KONÇLU",
+      "target": "SOKULU",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KONÇLU",
+        "KONULU",
+        "KOKULU",
+        "SOKULU"
+      ]
+    },
+    {
+      "start": "TÜNMEK",
+      "target": "GİTMEK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TÜNMEK",
+        "TÜTMEK",
+        "GÜTMEK",
+        "GİTMEK"
+      ]
+    },
+    {
+      "start": "DERVİŞ",
+      "target": "SERPUŞ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DERVİŞ",
+        "DERPİŞ",
+        "SERPİŞ",
+        "SERPUŞ"
+      ]
+    },
+    {
+      "start": "BAYMAK",
+      "target": "KAVRAÇ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BAYMAK",
+        "KAYMAK",
+        "KAYRAK",
+        "KAVRAK",
+        "KAVRAÇ"
+      ]
+    },
+    {
+      "start": "GÜNLÜK",
+      "target": "YÜKSÜK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GÜNLÜK",
+        "GÜZLÜK",
+        "YÜZLÜK",
+        "YÜKLÜK",
+        "YÜKSÜK"
+      ]
+    },
+    {
+      "start": "CENGEL",
+      "target": "KENTET",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "CENGEL",
+        "KENGEL",
+        "KENGER",
+        "KENTER",
+        "KENTET"
+      ]
+    },
+    {
+      "start": "SİNMEK",
+      "target": "ÇELMİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SİNMEK",
+        "DİNMEK",
+        "DENMEK",
+        "DELMEK",
+        "ÇELMEK",
+        "ÇELMİK"
+      ]
+    },
+    {
+      "start": "DOYGUN",
+      "target": "KORSAJ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DOYGUN",
+        "KOYGUN",
+        "KORGUN",
+        "KORGAN",
+        "KORSAN",
+        "KORSAJ"
+      ]
+    },
+    {
+      "start": "KAVATA",
+      "target": "KARACI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KAVATA",
+        "KANATA",
+        "KANAMA",
+        "KARAMA",
+        "KARACA",
+        "KARACI"
+      ]
+    },
+    {
+      "start": "BOKLUK",
+      "target": "KARLUK",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "BOKLUK",
+        "TOKLUK",
+        "TORLUK",
+        "KORLUK",
+        "KARLUK"
+      ]
+    },
+    {
+      "start": "KURTLU",
+      "target": "KUTUCU",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KURTLU",
+        "KURULU",
+        "KUTULU",
+        "KUTUCU"
+      ]
+    },
+    {
+      "start": "TERTİP",
+      "target": "TEMKİN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TERTİP",
+        "TERKİP",
+        "TERKİN",
+        "TEMKİN"
+      ]
+    },
+    {
+      "start": "DALGIR",
+      "target": "YILGIN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DALGIR",
+        "DALGIN",
+        "YALGIN",
+        "YILGIN"
+      ]
+    },
+    {
+      "start": "OVACIK",
+      "target": "ANALIK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "OVACIK",
+        "ODACIK",
+        "ADACIK",
+        "ANACIK",
+        "ANALIK"
+      ]
+    },
+    {
+      "start": "KASARA",
+      "target": "MALAMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KASARA",
+        "MASARA",
+        "MADARA",
+        "MADAMA",
+        "MALAMA"
+      ]
+    },
+    {
+      "start": "TEPHİR",
+      "target": "KESKİN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TEPHİR",
+        "TESHİR",
+        "TESHİN",
+        "TESKİN",
+        "KESKİN"
+      ]
+    },
+    {
+      "start": "BAŞMAL",
+      "target": "BURÇAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BAŞMAL",
+        "BAŞMAK",
+        "BANMAK",
+        "BUNMAK",
+        "BURMAK",
+        "BURÇAK"
+      ]
+    },
+    {
+      "start": "KAPICI",
+      "target": "SAKALI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KAPICI",
+        "KAPILI",
+        "KARILI",
+        "SARILI",
+        "SARALI",
+        "SAKALI"
+      ]
+    },
+    {
+      "start": "TAKLİT",
+      "target": "TEDBİR",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TAKLİT",
+        "TAKSİT",
+        "TAKSİR",
+        "TEKSİR",
+        "TEKBİR",
+        "TEDBİR"
+      ]
+    },
+    {
+      "start": "CEZALI",
+      "target": "SODALI",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "CEZALI",
+        "CEFALI",
+        "SEFALI",
+        "SOFALI",
+        "SODALI"
+      ]
+    },
+    {
+      "start": "SÜRTÜK",
+      "target": "PÜRÇEK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SÜRTÜK",
+        "PÜRTÜK",
+        "PÜRÇÜK",
+        "PÜRÇEK"
+      ]
+    },
+    {
+      "start": "SAHİFE",
+      "target": "RAKİBE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SAHİFE",
+        "SAHİBE",
+        "RAHİBE",
+        "RAKİBE"
+      ]
+    },
+    {
+      "start": "ÇOKLUK",
+      "target": "TORLAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÇOKLUK",
+        "TOKLUK",
+        "TORLUK",
+        "TORLAK"
+      ]
+    },
+    {
+      "start": "GELMEK",
+      "target": "ÇİZMEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GELMEK",
+        "DELMEK",
+        "DİLMEK",
+        "DİZMEK",
+        "ÇİZMEK"
+      ]
+    },
+    {
+      "start": "MEVKUT",
+      "target": "MEŞHET",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MEVKUT",
+        "MEVRUT",
+        "MEŞRUT",
+        "MEŞHUT",
+        "MEŞHET"
+      ]
+    },
+    {
+      "start": "TEKFUR",
+      "target": "TEDVİN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TEKFUR",
+        "TEKFİR",
+        "TEKFİN",
+        "TEDFİN",
+        "TEDVİN"
+      ]
+    },
+    {
+      "start": "SÜĞMEK",
+      "target": "GÖRDEK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SÜĞMEK",
+        "SÜRMEK",
+        "SERMEK",
+        "GERMEK",
+        "GÖRMEK",
+        "GÖRDEK"
+      ]
+    },
+    {
+      "start": "YIPRAK",
+      "target": "TUTMAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "YIPRAK",
+        "YAPRAK",
+        "YAPMAK",
+        "TAPMAK",
+        "TATMAK",
+        "TUTMAK"
+      ]
+    },
+    {
+      "start": "YUKARI",
+      "target": "KARACI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "YUKARI",
+        "YAKARI",
+        "YAKALI",
+        "YARALI",
+        "KARALI",
+        "KARACI"
+      ]
+    },
+    {
+      "start": "SILACI",
+      "target": "DAMACI",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "SILACI",
+        "SIVACI",
+        "SAVACI",
+        "DAVACI",
+        "DAMACI"
+      ]
+    },
+    {
+      "start": "SORGUN",
+      "target": "KURGAN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SORGUN",
+        "KORGUN",
+        "KORGAN",
+        "KURGAN"
+      ]
+    },
+    {
+      "start": "KUSMAK",
+      "target": "ÇATMAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KUSMAK",
+        "KASMAK",
+        "KATMAK",
+        "ÇATMAK"
+      ]
+    },
+    {
+      "start": "IRAMAK",
+      "target": "ATAMAN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "IRAMAK",
+        "ARAMAK",
+        "ATAMAK",
+        "ATAMAN"
+      ]
+    },
+    {
+      "start": "EMANET",
+      "target": "İKAMET",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "EMANET",
+        "EMARET",
+        "İMARET",
+        "İMAMET",
+        "İKAMET"
+      ]
+    },
+    {
+      "start": "PÜRÇÜK",
+      "target": "DÜRTÜŞ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "PÜRÇÜK",
+        "PÜRTÜK",
+        "SÜRTÜK",
+        "SÜRTÜŞ",
+        "DÜRTÜŞ"
+      ]
+    },
+    {
+      "start": "GERÇEK",
+      "target": "KERHEN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GERÇEK",
+        "GERMEK",
+        "GERMEN",
+        "KERMEN",
+        "KERHEN"
+      ]
+    },
+    {
+      "start": "YALÇIN",
+      "target": "KAYTAN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "YALÇIN",
+        "YALGIN",
+        "YAYGIN",
+        "KAYGIN",
+        "KAYGAN",
+        "KAYTAN"
+      ]
+    },
+    {
+      "start": "KARSLI",
+      "target": "YARICI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KARSLI",
+        "KARILI",
+        "KAPILI",
+        "YAPILI",
+        "YAPICI",
+        "YARICI"
+      ]
+    },
+    {
+      "start": "BALKIR",
+      "target": "SALMAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BALKIR",
+        "BALKAR",
+        "ÇALKAR",
+        "ÇALKAK",
+        "ÇALMAK",
+        "SALMAK"
+      ]
+    },
+    {
+      "start": "PARACA",
+      "target": "CURACI",
+      "optimalSteps": 4,
+      "difficulty": "boss",
+      "solution": [
+        "PARACA",
+        "KARACA",
+        "KARACI",
+        "KURACI",
+        "CURACI"
+      ]
+    },
+    {
+      "start": "YENSİZ",
+      "target": "DİPSİZ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "YENSİZ",
+        "DENSİZ",
+        "DİNSİZ",
+        "DİPSİZ"
+      ]
+    },
+    {
+      "start": "TENSİL",
+      "target": "CİNSEL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "TENSİL",
+        "TENSEL",
+        "TİNSEL",
+        "CİNSEL"
+      ]
+    },
+    {
+      "start": "ŞAŞMAK",
+      "target": "YIĞMAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ŞAŞMAK",
+        "YAŞMAK",
+        "YAĞMAK",
+        "YIĞMAK"
+      ]
+    },
+    {
+      "start": "GİTMEK",
+      "target": "BÖLMEÇ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GİTMEK",
+        "BİTMEK",
+        "BİLMEK",
+        "BÖLMEK",
+        "BÖLMEÇ"
+      ]
+    },
+    {
+      "start": "KONÇLU",
+      "target": "DOĞULU",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KONÇLU",
+        "KONULU",
+        "KOKULU",
+        "DOKULU",
+        "DOĞULU"
+      ]
+    },
+    {
+      "start": "SÖZCÜK",
+      "target": "GOLLÜK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SÖZCÜK",
+        "SÖZLÜK",
+        "GÖZLÜK",
+        "GÖLLÜK",
+        "GOLLÜK"
+      ]
+    },
+    {
+      "start": "BOZRAK",
+      "target": "ÇIKMAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BOZRAK",
+        "BOZMAK",
+        "TOZMAK",
+        "TOKMAK",
+        "TIKMAK",
+        "ÇIKMAK"
+      ]
+    },
+    {
+      "start": "ACIKMA",
+      "target": "ISIRMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ACIKMA",
+        "ACINMA",
+        "ALINMA",
+        "ILINMA",
+        "ISINMA",
+        "ISIRMA"
+      ]
+    },
+    {
+      "start": "HAZARİ",
+      "target": "DAVACI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "HAZARİ",
+        "HAVARİ",
+        "HAVALİ",
+        "HAVALI",
+        "DAVALI",
+        "DAVACI"
+      ]
+    },
+    {
+      "start": "BOZAYI",
+      "target": "KARALI",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "BOZAYI",
+        "BOZACI",
+        "KOZACI",
+        "KOZALI",
+        "KAZALI",
+        "KARALI"
+      ]
+    },
+    {
+      "start": "IRLAMA",
+      "target": "OKŞAMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "IRLAMA",
+        "IKLAMA",
+        "OKLAMA",
+        "OKŞAMA"
+      ]
+    },
+    {
+      "start": "BANKET",
+      "target": "KASVET",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BANKET",
+        "BASKET",
+        "KASKET",
+        "KASVET"
+      ]
+    },
+    {
+      "start": "ÇAPACI",
+      "target": "KAZALI",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÇAPACI",
+        "ÇAPALI",
+        "KAPALI",
+        "KAZALI"
+      ]
+    },
+    {
+      "start": "KEKEME",
+      "target": "TENEKE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KEKEME",
+        "KELEME",
+        "TELEME",
+        "TELEKE",
+        "TENEKE"
+      ]
+    },
+    {
+      "start": "BULADA",
+      "target": "YALAKA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BULADA",
+        "BULAMA",
+        "BALAMA",
+        "YALAMA",
+        "YALAKA"
+      ]
+    },
+    {
+      "start": "ÖZENLİ",
+      "target": "ÖDETME",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÖZENLİ",
+        "ÖZENLE",
+        "ÖZENME",
+        "ÖDENME",
+        "ÖDETME"
+      ]
+    },
+    {
+      "start": "VATMAN",
+      "target": "ŞAŞMAZ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "VATMAN",
+        "BATMAN",
+        "BATMAK",
+        "BAŞMAK",
+        "ŞAŞMAK",
+        "ŞAŞMAZ"
+      ]
+    },
+    {
+      "start": "SEÇİCİ",
+      "target": "DERTLİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SEÇİCİ",
+        "GEÇİCİ",
+        "GERİCİ",
+        "DERİCİ",
+        "DERİLİ",
+        "DERTLİ"
+      ]
+    },
+    {
+      "start": "ANASIZ",
+      "target": "ARALIK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ANASIZ",
+        "ANASIL",
+        "ANACIL",
+        "ANACIK",
+        "ANALIK",
+        "ARALIK"
+      ]
+    },
+    {
+      "start": "TAŞMAK",
+      "target": "PISMAK",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "TAŞMAK",
+        "BAŞMAK",
+        "BASMAK",
+        "KASMAK",
+        "KISMAK",
+        "PISMAK"
+      ]
+    },
+    {
+      "start": "MANDAL",
+      "target": "KANTAR",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MANDAL",
+        "MANDAR",
+        "MANTAR",
+        "KANTAR"
+      ]
+    },
+    {
+      "start": "BÜYÜCÜ",
+      "target": "DÜRÜLÜ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BÜYÜCÜ",
+        "BÜYÜLÜ",
+        "BÜRÜLÜ",
+        "DÜRÜLÜ"
+      ]
+    },
+    {
+      "start": "GÖZELİ",
+      "target": "TÖRECİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GÖZELİ",
+        "GÖRELİ",
+        "TÖRELİ",
+        "TÖRECİ"
+      ]
+    },
+    {
+      "start": "MAHMUL",
+      "target": "MATRUT",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MAHMUL",
+        "MAHLUL",
+        "MAHLUT",
+        "MAHRUT",
+        "MATRUT"
+      ]
+    },
+    {
+      "start": "KIZMAK",
+      "target": "MANYAK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KIZMAK",
+        "KAZMAK",
+        "KANMAK",
+        "KANYAK",
+        "MANYAK"
+      ]
+    },
+    {
+      "start": "İYELİK",
+      "target": "ANİLİK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "İYELİK",
+        "İYİLİK",
+        "İSİLİK",
+        "ASİLİK",
+        "ANİLİK"
+      ]
+    },
+    {
+      "start": "DİŞLİK",
+      "target": "YELMEK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DİŞLİK",
+        "DİŞLEK",
+        "DİLLEK",
+        "DİLMEK",
+        "DELMEK",
+        "YELMEK"
+      ]
+    },
+    {
+      "start": "DUYMAK",
+      "target": "KAVRUK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DUYMAK",
+        "KUYMAK",
+        "KAYMAK",
+        "KAYRAK",
+        "KAVRAK",
+        "KAVRUK"
+      ]
+    },
+    {
+      "start": "KASMAK",
+      "target": "KAYGIN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KASMAK",
+        "KAYMAK",
+        "KAYRAK",
+        "KAYRAN",
+        "KAYGAN",
+        "KAYGIN"
+      ]
+    },
+    {
+      "start": "YASMAK",
+      "target": "KAVLIK",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "YASMAK",
+        "KASMAK",
+        "KARMAK",
+        "KARMIK",
+        "KARLIK",
+        "KAVLIK"
+      ]
+    },
+    {
+      "start": "KORLUK",
+      "target": "TUZLUK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KORLUK",
+        "TORLUK",
+        "TOZLUK",
+        "TUZLUK"
+      ]
+    },
+    {
+      "start": "DİZGİN",
+      "target": "SİNSİN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DİZGİN",
+        "DİNGİN",
+        "SİNGİN",
+        "SİNSİN"
+      ]
+    },
+    {
+      "start": "CIRNIK",
+      "target": "KIRNAV",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "CIRNIK",
+        "CIRNAK",
+        "KIRNAK",
+        "KIRNAV"
+      ]
+    },
+    {
+      "start": "KİRALI",
+      "target": "YAPILI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KİRALI",
+        "KARALI",
+        "KAPALI",
+        "KAPILI",
+        "YAPILI"
+      ]
+    },
+    {
+      "start": "PİYASA",
+      "target": "SİPAHİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "PİYASA",
+        "SİYASA",
+        "SİYASİ",
+        "SİYAHİ",
+        "SİPAHİ"
+      ]
+    },
+    {
+      "start": "DALGIN",
+      "target": "KIRGIZ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DALGIN",
+        "DARGIN",
+        "KARGIN",
+        "KIRGIN",
+        "KIRGIZ"
+      ]
+    },
+    {
+      "start": "BOZACI",
+      "target": "KARTLI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BOZACI",
+        "KOZACI",
+        "KOZALI",
+        "KAZALI",
+        "KARALI",
+        "KARTLI"
+      ]
+    },
+    {
+      "start": "HOYRAT",
+      "target": "KATMAN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "HOYRAT",
+        "HAYRAT",
+        "HAYRAN",
+        "KAYRAN",
+        "KATRAN",
+        "KATMAN"
+      ]
+    },
+    {
+      "start": "GEZLİK",
+      "target": "TEVSİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GEZLİK",
+        "TEZLİK",
+        "TERLİK",
+        "TERFİK",
+        "TEVFİK",
+        "TEVSİK"
+      ]
+    },
+    {
+      "start": "TAKTİK",
+      "target": "TASRİF",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "TAKTİK",
+        "TAKTİR",
+        "TAKRİR",
+        "TAHRİR",
+        "TAHRİF",
+        "TASRİF"
+      ]
+    },
+    {
+      "start": "GÜNDÜZ",
+      "target": "YÜKSÜZ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GÜNDÜZ",
+        "GÜNSÜZ",
+        "YÜNSÜZ",
+        "YÜKSÜZ"
+      ]
+    },
+    {
+      "start": "EMEKLİ",
+      "target": "EŞEKÇE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "EMEKLİ",
+        "EMEKÇİ",
+        "EŞEKÇİ",
+        "EŞEKÇE"
+      ]
+    },
+    {
+      "start": "KATRAK",
+      "target": "VARMAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KATRAK",
+        "KATMAK",
+        "KARMAK",
+        "VARMAK"
+      ]
+    },
+    {
+      "start": "KARGIŞ",
+      "target": "KAYRAN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KARGIŞ",
+        "KARGIN",
+        "KAYGIN",
+        "KAYGAN",
+        "KAYRAN"
+      ]
+    },
+    {
+      "start": "ROBALI",
+      "target": "VEFALI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ROBALI",
+        "SOBALI",
+        "SOFALI",
+        "SEFALI",
+        "VEFALI"
+      ]
+    },
+    {
+      "start": "MEVCUT",
+      "target": "TEVHİT",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MEVCUT",
+        "MEVLUT",
+        "MEVLİT",
+        "TEVLİT",
+        "TEVHİT"
+      ]
+    },
+    {
+      "start": "TAŞMAK",
+      "target": "PISMAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TAŞMAK",
+        "BAŞMAK",
+        "BASMAK",
+        "KASMAK",
+        "KISMAK",
+        "PISMAK"
+      ]
+    },
+    {
+      "start": "DİŞLEK",
+      "target": "DÜĞMEK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DİŞLEK",
+        "DİLLEK",
+        "DİLMEK",
+        "DELMEK",
+        "DEĞMEK",
+        "DÜĞMEK"
+      ]
+    },
+    {
+      "start": "KISTAS",
+      "target": "DUYMAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KISTAS",
+        "KISTAK",
+        "KISMAK",
+        "KUSMAK",
+        "KUYMAK",
+        "DUYMAK"
+      ]
+    },
+    {
+      "start": "TAKLİT",
+      "target": "TEDBİR",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "TAKLİT",
+        "TAKSİT",
+        "TAKSİR",
+        "TEKSİR",
+        "TEKBİR",
+        "TEDBİR"
+      ]
+    },
+    {
+      "start": "ERİTME",
+      "target": "ENİŞTE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ERİTME",
+        "ERİŞME",
+        "ERİŞTE",
+        "ENİŞTE"
+      ]
+    },
+    {
+      "start": "ÇİLELİ",
+      "target": "HARELİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÇİLELİ",
+        "HİLELİ",
+        "HALELİ",
+        "HARELİ"
+      ]
+    },
+    {
+      "start": "CEMEVİ",
+      "target": "MANEVİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "CEMEVİ",
+        "CAMEVİ",
+        "CANEVİ",
+        "MANEVİ"
+      ]
+    },
+    {
+      "start": "ÖKELİK",
+      "target": "EŞELEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÖKELİK",
+        "EKELİK",
+        "EFELİK",
+        "EFELEK",
+        "EŞELEK"
+      ]
+    },
+    {
+      "start": "SEÇMEN",
+      "target": "YEDMEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SEÇMEN",
+        "SEÇMEK",
+        "GEÇMEK",
+        "GEDMEK",
+        "YEDMEK"
+      ]
+    },
+    {
+      "start": "TERMİN",
+      "target": "TEKLİF",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TERMİN",
+        "TERMİK",
+        "TERLİK",
+        "TEKLİK",
+        "TEKLİF"
+      ]
+    },
+    {
+      "start": "SOSLUK",
+      "target": "DUTLUK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SOSLUK",
+        "SOLLUK",
+        "KOLLUK",
+        "KULLUK",
+        "DULLUK",
+        "DUTLUK"
+      ]
+    },
+    {
+      "start": "AĞARIŞ",
+      "target": "OVACIK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "AĞARIŞ",
+        "AĞARIK",
+        "AĞACIK",
+        "ADACIK",
+        "ODACIK",
+        "OVACIK"
+      ]
+    },
+    {
+      "start": "YARICI",
+      "target": "KARTLI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "YARICI",
+        "YAPICI",
+        "KAPICI",
+        "KAPILI",
+        "KARILI",
+        "KARTLI"
+      ]
+    },
+    {
+      "start": "KAFACA",
+      "target": "TAŞIMA",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "KAFACA",
+        "KARACA",
+        "KARAMA",
+        "KARIMA",
+        "KAŞIMA",
+        "TAŞIMA"
+      ]
+    },
+    {
+      "start": "ARINIŞ",
+      "target": "ARALIK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ARINIŞ",
+        "ARINIK",
+        "ARILIK",
+        "ARALIK"
+      ]
+    },
+    {
+      "start": "MANDAR",
+      "target": "KANGAL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MANDAR",
+        "MANDAL",
+        "MANGAL",
+        "KANGAL"
+      ]
+    },
+    {
+      "start": "MAKİNE",
+      "target": "KARİNA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "MAKİNE",
+        "MARİNE",
+        "KARİNE",
+        "KARİNA"
+      ]
+    },
+    {
+      "start": "GÜZLÜK",
+      "target": "BÜKLÜM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GÜZLÜK",
+        "DÜZLÜK",
+        "DÜKLÜK",
+        "BÜKLÜK",
+        "BÜKLÜM"
+      ]
+    },
+    {
+      "start": "GEZMEK",
+      "target": "DÖNMEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GEZMEK",
+        "GELMEK",
+        "DELMEK",
+        "DENMEK",
+        "DÖNMEK"
+      ]
+    },
+    {
+      "start": "SİYAHİ",
+      "target": "PİYATA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SİYAHİ",
+        "SİYASİ",
+        "SİYASA",
+        "PİYASA",
+        "PİYATA"
+      ]
+    },
+    {
+      "start": "GEZMEN",
+      "target": "SİYMEK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "GEZMEN",
+        "GERMEN",
+        "GERMEK",
+        "GİRMEK",
+        "GİYMEK",
+        "SİYMEK"
+      ]
+    },
+    {
+      "start": "KANMAK",
+      "target": "KAVLIÇ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KANMAK",
+        "KARMAK",
+        "KARMIK",
+        "KARLIK",
+        "KAVLIK",
+        "KAVLIÇ"
+      ]
+    },
+    {
+      "start": "KAFACA",
+      "target": "TAŞIMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KAFACA",
+        "KARACA",
+        "KARAMA",
+        "KARIMA",
+        "KAŞIMA",
+        "TAŞIMA"
+      ]
+    },
+    {
+      "start": "PARMAK",
+      "target": "KOSTAK",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "PARMAK",
+        "KARMAK",
+        "KIRMAK",
+        "KISMAK",
+        "KISTAK",
+        "KOSTAK"
+      ]
+    },
+    {
+      "start": "BİRSAM",
+      "target": "BAĞLAM",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BİRSAM",
+        "BARSAM",
+        "BARLAM",
+        "BAĞLAM"
+      ]
+    },
+    {
+      "start": "GELGEL",
+      "target": "DELGİÇ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GELGEL",
+        "GELGEÇ",
+        "DELGEÇ",
+        "DELGİÇ"
+      ]
+    },
+    {
+      "start": "GÜRLEK",
+      "target": "GOLLÜK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GÜRLEK",
+        "GÜRLÜK",
+        "GÜLLÜK",
+        "GOLLÜK"
+      ]
+    },
+    {
+      "start": "TEZVİR",
+      "target": "TELFİN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TEZVİR",
+        "TEDVİR",
+        "TEDVİN",
+        "TEDFİN",
+        "TELFİN"
+      ]
+    },
+    {
+      "start": "ADATIŞ",
+      "target": "UYANIŞ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ADATIŞ",
+        "ADANIŞ",
+        "ATANIŞ",
+        "UTANIŞ",
+        "UYANIŞ"
+      ]
+    },
+    {
+      "start": "BUNLUK",
+      "target": "MEMLUK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BUNLUK",
+        "BUZLUK",
+        "MUZLUK",
+        "MUMLUK",
+        "MEMLUK"
+      ]
+    },
+    {
+      "start": "ANILIŞ",
+      "target": "ANASIL",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ANILIŞ",
+        "ANILIK",
+        "ANALIK",
+        "ANACIK",
+        "ANACIL",
+        "ANASIL"
+      ]
+    },
+    {
+      "start": "HANEFİ",
+      "target": "LÜLECİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "HANEFİ",
+        "HANELİ",
+        "HALELİ",
+        "LALELİ",
+        "LÜLELİ",
+        "LÜLECİ"
+      ]
+    },
+    {
+      "start": "YAKARI",
+      "target": "PAHACI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "YAKARI",
+        "YAKALI",
+        "YARALI",
+        "PARALI",
+        "PAHALI",
+        "PAHACI"
+      ]
+    },
+    {
+      "start": "YAKARI",
+      "target": "PAHACI",
+      "optimalSteps": 5,
+      "difficulty": "boss",
+      "solution": [
+        "YAKARI",
+        "YAKALI",
+        "YARALI",
+        "PARALI",
+        "PAHALI",
+        "PAHACI"
+      ]
+    },
+    {
+      "start": "KAKMAK",
+      "target": "SANCAK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KAKMAK",
+        "KANMAK",
+        "SANMAK",
+        "SANCAK"
+      ]
+    },
+    {
+      "start": "KARELİ",
+      "target": "DÖŞELİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KARELİ",
+        "KAŞELİ",
+        "KÖŞELİ",
+        "DÖŞELİ"
+      ]
+    },
+    {
+      "start": "VURMAK",
+      "target": "KARMAÇ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "VURMAK",
+        "KURMAK",
+        "KARMAK",
+        "KARMAÇ"
+      ]
+    },
+    {
+      "start": "ÇAVMAK",
+      "target": "MALKAR",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÇAVMAK",
+        "ÇALMAK",
+        "ÇALKAK",
+        "ÇALKAR",
+        "MALKAR"
+      ]
+    },
+    {
+      "start": "PERİLİ",
+      "target": "NERESİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "PERİLİ",
+        "DERİLİ",
+        "DERELİ",
+        "NERELİ",
+        "NERESİ"
+      ]
+    },
+    {
+      "start": "GAYZER",
+      "target": "KONSER",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GAYZER",
+        "KAYZER",
+        "KAYSER",
+        "KANSER",
+        "KONSER"
+      ]
+    },
+    {
+      "start": "NERESİ",
+      "target": "SEPİLİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "NERESİ",
+        "NERELİ",
+        "DERELİ",
+        "DERİLİ",
+        "SERİLİ",
+        "SEPİLİ"
+      ]
+    },
+    {
+      "start": "YAYMAK",
+      "target": "SARSIŞ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "YAYMAK",
+        "SAYMAK",
+        "SARMAK",
+        "SARSAK",
+        "SARSIK",
+        "SARSIŞ"
+      ]
+    },
+    {
+      "start": "OYULGA",
+      "target": "USANMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "OYULGA",
+        "OYULMA",
+        "UYULMA",
+        "UYUNMA",
+        "UYANMA",
+        "USANMA"
+      ]
+    },
+    {
+      "start": "YAYVAN",
+      "target": "BAYRAM",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "YAYVAN",
+        "HAYVAN",
+        "HAYRAN",
+        "KAYRAN",
+        "KAYRAK",
+        "BAYRAK",
+        "BAYRAM"
+      ]
+    },
+    {
+      "start": "ÇAKŞIR",
+      "target": "ÇAVDAR",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ÇAKŞIR",
+        "ÇAVŞIR",
+        "ÇAVDIR",
+        "ÇAVDAR"
+      ]
+    },
+    {
+      "start": "EDİNME",
+      "target": "ERİŞTE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "EDİNME",
+        "ERİNME",
+        "ERİŞME",
+        "ERİŞTE"
+      ]
+    },
+    {
+      "start": "PASTEL",
+      "target": "PORTAL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "PASTEL",
+        "PASTAL",
+        "POSTAL",
+        "PORTAL"
+      ]
+    },
+    {
+      "start": "GERDEK",
+      "target": "ÇÖMMEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GERDEK",
+        "GÖRDEK",
+        "GÖRMEK",
+        "GÖMMEK",
+        "ÇÖMMEK"
+      ]
+    },
+    {
+      "start": "TAKRİP",
+      "target": "TEFSİR",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TAKRİP",
+        "TAKRİR",
+        "TEKRİR",
+        "TEKSİR",
+        "TEFSİR"
+      ]
+    },
+    {
+      "start": "MİLSİZ",
+      "target": "YENSİZ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MİLSİZ",
+        "DİLSİZ",
+        "DİNSİZ",
+        "DENSİZ",
+        "YENSİZ"
+      ]
+    },
+    {
+      "start": "BARDAK",
+      "target": "HARMAN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BARDAK",
+        "YARDAK",
+        "YARMAK",
+        "SARMAK",
+        "SARMAN",
+        "HARMAN"
+      ]
+    },
+    {
+      "start": "AĞINMA",
+      "target": "ULANMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "AĞINMA",
+        "ARINMA",
+        "ARANMA",
+        "ATANMA",
+        "UTANMA",
+        "ULANMA"
+      ]
+    },
+    {
+      "start": "ÇANGAL",
+      "target": "KANTAR",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇANGAL",
+        "MANGAL",
+        "MANDAL",
+        "MANDAR",
+        "MANTAR",
+        "KANTAR"
+      ]
+    },
+    {
+      "start": "SOĞUMA",
+      "target": "TARAMA",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "SOĞUMA",
+        "SORUMA",
+        "KORUMA",
+        "KURUMA",
+        "KURAMA",
+        "KARAMA",
+        "TARAMA"
+      ]
+    },
+    {
+      "start": "DOLAMA",
+      "target": "YAMAMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "DOLAMA",
+        "DALAMA",
+        "YALAMA",
+        "YAMAMA"
+      ]
+    },
+    {
+      "start": "BÜKÜCÜ",
+      "target": "DÜRÜLÜ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BÜKÜCÜ",
+        "BÜKÜLÜ",
+        "BÜRÜLÜ",
+        "DÜRÜLÜ"
+      ]
+    },
+    {
+      "start": "ANASIL",
+      "target": "AĞACIK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ANASIL",
+        "ANACIL",
+        "ANACIK",
+        "AĞACIK"
+      ]
+    },
+    {
+      "start": "KARSAK",
+      "target": "ÇARLIK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KARSAK",
+        "KARMAK",
+        "KARMIK",
+        "KARLIK",
+        "ÇARLIK"
+      ]
+    },
+    {
+      "start": "EVERME",
+      "target": "EKİLME",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "EVERME",
+        "EVİRME",
+        "EĞİRME",
+        "EĞİLME",
+        "EKİLME"
+      ]
+    },
+    {
+      "start": "KİRALI",
+      "target": "ÇAPACI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "KİRALI",
+        "KARALI",
+        "KAPALI",
+        "ÇAPALI",
+        "ÇAPACI"
+      ]
+    },
+    {
+      "start": "ADACIK",
+      "target": "ABASIZ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ADACIK",
+        "ANACIK",
+        "ANACIL",
+        "ANASIL",
+        "ANASIZ",
+        "ABASIZ"
+      ]
+    },
+    {
+      "start": "ÇARDAK",
+      "target": "BUYMAK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ÇARDAK",
+        "BARDAK",
+        "BARÇAK",
+        "BURÇAK",
+        "BURMAK",
+        "BUYMAK"
+      ]
+    },
+    {
+      "start": "KABARA",
+      "target": "KURALI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KABARA",
+        "KABACA",
+        "KARACA",
+        "KARACI",
+        "KURACI",
+        "KURALI"
+      ]
+    },
+    {
+      "start": "KAPAMA",
+      "target": "KILAĞI",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "KAPAMA",
+        "KARAMA",
+        "KARACA",
+        "KARACI",
+        "KARAĞI",
+        "KIRAĞI",
+        "KILAĞI"
+      ]
+    },
+    {
+      "start": "GÜZLÜK",
+      "target": "HÖLLÜK",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GÜZLÜK",
+        "GÖZLÜK",
+        "GÖLLÜK",
+        "HÖLLÜK"
+      ]
+    },
+    {
+      "start": "BARATA",
+      "target": "YALAMA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BARATA",
+        "BALATA",
+        "BALAMA",
+        "YALAMA"
+      ]
+    },
+    {
+      "start": "ONUNCU",
+      "target": "UYUNTU",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ONUNCU",
+        "OYUNCU",
+        "OYUNTU",
+        "UYUNTU"
+      ]
+    },
+    {
+      "start": "AŞILMA",
+      "target": "ARAŞMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "AŞILMA",
+        "AŞINMA",
+        "ARINMA",
+        "ARANMA",
+        "ARAŞMA"
+      ]
+    },
+    {
+      "start": "ONAŞMA",
+      "target": "OSURMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ONAŞMA",
+        "ONARMA",
+        "OTARMA",
+        "OTURMA",
+        "OSURMA"
+      ]
+    },
+    {
+      "start": "SARPIN",
+      "target": "KIYGIN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SARPIN",
+        "SARGIN",
+        "KARGIN",
+        "KIRGIN",
+        "KIYGIN"
+      ]
+    },
+    {
+      "start": "KIRAĞI",
+      "target": "KOLALI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KIRAĞI",
+        "KARAĞI",
+        "KAZAĞI",
+        "KAZALI",
+        "KOZALI",
+        "KOLALI"
+      ]
+    },
+    {
+      "start": "BİNİCİ",
+      "target": "DİKİLİ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BİNİCİ",
+        "ÇİNİCİ",
+        "ÇİZİCİ",
+        "DİZİCİ",
+        "DİKİCİ",
+        "DİKİLİ"
+      ]
+    },
+    {
+      "start": "SİNCİK",
+      "target": "BELLEK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "SİNCİK",
+        "SİNLİK",
+        "BİNLİK",
+        "BENLİK",
+        "BELLİK",
+        "BELLEK"
+      ]
+    },
+    {
+      "start": "FİŞLİK",
+      "target": "GENLİK",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "FİŞLİK",
+        "DİŞLİK",
+        "DİRLİK",
+        "BİRLİK",
+        "BİNLİK",
+        "BENLİK",
+        "GENLİK"
+      ]
+    },
+    {
+      "start": "PARTAL",
+      "target": "PESTİL",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "PARTAL",
+        "PASTAL",
+        "PASTİL",
+        "PESTİL"
+      ]
+    },
+    {
+      "start": "AYAKSI",
+      "target": "IRAKLI",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "AYAKSI",
+        "AYAKLI",
+        "ARAKLI",
+        "IRAKLI"
+      ]
+    },
+    {
+      "start": "SAHABE",
+      "target": "RAKİBE",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SAHABE",
+        "SAHİBE",
+        "RAHİBE",
+        "RAKİBE"
+      ]
+    },
+    {
+      "start": "ADANIŞ",
+      "target": "AŞINIM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ADANIŞ",
+        "ARANIŞ",
+        "ARINIŞ",
+        "AŞINIŞ",
+        "AŞINIM"
+      ]
+    },
+    {
+      "start": "MAŞACI",
+      "target": "FAÇALI",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MAŞACI",
+        "MAŞALI",
+        "PAŞALI",
+        "PAÇALI",
+        "FAÇALI"
+      ]
+    },
+    {
+      "start": "ILINMA",
+      "target": "AYIKMA",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ILINMA",
+        "ALINMA",
+        "ACINMA",
+        "ACIKMA",
+        "AYIKMA"
+      ]
+    },
+    {
+      "start": "ŞARBON",
+      "target": "KAMYON",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ŞARBON",
+        "KARBON",
+        "KARTON",
+        "KANTON",
+        "KANYON",
+        "KAMYON"
+      ]
+    },
+    {
+      "start": "MEŞRUT",
+      "target": "MEVSUK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MEŞRUT",
+        "MEVRUT",
+        "MEVKUT",
+        "MEVKUF",
+        "MEVSUF",
+        "MEVSUK"
+      ]
+    },
+    {
+      "start": "BELEŞE",
+      "target": "DEREKE",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "BELEŞE",
+        "BELEME",
+        "TELEME",
+        "TELEKE",
+        "TEREKE",
+        "DEREKE"
+      ]
+    },
+    {
+      "start": "COŞMAK",
+      "target": "ÇIKMAZ",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "COŞMAK",
+        "KOŞMAK",
+        "KOKMAK",
+        "SOKMAK",
+        "SIKMAK",
+        "ÇIKMAK",
+        "ÇIKMAZ"
+      ]
+    },
+    {
+      "start": "UYANIK",
+      "target": "ULAYIŞ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "UYANIK",
+        "UYANIŞ",
+        "ULANIŞ",
+        "ULAYIŞ"
+      ]
+    },
+    {
+      "start": "ARAKÇI",
+      "target": "AĞAÇLI",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ARAKÇI",
+        "ARAKLI",
+        "ARAÇLI",
+        "AĞAÇLI"
+      ]
+    },
+    {
+      "start": "GERİCİ",
+      "target": "DERELİ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "GERİCİ",
+        "DERİCİ",
+        "DERİLİ",
+        "DERELİ"
+      ]
+    },
+    {
+      "start": "SERİLİ",
+      "target": "DELİCE",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "SERİLİ",
+        "DERİLİ",
+        "DERİCİ",
+        "DELİCİ",
+        "DELİCE"
+      ]
+    },
+    {
+      "start": "BİLEME",
+      "target": "KERİME",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "BİLEME",
+        "BELEME",
+        "KELEME",
+        "KELİME",
+        "KERİME"
+      ]
+    },
+    {
+      "start": "DÖVMEK",
+      "target": "GİTMEK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "DÖVMEK",
+        "DÖKMEK",
+        "DİKMEK",
+        "DİTMEK",
+        "GİTMEK"
+      ]
+    },
+    {
+      "start": "TATARI",
+      "target": "KİRALI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TATARI",
+        "TASARI",
+        "TASALI",
+        "KASALI",
+        "KARALI",
+        "KİRALI"
+      ]
+    },
+    {
+      "start": "KASSIL",
+      "target": "ZAMSIZ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "KASSIL",
+        "KASSIZ",
+        "KANSIZ",
+        "CANSIZ",
+        "CAMSIZ",
+        "ZAMSIZ"
+      ]
+    },
+    {
+      "start": "ISINMA",
+      "target": "ARAŞMA",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "ISINMA",
+        "ILINMA",
+        "ALINMA",
+        "ARINMA",
+        "ARANMA",
+        "ARAŞMA"
+      ]
+    },
+    {
+      "start": "TERHİS",
+      "target": "TAHDİT",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "TERHİS",
+        "TERHİN",
+        "TERMİN",
+        "TERMİT",
+        "TERDİT",
+        "TEHDİT",
+        "TAHDİT"
+      ]
+    },
+    {
+      "start": "UYARIM",
+      "target": "ULANIŞ",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "UYARIM",
+        "UYARIŞ",
+        "UYANIŞ",
+        "ULANIŞ"
+      ]
+    },
+    {
+      "start": "ESKİCİ",
+      "target": "ESRİME",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "ESKİCİ",
+        "ESKİCE",
+        "ESKİME",
+        "ESRİME"
+      ]
+    },
+    {
+      "start": "BABACI",
+      "target": "KAFACA",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BABACI",
+        "BABACA",
+        "KABACA",
+        "KAFACA"
+      ]
+    },
+    {
+      "start": "MİDEVİ",
+      "target": "PİRELİ",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "MİDEVİ",
+        "MİDECİ",
+        "PİDECİ",
+        "PİDELİ",
+        "PİRELİ"
+      ]
+    },
+    {
+      "start": "ÇEKMEK",
+      "target": "SENSEN",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ÇEKMEK",
+        "SEKMEK",
+        "SEKSEK",
+        "SEKSEN",
+        "SENSEN"
+      ]
+    },
+    {
+      "start": "TARTIL",
+      "target": "YIRTIM",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "TARTIL",
+        "TIRTIL",
+        "TIRTIK",
+        "YIRTIK",
+        "YIRTIM"
+      ]
+    },
+    {
+      "start": "MATRAK",
+      "target": "HAVRAN",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "MATRAK",
+        "KATRAK",
+        "KAYRAK",
+        "KAYRAN",
+        "HAYRAN",
+        "HAVRAN"
+      ]
+    },
+    {
+      "start": "AÇILIM",
+      "target": "ARALIK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "AÇILIM",
+        "AÇILIŞ",
+        "ANILIŞ",
+        "ANILIK",
+        "ARILIK",
+        "ARALIK"
+      ]
+    },
+    {
+      "start": "TEKFUR",
+      "target": "TEKLİK",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "TEKFUR",
+        "TEKFİR",
+        "TEKSİR",
+        "TEKSİF",
+        "TEKLİF",
+        "TEKLİK"
+      ]
+    },
+    {
+      "start": "ACITMA",
+      "target": "UYANMA",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "ACITMA",
+        "ARITMA",
+        "ARATMA",
+        "ARANMA",
+        "ATANMA",
+        "UTANMA",
+        "UYANMA"
+      ]
+    },
+    {
+      "start": "SIRALI",
+      "target": "KARAĞI",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "SIRALI",
+        "SARALI",
+        "KARALI",
+        "KARAĞI"
+      ]
+    },
+    {
+      "start": "KATYON",
+      "target": "KANTİN",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "KATYON",
+        "KANYON",
+        "KANTON",
+        "KANTİN"
+      ]
+    },
+    {
+      "start": "BASKET",
+      "target": "TANKER",
+      "optimalSteps": 3,
+      "difficulty": "easy",
+      "solution": [
+        "BASKET",
+        "BANKET",
+        "BANKER",
+        "TANKER"
+      ]
+    },
+    {
+      "start": "ENENME",
+      "target": "İŞETME",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "ENENME",
+        "ELENME",
+        "İLENME",
+        "İLETME",
+        "İŞETME"
+      ]
+    },
+    {
+      "start": "GÜNLÜK",
+      "target": "ÇÖPLÜK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GÜNLÜK",
+        "GÜLLÜK",
+        "GÖLLÜK",
+        "ÇÖLLÜK",
+        "ÇÖPLÜK"
+      ]
+    },
+    {
+      "start": "GERMEK",
+      "target": "DÜĞMÜK",
+      "optimalSteps": 4,
+      "difficulty": "medium",
+      "solution": [
+        "GERMEK",
+        "DERMEK",
+        "DÜRMEK",
+        "DÜĞMEK",
+        "DÜĞMÜK"
+      ]
+    },
+    {
+      "start": "HALICI",
+      "target": "KARALI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "HALICI",
+        "KALICI",
+        "KAPICI",
+        "KAPILI",
+        "KARILI",
+        "KARALI"
+      ]
+    },
+    {
+      "start": "DAYLAK",
+      "target": "ÇALMAÇ",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DAYLAK",
+        "ÇAYLAK",
+        "ÇATLAK",
+        "ÇATMAK",
+        "ÇALMAK",
+        "ÇALMAÇ"
+      ]
+    },
+    {
+      "start": "DALICI",
+      "target": "KAZALI",
+      "optimalSteps": 5,
+      "difficulty": "hard",
+      "solution": [
+        "DALICI",
+        "KALICI",
+        "KAPICI",
+        "KAPILI",
+        "KAZILI",
+        "KAZALI"
+      ]
+    },
+    {
+      "start": "GÜNSÜZ",
+      "target": "BÜKLÜM",
+      "optimalSteps": 6,
+      "difficulty": "boss",
+      "solution": [
+        "GÜNSÜZ",
+        "YÜNSÜZ",
+        "YÜKSÜZ",
+        "YÜKSÜK",
+        "YÜKLÜK",
+        "BÜKLÜK",
+        "BÜKLÜM"
+      ]
+    }
+  ]
+}
