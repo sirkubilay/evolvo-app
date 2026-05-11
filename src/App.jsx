@@ -941,7 +941,7 @@ const handleStartUnlimited = async (length, level) => {
         </div>
         <p className="opacity-50">© 2026 Evolvo. Tüm hakları saklıdır.</p>
         <div className="flex justify-center gap-4 mt-2 font-bold text-xs uppercase tracking-widest opacity-50">
-          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:underline">Gizlilik & KVKK</a>
+          <a href="/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:underline">Gizlilik & KVKK</a>
           <button onClick={() => toggleModal('contact', true)} className="hover:underline">İletişim</button>
         </div>
       </footer>
