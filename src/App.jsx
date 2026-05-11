@@ -38,6 +38,7 @@ const injectStyles = () => {
     
     .scrollbar-thin::-webkit-scrollbar { width: 4px; }
     .scrollbar-thumb-white\\/10::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    @keyframes altayBrandIn { from{opacity:0} to{opacity:0.35} }
   `;
   document.head.appendChild(style);
 };
@@ -176,6 +177,16 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 
+function MountainMini({ size = 18 }) {
+  return (
+    <svg viewBox="-1 -2 62 46" width={size} height={Math.round(size * 44 / 60)} fill="none">
+      <path d="M 0,42 L 13,17 L 21,29 L 31,0 L 41,22 L 50,11 L 60,42 Z" fill="#C9A84C" fillOpacity="0.3" />
+      <path d="M 0,42 L 13,17 L 21,29 L 31,0 L 41,22 L 50,11 L 60,42" stroke="#C9A84C" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 26,8 L 31,0 L 36,8 L 31,6 Z" fill="white" opacity="0.9" />
+    </svg>
+  );
+}
+
 const SplashScreen = ({ onDone }) => {
   const [fade, setFade] = useState(false);
   useEffect(() => {
@@ -292,7 +303,10 @@ const SplashScreen = ({ onDone }) => {
 };
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    if (!Capacitor.isNativePlatform()) return false;
+    return !sessionStorage.getItem('evolvo_splash_shown');
+  });
   const [message, setMessage] = useState(null);
   const showFeedback = (msg, type = "info") => {
     setMessage({ text: msg, type });
@@ -690,7 +704,7 @@ const handleStartUnlimited = async (length, level) => {
     <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
   );
 
-  if (showSplash) return <SplashScreen onDone={() => setShowSplash(false)} />;
+  if (showSplash) return <SplashScreen onDone={() => { sessionStorage.setItem('evolvo_splash_shown', '1'); setShowSplash(false); }} />;
 
   if (window.location.pathname === '/privacy') {
     return (
@@ -910,17 +924,23 @@ const handleStartUnlimited = async (length, level) => {
             </button>
           </div>
 
-          <div className="mt-6 flex justify-center animate-in zoom-in duration-500">
-            <button onClick={() => setCurrentPage('unlimited_menu')} className="w-full sm:w-auto bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-600 hover:to-indigo-500 px-10 py-4 rounded-3xl font-black text-xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-purple-500/30 text-white">
-              <InfinityIcon size={24} /> SINIRSIZ MOD (OFFLINE)
-            </button>
-          </div>
+          {isNative && (
+            <div className="mt-6 flex justify-center animate-in zoom-in duration-500">
+              <button onClick={() => setCurrentPage('unlimited_menu')} className="w-full sm:w-auto bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-600 hover:to-indigo-500 px-10 py-4 rounded-3xl font-black text-xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-purple-500/30 text-white">
+                <InfinityIcon size={24} /> SINIRSIZ MOD
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
-      <footer className={`py-8 text-center border-t ${theme.panelBorder} opacity-60 text-sm mt-auto`}>
-        <p>© 2026 Evolvo. Tüm hakları saklıdır.</p>
-        <div className="flex justify-center gap-4 mt-2 font-bold text-xs uppercase tracking-widest">
+      <footer className={`py-8 text-center border-t ${theme.panelBorder} text-sm mt-auto`}>
+        <div className="flex items-center justify-center gap-2 mb-3" style={{animation:'altayBrandIn 1s ease 0.7s forwards', opacity:0}}>
+          <MountainMini size={14} />
+          <span className="text-[11px] text-slate-400 tracking-[0.25em] font-medium">ALTAY INTERACTIVE</span>
+        </div>
+        <p className="opacity-50">© 2026 Evolvo. Tüm hakları saklıdır.</p>
+        <div className="flex justify-center gap-4 mt-2 font-bold text-xs uppercase tracking-widest opacity-50">
           <a href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:underline">Gizlilik & KVKK</a>
           <button onClick={() => toggleModal('contact', true)} className="hover:underline">İletişim</button>
         </div>
