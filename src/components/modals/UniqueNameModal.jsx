@@ -36,7 +36,7 @@ export const UniqueNameModal = ({ isOpen, tempUser, onComplete, theme, colors })
       await setDoc(doc(db, 'users', tempUser.uid), {
         username: nameToSave,
         createdAt: new Date().toISOString()
-      });
+      }, { merge: true }); // merge: ilerleme ve arkadaş verisini silmesin
 
       setIsChecking(false);
       onComplete(nameToSave);

@@ -28,7 +28,9 @@ import { ContactModal } from './components/modals/ContactModal';
 import { Logo } from './components/Logo';
 import { AchievementToast } from './components/AchievementToast';
 import { useProgress } from './lib/useProgress';
-import { loadStats } from './lib/progress';
+import { loadStats, dayKey } from './lib/progress';
+import { FriendsModal } from './components/modals/FriendsModal';
+import { takeFriendCodeFromUrl } from './lib/friends';
 import { NotificationPrompt } from './components/modals/NotificationPrompt';
 import { RemoveAdsModal } from './components/modals/RemoveAdsModal';
 import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial } from './lib/monetization';
@@ -200,6 +202,11 @@ const handleStartUnlimited = async (length, level) => {
   const [adsRemovedState, setAdsRemovedState] = useState(adsRemoved);
   const [privacyOptions, setPrivacyOptions] = useState(false);
   const [showRemoveAds, setShowRemoveAds] = useState(false);
+  // Davet linki (?arkadas=EVO-XXXXXX) ile gelindiyse arkadaşlar penceresini kod dolu açar
+  const [pendingFriendCode] = useState(takeFriendCodeFromUrl);
+  useEffect(() => {
+    if (pendingFriendCode) setModalState(prev => ({ ...prev, friends: true }));
+  }, [pendingFriendCode]);
 
   const setUserAvatar = (av) => {
     setUserAvatarState(av);
@@ -495,6 +502,18 @@ const handleStartUnlimited = async (length, level) => {
       <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
       {achievementToast}
       {notificationPrompt}
+      <FriendsModal
+        isOpen={!!modalState.friends}
+        onClose={() => toggleModal('friends', false)}
+        theme={theme}
+        user={user}
+        username={username}
+        puzzleId={activePuzzle?.type === 'daily' ? activePuzzle.date : dayKey()}
+        onLogin={handleGoogleLogin}
+        showFeedback={showFeedback}
+        initialCode={pendingFriendCode}
+        onRecordShare={() => recordEvent('share')}
+      />
       <RemoveAdsModal isOpen={showRemoveAds} onClose={() => setShowRemoveAds(false)} onPurchased={() => setAdsRemovedState(true)} theme={theme} showFeedback={showFeedback} />
     </>
   );
@@ -642,7 +661,7 @@ const handleStartUnlimited = async (length, level) => {
         </div>
       )}
 
-      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={currentColors} leaderboardData={leaderboardData} userAvatar={userAvatar} username={username} onTabChange={fetchLeaderboard} />
+      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={currentColors} leaderboardData={leaderboardData} userAvatar={userAvatar} username={username} onTabChange={fetchLeaderboard} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={currentColors} />
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={currentColors} stats={stats} />

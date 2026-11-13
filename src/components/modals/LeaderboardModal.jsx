@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Users } from 'lucide-react';
 
-export const LeaderboardModal = ({ isOpen, onClose, theme, colors, userAvatar, username, leaderboardData = {}, onTabChange }) => {
+export const LeaderboardModal = ({ isOpen, onClose, theme, userAvatar, username, leaderboardData = {}, onTabChange, onOpenFriends }) => {
   const [activeTab, setActiveTab] = useState('daily');
 
   const handleTabChange = (tab) => {
@@ -25,7 +25,7 @@ export const LeaderboardModal = ({ isOpen, onClose, theme, colors, userAvatar, u
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-md" onClick={onClose}>
        <div className={`${theme.panel} w-full max-w-md rounded-3xl p-8 border ${theme.panelBorder} shadow-2xl`} onClick={e => e.stopPropagation()}>
-          <div className="flex justify-between items-center mb-6"><h2 className="text-2xl font-black italic uppercase tracking-tighter">SIRALAMA</h2><button onClick={onClose} className="p-1 hover:bg-white/10 rounded-full transition-colors"><X /></button></div>
+          <div className="flex justify-between items-center mb-6"><h2 className="text-2xl font-black italic uppercase tracking-tighter">SIRALAMA</h2><div className="flex items-center gap-2">{onOpenFriends && <button onClick={onOpenFriends} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pink-500/15 border border-pink-400/30 text-pink-300 text-xs font-bold"><Users size={14} /> Arkadaşlar</button>}<button onClick={onClose} className="p-1 hover:bg-white/10 rounded-full transition-colors"><X /></button></div></div>
 
           <div className="flex p-1 bg-white/5 rounded-xl mb-6 shadow-inner border border-white/5">
             {['daily', 'weekly', 'monthly'].map(tab => (
