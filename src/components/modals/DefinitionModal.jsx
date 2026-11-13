@@ -1,48 +1,34 @@
 import { useState, useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
 
-export const dictionaryCache = {};
+// Oturum boyunca TDK cevaplarını hafızada tut (aynı kelimeye tekrar istek atma)
+const dictionaryCache = {};
 
 export const DefinitionModal = ({ word, onClose, theme }) => {
-  const [definition, setDefinition] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const safeWord = word ? word.toLocaleLowerCase('tr-TR') : null;
+  const [results, setResults] = useState({});
+  const definition = safeWord ? (results[safeWord] ?? dictionaryCache[safeWord]) : null;
+  const loading = !!safeWord && definition === undefined;
 
   useEffect(() => {
-    if (!word) return;
-    
-    // Kelimenin küçük harfli halini alıyoruz ki büyük/küçük harf farkından dolayı hafızayı kaçırmayalım
-    const safeWord = word.toLocaleLowerCase('tr-TR');
-
-    // 🔥 2. ADIM: KONTROL - Kelime hafızada var mı? Varsa interneti bekleme, direkt yapıştır!
-    if (dictionaryCache[safeWord]) {
-      setDefinition(dictionaryCache[safeWord]);
-      setLoading(false);
-      return; // Fonksiyonu burada kes, aşağı inip TDK'ya boşuna istek atma
-    }
-
-    // 🔥 3. ADIM: HAFIZADA YOKSA - Mecbur TDK'ya soracağız
-    setLoading(true);
-    fetch(`https://sozluk.gov.tr/gts?ara=${safeWord}`)
+    if (!safeWord || dictionaryCache[safeWord] !== undefined) return undefined;
+    let alive = true;
+    fetch(`https://sozluk.gov.tr/gts?ara=${encodeURIComponent(safeWord)}`)
       .then(res => res.json())
-      .then(data => { 
+      .then(data => {
         let resultText = "Anlam bulunamadı.";
-        
-        // Gelen verinin içi dolu mu diye güvenlik kontrolü yapıyoruz
-        if (Array.isArray(data) && data.length > 0 && data[0].anlamlarListe && data[0].anlamlarListe.length > 0) { 
-          resultText = data[0].anlamlarListe[0].anlam; 
+        if (Array.isArray(data) && data.length > 0 && data[0].anlamlarListe && data[0].anlamlarListe.length > 0) {
+          resultText = data[0].anlamlarListe[0].anlam;
         }
-        
-        // 🔥 4. ADIM: KAYIT - TDK'dan gelen cevabı hafızaya yaz ki adam bir dahakine tıklayınca fişek gibi açılsın
         dictionaryCache[safeWord] = resultText;
-        
-        setDefinition(resultText);
-        setLoading(false); 
+        if (alive) setResults(r => ({ ...r, [safeWord]: resultText }));
       })
-      .catch(() => { 
-        setDefinition("Bağlantı hatası."); 
-        setLoading(false); 
+      .catch(() => {
+        // Hata önbelleğe yazılmaz; pencere yeniden açılınca tekrar denenir
+        if (alive) setResults(r => ({ ...r, [safeWord]: "Bağlantı hatası." }));
       });
-  }, [word]);
+    return () => { alive = false; };
+  }, [safeWord]);
 
   if (!word) return null;
 

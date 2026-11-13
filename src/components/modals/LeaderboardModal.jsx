@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { X, Users } from 'lucide-react';
+import { X, Users, Loader2 } from 'lucide-react';
 
-export const LeaderboardModal = ({ isOpen, onClose, theme, userAvatar, username, leaderboardData = {}, onTabChange, onOpenFriends }) => {
+export const LeaderboardModal = ({ isOpen, onClose, theme, userAvatar, username, leaderboardData = {}, onTabChange, onOpenFriends, isLoading = false }) => {
   const [activeTab, setActiveTab] = useState('daily');
 
   const handleTabChange = (tab) => {
@@ -40,7 +40,9 @@ export const LeaderboardModal = ({ isOpen, onClose, theme, userAvatar, username,
           </div>
 
           <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/20">
-             {currentScores.length > 0 ? (
+             {isLoading && currentScores.length === 0 ? (
+                <div className="flex justify-center py-12"><Loader2 className="animate-spin text-yellow-400" /></div>
+             ) : currentScores.length > 0 ? (
                <>
                 {currentScores.map((data, i) => (
                   <div key={i} className={`flex justify-between items-center p-4 rounded-xl border ${i === 0 ? 'bg-yellow-500/20 border-yellow-500/50 shadow-yellow-500/10' : theme.emptyCell} shadow-inner`}>

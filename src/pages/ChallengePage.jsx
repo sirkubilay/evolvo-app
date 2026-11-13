@@ -4,10 +4,9 @@ import { X, Delete, Swords, CheckCircle2, AlertCircle, Loader2, Book, ChevronLef
 export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
   // Kitap ikonuna basınca kelimenin TDK anlamını göster (önceden tanımsızdı → çökme)
   const handleDictClick = (word) => toggleModal('definition', word);
-const [isWon, setIsWon] = useState(false);
-const [winningRowAnimation, setWinningRowAnimation] = useState(null);
-const [showShareToast, setShowShareToast] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
+  // (Kullanılmayan isWon/showShareToast state'leri kaldırıldı; bu iki değer bu ekranda hiç değişmiyor)
+  const winningRowAnimation = null;
+  const isGameOver = false;
   const [wordLength, setWordLength] = useState(5);
   const [history, setHistory] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");

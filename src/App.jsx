@@ -634,7 +634,6 @@ const handleStartUnlimited = async (length, level) => {
           updateStats={updateStats}
           puzzleData={activePuzzle} 
           leaderboardData={leaderboardData}
-          onStartCustomGame={handleStartCustomGame}
           onLoadPastPuzzle={loadPastPuzzle}
           user={user}
           onLogout={handleLogout}
@@ -661,7 +660,7 @@ const handleStartUnlimited = async (length, level) => {
         </div>
       )}
 
-      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={currentColors} leaderboardData={leaderboardData} userAvatar={userAvatar} username={username} onTabChange={fetchLeaderboard} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
+      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={currentColors} leaderboardData={leaderboardData} userAvatar={userAvatar} username={username} isLoading={isLoadingLeaderboard} onTabChange={fetchLeaderboard} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={currentColors} />
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={currentColors} stats={stats} />

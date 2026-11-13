@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 
-export const HowToPlayModal = ({ isOpen, onClose, theme, colors }) => {
+export const HowToPlayModal = ({ isOpen, onClose, theme }) => {
    if (!isOpen) return null;
    const steps = ["Amaç, \"Başlangıç\" kelimesinden \"Bitiş\" kelimesine ulaşmaktır.", "Her adımda, bir önceki kelimenin sadece 1 harfini değiştirebilirsiniz.", "Girdiğiniz her kelime, sözlükte bulunan geçerli bir Türkçe kelime olmalıdır.", "En az adımda ve en kısa sürede bitiş kelimesine ulaşarak Liderlik Tablosu'na girin!", "Takılırsanız, 'Sil' tuşu (⌫) aktif satır boşken bir önceki adıma geri dönmenizi sağlar.", "Zorlandığınızda ampul (💡) ikonuna tıklayarak ipucu alabilirsiniz (Maks. 3 Hak). Her ipucu 150 puan düşer."];
    return (

@@ -1,7 +1,7 @@
 import { X } from 'lucide-react';
 import { AVATARS } from '../../data/constants';
 
-export const AvatarModal = ({ isOpen, onClose, onSelect, theme, colors, userAvatar, username }) => {
+export const AvatarModal = ({ isOpen, onClose, onSelect, theme, userAvatar, username }) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-[250] flex items-center justify-center p-6 bg-black/70 backdrop-blur-md" onClick={onClose}>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, X, Star, HelpCircle, CheckCircle2, ChevronLeft, Infinity as InfinityIcon, Lock } from 'lucide-react';
 
-export const UnlimitedMenuPage = ({ onBack, theme, progress, scores, userAvatar, setUserAvatar, onPlay }) => {
+export const UnlimitedMenuPage = ({ onBack, progress, scores, userAvatar, setUserAvatar, onPlay }) => {
     const [selectedLen, setSelectedLen] = useState(() => parseInt(localStorage.getItem('evolvo_offline_tab')) || 5);
     const [showAvatarSelect, setShowAvatarSelect] = useState(false);
     const [showInfo, setShowInfo] = useState(false);

@@ -19,7 +19,7 @@ import { watchRewardedAd, adsRemoved } from '../lib/monetization';
 import { PLAY_STORE_LIVE, PLAY_STORE_URL, WEB_URL, MAX_BONUS_HINTS } from '../data/constants';
 import { dayKey } from '../lib/progress';
 
-export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onStartCustomGame, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
+export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
   const [history, setHistory] = useState([puzzleData.start]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [winningRowAnimation, setWinningRowAnimation] = useState(false);
@@ -507,7 +507,7 @@ Sen de dene 👇`;
       <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
       <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} leaderboardData={leaderboardData} onTabChange={fetchLeaderboard} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={colors} />
-      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} />
+      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} onSelectDate={onLoadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
