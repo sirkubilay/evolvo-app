@@ -1,7 +1,7 @@
-import { Medal, X } from 'lucide-react';
-import { ACHIEVEMENTS } from '../../constants';
+import { X, Medal } from 'lucide-react';
+import { ACHIEVEMENTS } from '../../data/constants';
 
-const AchievementsModal = ({ isOpen, onClose, theme, colors }) => {
+export const AchievementsModal = ({ isOpen, onClose, theme, colors }) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/70 backdrop-blur-md" onClick={onClose}>
@@ -10,6 +10,7 @@ const AchievementsModal = ({ isOpen, onClose, theme, colors }) => {
           <h2 className="text-2xl font-black flex items-center gap-2 italic text-yellow-400"><Medal /> BAŞARIMLAR</h2>
           <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors"><X /></button>
         </div>
+        
         <div className="overflow-y-auto pr-2 space-y-3 scrollbar-thin scrollbar-thumb-white/20">
           {ACHIEVEMENTS.map((ach) => (
             <div key={ach.id} className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-yellow-500/30 transition-all group shadow-inner">
@@ -31,4 +32,3 @@ const AchievementsModal = ({ isOpen, onClose, theme, colors }) => {
   );
 };
 
-export default AchievementsModal;

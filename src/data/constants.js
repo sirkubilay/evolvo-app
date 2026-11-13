@@ -1,6 +1,8 @@
+
+
 export const TURKISH_DICTIONARY_MOCK = [
   "YATAK", "YASAK", "YANAK", "YANIK", "TANIK", "SANIK", "SADIK", "SAZIK", "KAZIK", "KAZAK",
-  "EVRAK", "EVRAT", "EVKAT", "EUKAT", "KUKAT", "KONAT", "KONAK",
+  "EVRAK", "EVRAT", "EVKAT", "EUKAT", "KUKAT", "KONAT", "KONAK", 
   "KONUK", "KONUT", "KOMUT", "VURAK", "DURAK", "DORAK", "KORAK", "TARAK", "YARAK", "BARAK", "KABAK", "TABAK",
   "KALEM", "KELAM", "SELAM", "SALAM", "SALIM", "SALIK", "BALIK"
 ];
@@ -65,11 +67,11 @@ export const AVATARS = [
   { id: 27, icon: '🦋', label: 'Kelebek' },
   { id: 28, icon: '🍄', label: 'Mantar' },
   { id: 29, icon: '🍕', label: 'Pizza' },
-  { id: 30, icon: '⚽', label: 'Futbol' },
+  { id: 30, icon: '⚽', label: 'Futbol' }, // DÜZELTİLDİ!
 ];
 
-const ADJECTIVES = ["Hızlı", "Cesur", "Bilge", "Çılgın", "Gizemli", "Zehirli", "Vahşi", "Gölge", "Parlak", "Buzlu", "Ateşli", "Sessiz", "Kayıp", "Efsane", "Yırtıcı", "Demir", "Çelik", "Uçan", "Altın", "Bordo"];
-const NOUNS = ["Dinozor", "Porsuk", "Baykuş", "Kedi", "Kaplan", "Kurt", "Şahin", "Ejderha", "Yılan", "Panter", "Akrep", "Kartal", "Boğa", "Ayı", "Timsah", "Kuzgun", "Anka", "Korsan", "Ninja", "Robot"];
+export const ADJECTIVES = ["Hızlı", "Cesur", "Bilge", "Çılgın", "Gizemli", "Zehirli", "Vahşi", "Gölge", "Parlak", "Buzlu", "Ateşli", "Sessiz", "Kayıp", "Efsane", "Yırtıcı", "Demir", "Çelik", "Uçan", "Altın", "Bordo"];
+export const NOUNS = ["Dinozor", "Porsuk", "Baykuş", "Kedi", "Kaplan", "Kurt", "Şahin", "Ejderha", "Yılan", "Panter", "Akrep", "Kartal", "Boğa", "Ayı", "Timsah", "Kuzgun", "Anka", "Korsan", "Ninja", "Robot"];
 
 export const generateRandomName = () => {
   const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];

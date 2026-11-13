@@ -1,3 +1,6 @@
+# public/ klasöründeki veri dosyaları üzerinde çalışır (script nereden çalıştırılırsa çalıştırılsın)
+import os as _os
+_os.chdir(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "public"))
 import json
 
 # Evolvo kuralı: Şapkalı harfler düz harf olarak değerlendirilir

@@ -1,7 +1,7 @@
-import { BarChart2, Medal, HelpCircle, Trophy, Calendar as CalendarIcon, Swords, Moon, Eye, X } from 'lucide-react';
-import Logo from '../Logo';
+import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye } from 'lucide-react';
+import { Logo } from '../Logo';
 
-const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, onLogout, onLogin }) => {
+export const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, onLogout, onLogin }) => {
   const items = [
     { icon: <BarChart2 size={18} className="text-green-400" />, label: "İstatistikler", action: 'stats' },
     { icon: <Medal size={18} className="text-blue-400" />, label: "Başarımlar", action: 'achievements' },
@@ -19,9 +19,10 @@ const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, onLogou
           <Logo colors={theme} />
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg transition-colors"><X /></button>
         </div>
+        
         <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin scrollbar-thumb-white/10">
            {user ? (
-             <button onClick={() => { onLogout(); onClose(); }} className="w-full flex items-center gap-4 p-4 bg-red-900/20 text-red-400 hover:bg-red-900/40 rounded-xl font-bold text-sm transition-all flex-shrink-0 mb-4 shadow-inner">
+             <button onClick={() => { onLogout(); onClose(); }} className={`w-full flex items-center gap-4 p-4 bg-red-900/20 text-red-400 hover:bg-red-900/40 rounded-xl font-bold text-sm transition-all flex-shrink-0 mb-4 shadow-inner`}>
                <div className="font-bold text-lg">X</div> Çıkış Yap
              </button>
            ) : (
@@ -29,11 +30,13 @@ const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, onLogou
                <div className="text-blue-400 font-bold text-lg">G</div> İlerlemeyi Kaydet
              </button>
            )}
+
            {items.map((item, i) => (
              <button key={i} onClick={() => { if(item.action) toggleModal(item.action, true); onClose(); }} className={`w-full flex items-center gap-4 p-4 ${theme.key} text-white rounded-xl font-bold text-sm hover:brightness-105 transition-all flex-shrink-0 shadow-inner`}>
                {item.icon} {item.label}
              </button>
            ))}
+
            <div className="border-t border-white/5 my-4 pt-4 space-y-2">
              <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>
                <div className="flex items-center gap-3"><Moon size={18} /><span className="font-bold text-sm text-white">Koyu Mod</span></div>
@@ -41,6 +44,7 @@ const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, onLogou
                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${settings.darkMode ? 'right-1' : 'left-1'}`} />
                </button>
              </div>
+             
              <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>
                <div className="flex items-center gap-3"><Eye size={18} /><span className="font-bold text-sm text-white">Renk Körlüğü</span></div>
                <button onClick={() => settings.setColorBlindMode(!settings.colorBlindMode)} className={`w-12 h-6 rounded-full relative transition-colors ${settings.colorBlindMode ? 'bg-blue-500' : 'bg-gray-400'}`}>
@@ -54,4 +58,3 @@ const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, onLogou
   );
 };
 
-export default SideMenu;
