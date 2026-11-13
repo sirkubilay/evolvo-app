@@ -1,4 +1,4 @@
-import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye, Bell, Users, Ban } from 'lucide-react';
+import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye, Bell, Users, Ban, ShieldCheck } from 'lucide-react';
 import { isNative } from '../../lib/native';
 import { Logo } from '../Logo';
 
@@ -53,6 +53,11 @@ export const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, 
            )}
 
            <div className="border-t border-white/5 my-4 pt-4 space-y-2">
+             {native && settings.onPrivacyOptions && (
+               <button onClick={() => { settings.onPrivacyOptions(); onClose(); }} className={`w-full flex items-center gap-3 p-4 ${theme.key} rounded-xl shadow-inner font-bold text-sm text-white`}>
+                 <ShieldCheck size={18} /> Reklam Gizlilik Tercihleri
+               </button>
+             )}
              {native && settings.setNotifications && (
                <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>
                  <div className="flex items-center gap-3"><Bell size={18} /><span className="font-bold text-sm text-white">Günlük Hatırlatma</span></div>

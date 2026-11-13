@@ -30,6 +30,8 @@ import { AchievementToast } from './components/AchievementToast';
 import { useProgress } from './lib/useProgress';
 import { loadStats } from './lib/progress';
 import { NotificationPrompt } from './components/modals/NotificationPrompt';
+import { RemoveAdsModal } from './components/modals/RemoveAdsModal';
+import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial } from './lib/monetization';
 import {
   scheduleReminders, maybeAskForReview, shouldAskNotifications, notificationsEnabled,
   enableNotifications, disableNotifications,
@@ -101,6 +103,7 @@ const App = () => {
   };
 
 const handleStartUnlimited = async (length, level) => {
+    await maybeShowInterstitial(); // her INTERSTITIAL_EVERY bölümde bir (reklamsız sürümde hiç)
     setIsPuzzleLoading(true);
     try {
       const response = await fetch('/offline_puzzles.json');
@@ -190,7 +193,13 @@ const handleStartUnlimited = async (length, level) => {
     setUnlockedQueue(q => [...q, achievement]);
   }, []);
   const { stats, recordGameEnd, recordEvent } = useProgress(user, handleUnlock);
-  useEffect(() => { scheduleReminders(loadStats()); }, []);
+  useEffect(() => {
+    scheduleReminders(loadStats());
+    initMonetization().then(() => { setAdsRemovedState(adsRemoved()); setPrivacyOptions(needsPrivacyOptions()); });
+  }, []);
+  const [adsRemovedState, setAdsRemovedState] = useState(adsRemoved);
+  const [privacyOptions, setPrivacyOptions] = useState(false);
+  const [showRemoveAds, setShowRemoveAds] = useState(false);
 
   const setUserAvatar = (av) => {
     setUserAvatarState(av);
@@ -486,6 +495,7 @@ const handleStartUnlimited = async (length, level) => {
       <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
       {achievementToast}
       {notificationPrompt}
+      <RemoveAdsModal isOpen={showRemoveAds} onClose={() => setShowRemoveAds(false)} onPurchased={() => setAdsRemovedState(true)} theme={theme} showFeedback={showFeedback} />
     </>
   );
 
@@ -509,7 +519,7 @@ const handleStartUnlimited = async (length, level) => {
             <ul style={{paddingLeft:20,fontSize:14,lineHeight:1.7}}>
               <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Toplanan Veriler:</strong> Google ile giriş yaptığınızda Google UID, ad/soyad ve e-posta adresiniz Firebase'e aktarılır. Kullanıcı adınız liderlik tablosu için herkese açık görünür.</li>
               <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Kullanım Amacı:</strong> Veriler yalnızca skor kaydı, hile önleme (reCAPTCHA) ve cihazlar arası ilerleme eşitleme için kullanılır.</li>
-              <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Veri Paylaşımı:</strong> Kişisel verileriniz hiçbir üçüncü tarafla reklam veya ticari amaçla paylaşılmaz.</li>
+              <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Veri Paylaşımı:</strong> Hesap verileriniz satılmaz veya pazarlama amacıyla paylaşılmaz. Android uygulamasındaki reklamlar Google AdMob ile sunulur; ayrıntılar için <a href="/privacy.html" style={{color:'#60a5fa'}}>tam gizlilik politikası</a>.</li>
               <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Veri Silme:</strong> KVKK kapsamındaki haklarınız için <a href="mailto:tr.evolvogame@gmail.com" style={{color:'#60a5fa'}}>tr.evolvogame@gmail.com</a> adresine yazabilirsiniz.</li>
             </ul>
           </section>
@@ -601,7 +611,7 @@ const handleStartUnlimited = async (length, level) => {
           colors={currentColors}
           toggleModal={toggleModal}
           modalState={modalState}
-          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats, notificationsOn, setNotifications }}
+          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onRemoveAds: () => setShowRemoveAds(true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }}
           updateStats={updateStats}
           puzzleData={activePuzzle} 
           leaderboardData={leaderboardData}
@@ -685,7 +695,7 @@ const handleStartUnlimited = async (length, level) => {
         </div>
       </nav>
 
-      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, notificationsOn, setNotifications }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
+      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onRemoveAds: () => setShowRemoveAds(true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
 
       <section className="flex-1 flex flex-col justify-center pb-12 md:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">

@@ -128,3 +128,18 @@ export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com
 // Uygulama Play'de herkese açık (üretim) olunca true yap: paylaşımlara Play linki eklenir.
 // Kapalı testteyken link testçi olmayanlara "bulunamadı" gösterir.
 export const PLAY_STORE_LIVE = false;
+
+// --- Reklam (AdMob) ---
+// ŞU AN GOOGLE'IN RESMİ TEST KİMLİKLERİ. AdMob hesabı açılınca gerçek kimliklerle değiştir,
+// android/app/src/main/res/values/strings.xml içindeki admob_app_id'yi de güncelle ve USE_TEST_ADS=false yap.
+export const ADMOB = {
+  USE_TEST_ADS: true,
+  REWARDED_ID: 'ca-app-pub-3940256099942544/5224354917',
+  INTERSTITIAL_ID: 'ca-app-pub-3940256099942544/1033173712',
+};
+// Sınırsız modda kaç bölümde bir geçiş reklamı gösterilsin
+export const INTERSTITIAL_EVERY = 3;
+// Bir bulmacada reklamla kazanılabilecek en fazla ek ipucu
+export const MAX_BONUS_HINTS = 2;
+// Play Console > Para kazanma > Ürünler > Uygulama içi ürünler'de bu kimlikle oluşturulmalı
+export const REMOVE_ADS_PRODUCT_ID = 'remove_ads';

@@ -15,7 +15,8 @@ import { DefinitionModal } from '../components/modals/DefinitionModal';
 import { Logo } from '../components/Logo';
 import { hapticTap, hapticMove, hapticError, isNative } from '../lib/native';
 import { shareImage, saveImage, shareLinks } from '../lib/share';
-import { PLAY_STORE_LIVE, PLAY_STORE_URL, WEB_URL } from '../data/constants';
+import { watchRewardedAd, adsRemoved } from '../lib/monetization';
+import { PLAY_STORE_LIVE, PLAY_STORE_URL, WEB_URL, MAX_BONUS_HINTS } from '../data/constants';
 import { dayKey } from '../lib/progress';
 
 export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onStartCustomGame, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
@@ -29,6 +30,12 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   // "Keskin Nişancı" başarımı için: bu oyunda girilen geçersiz kelime sayısı
   const invalidAttemptsRef = useRef(0);
   const [hintsLeft, setHintsLeft] = useState(3);
+  // Reklam izleyerek kazanılan ek ipuçları (ceza hesabı için kullanılan toplam = 3 + bonus - kalan)
+  const [bonusHints, setBonusHints] = useState(0);
+  const [rewardSheetOpen, setRewardSheetOpen] = useState(false);
+  const [rewardLoading, setRewardLoading] = useState(false);
+  const hintsUsedCount = 3 + bonusHints - hintsLeft;
+  const canEarnHint = isNative() && puzzleData.type !== 'custom' && bonusHints < MAX_BONUS_HINTS;
   const [lockedIndices, setLockedIndices] = useState([0]); 
   const [rowAnimation, setRowAnimation] = useState(null);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
@@ -143,7 +150,7 @@ useEffect(() => {
     
     // 1. DÜZELTME: Değişkenleri ve hesaplamaları EN ÜSTE aldık ki kod patlamasın.
     let score = 0;
-    const hintsUsed = 3 - hintsLeft;
+    const hintsUsed = hintsUsedCount;
 
     if (didWin) {
         const stepsUsed = finalHistory.length - 1;
@@ -235,7 +242,11 @@ const handleHint = async (e) => {
       showFeedback("Bu modda ipucu kapalıdır.", "info");
       return;
     }
-    if (isGameOver || hintsLeft <= 0) return;
+    if (isGameOver) return;
+    if (hintsLeft <= 0) {
+      if (canEarnHint) setRewardSheetOpen(true);
+      return;
+    }
 
     // SINIRSIZ MOD (ÇEVRİMDIŞI) İPUCU MANTIĞI
     if (puzzleData.type === 'unlimited') {
@@ -306,6 +317,20 @@ const handleHint = async (e) => {
       showFeedback("İpucu alınırken bir hata oluştu.", "error");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleEarnHint = async () => {
+    setRewardLoading(true);
+    const ok = await watchRewardedAd();
+    setRewardLoading(false);
+    setRewardSheetOpen(false);
+    if (ok) {
+      setBonusHints(b => b + 1);
+      setHintsLeft(h => h + 1);
+      showFeedback("+1 ipucu kazandın! Ampule dokun.", "success");
+    } else {
+      showFeedback("Şu an reklam yok, biraz sonra tekrar dene.", "error");
     }
   };
 
@@ -407,7 +432,7 @@ const handleHint = async (e) => {
       hapticTap();
       setCurrentGuess(p => p + key);
     }
-  }, [currentGuess, history, isGameOver, isLoading, winningRowAnimation, lockedIndices, maxMoves, timer, hintsLeft, wordLength]);
+  }, [currentGuess, history, isGameOver, isLoading, winningRowAnimation, lockedIndices, maxMoves, timer, hintsLeft, bonusHints, wordLength]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -582,16 +607,20 @@ Sen de dene 👇`;
                 <div className="relative">
                   <button 
                     onClick={handleHint} 
-                    disabled={hintsLeft <= 0} 
+                    disabled={hintsLeft <= 0 && !canEarnHint} 
                     className="p-3 bg-yellow-400 rounded-full hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:hover:scale-100 shadow-lg"
                   >
                     <Lightbulb size={28} className="text-black" fill="currentColor" />
                   </button>
                   
                   {/* Kırmızı x3 Rozeti (Sadece hak varsa görünür) */}
-                  {hintsLeft > 0 && (
+                  {hintsLeft > 0 ? (
                     <span className="absolute -bottom-1 -right-2 bg-red-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-[#0B1121] shadow-md z-10">
                       x{hintsLeft}
+                    </span>
+                  ) : canEarnHint && !isGameOver && (
+                    <span className="absolute -bottom-1 -right-2 bg-purple-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-[#0B1121] shadow-md z-10">
+                      +1
                     </span>
                   )}
                 </div>
@@ -725,7 +754,7 @@ Sen de dene 👇`;
 
         {/* Stats */}
         <div style={{ display: 'flex', width: '100%', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 16, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          {[{ label: 'HAMLE', value: history.length - 1 }, { label: 'SÜRE', value: formatTime(timer) }, { label: 'İPUCU', value: 3 - hintsLeft }].map((s, i) => (
+          {[{ label: 'HAMLE', value: history.length - 1 }, { label: 'SÜRE', value: formatTime(timer) }, { label: 'İPUCU', value: hintsUsedCount }].map((s, i) => (
             <div key={i} style={{ flex: 1, textAlign: 'center' }}>
               <div style={{ color: 'white', fontSize: 24, fontWeight: 900 }}>{s.value}</div>
               <div style={{ color: 'rgba(255,255,255,0.28)', fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 3 }}>{s.label}</div>
@@ -771,6 +800,21 @@ Sen de dene 👇`;
                  </div>
               ))}
            </div>
+        </div>
+      )}
+
+      {/* ÖDÜLLÜ REKLAM: +1 İPUCU */}
+      {rewardSheetOpen && (
+        <div className="fixed inset-0 z-[350] flex items-end justify-center bg-black/75 backdrop-blur-sm" onClick={() => !rewardLoading && setRewardSheetOpen(false)}>
+          <div className="w-full max-w-md bg-[#0d1829] rounded-t-3xl p-6 pb-10 border-t border-white/10 shadow-2xl animate-in slide-in-from-bottom-6 duration-300 text-center" onClick={e => e.stopPropagation()}>
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-yellow-400 flex items-center justify-center"><Lightbulb size={28} className="text-black" fill="currentColor" /></div>
+            <h3 className="font-black text-xl uppercase italic mb-1">İpuçların Bitti</h3>
+            <p className="text-sm opacity-60 mb-6">{adsRemoved() ? 'Reklamsız sürüm sende — ek ipucun hazır.' : 'Kısa bir reklam izle, +1 ipucu kazan.'} (İpucu yine −150 puan.)</p>
+            <button disabled={rewardLoading} onClick={handleEarnHint} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60">
+              {rewardLoading ? <Loader2 className="animate-spin" /> : (adsRemoved() ? '+1 İPUCU AL' : '🎬 İZLE, +1 İPUCU')}
+            </button>
+            <button disabled={rewardLoading} onClick={() => setRewardSheetOpen(false)} className="w-full py-3 mt-2 text-sm font-bold text-white/50">Vazgeç</button>
+          </div>
         </div>
       )}
 
@@ -843,7 +887,7 @@ Sen de dene 👇`;
                 {[
                   { label: 'HAMLE', value: history.length - 1 },
                   { label: 'SÜRE', value: formatTime(timer) },
-                  { label: 'İPUCU', value: 3 - hintsLeft }
+                  { label: 'İPUCU', value: hintsUsedCount }
                 ].map((s, i) => (
                   <div key={i} className="text-center">
                     <div className="text-white font-black text-base">{s.value}</div>
