@@ -20,7 +20,7 @@ export const ACHIEVEMENTS = [
   { id: 8, title: "İstikrarlı", desc: "3 gün üst üste oyna.", icon: '📅', xp: 25, category: 'medium' },
   { id: 9, title: "Keskin Nişancı", desc: "Hatalı kelime girmeden bitir.", icon: '🎯', xp: 25, category: 'medium' },
   { id: 10, title: "Erkenci Kuş", desc: "Sabah 06:00 - 09:00 arası oyna.", icon: '🌅', xp: 25, category: 'medium' },
-  { id: 11, title: "Efsane", desc: "Tam 1000 puan al (Optimal + 0 sn).", icon: '🏆', xp: 50, category: 'hard' },
+  { id: 11, title: "Efsane", desc: "980+ puan al (optimal hamle, ipuçsuz, çok hızlı).", icon: '🏆', xp: 50, category: 'hard' },
   { id: 12, title: "Maratoncu", desc: "30 gün üst üste oyna.", icon: '🏅', xp: 50, category: 'hard' },
   { id: 13, title: "Zamanı Durduran", desc: "30 saniyenin altında bitir.", icon: '⚡', xp: 50, category: 'hard' },
   { id: 14, title: "Kelime Hazinesi", desc: "Toplam 100 farklı kelime türet.", icon: '🧠', xp: 50, category: 'hard' },
@@ -121,3 +121,10 @@ export const COLOR_BLIND_THEME = {
   logoSuccess: "bg-blue-600",
   logoError: "bg-orange-600"
 };
+
+// --- Mağaza / paylaşım linkleri ---
+export const WEB_URL = 'https://tr.evolvogame.com';
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.altayinteractive.evolvo';
+// Uygulama Play'de herkese açık (üretim) olunca true yap: paylaşımlara Play linki eklenir.
+// Kapalı testteyken link testçi olmayanlara "bulunamadı" gösterir.
+export const PLAY_STORE_LIVE = false;

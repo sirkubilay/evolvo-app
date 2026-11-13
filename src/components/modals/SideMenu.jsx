@@ -1,5 +1,12 @@
-import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye } from 'lucide-react';
+import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye, Bell, Users, Ban } from 'lucide-react';
+import { isNative } from '../../lib/native';
 import { Logo } from '../Logo';
+
+const Toggle = ({ on, onToggle, color = 'bg-green-500' }) => (
+  <button onClick={onToggle} className={`w-12 h-6 rounded-full relative transition-colors ${on ? color : 'bg-gray-400'}`}>
+    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${on ? 'right-1' : 'left-1'}`} />
+  </button>
+);
 
 export const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, onLogout, onLogin }) => {
   const items = [
@@ -7,9 +14,11 @@ export const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, 
     { icon: <Medal size={18} className="text-blue-400" />, label: "Başarımlar", action: 'achievements' },
     { icon: <HelpCircle size={18} className="text-red-400" />, label: "Nasıl Oynanır?", action: 'howToPlay' },
     { icon: <Trophy size={18} className="text-yellow-400" />, label: "Liderlik Tablosu", action: 'leaderboard' },
+    { icon: <Users size={18} className="text-pink-400" />, label: "Arkadaşlar", action: 'friends' },
     { icon: <CalendarIcon size={18} className="text-orange-400" />, label: "Geçmiş Bulmacalar", action: 'calendar' },
     { icon: <Swords size={18} className="text-gray-300" />, label: "Meydan Oku", action: 'challenge' },
   ];
+  const native = isNative();
 
   return (
     <>
@@ -37,7 +46,19 @@ export const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, 
              </button>
            ))}
 
+           {native && settings.onRemoveAds && !settings.adsRemoved && (
+             <button onClick={() => { settings.onRemoveAds(); onClose(); }} className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-500/20 to-amber-600/20 border border-yellow-500/30 text-yellow-200 rounded-xl font-bold text-sm hover:brightness-110 transition-all flex-shrink-0">
+               <Ban size={18} className="text-yellow-400" /> Reklamları Kaldır
+             </button>
+           )}
+
            <div className="border-t border-white/5 my-4 pt-4 space-y-2">
+             {native && settings.setNotifications && (
+               <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>
+                 <div className="flex items-center gap-3"><Bell size={18} /><span className="font-bold text-sm text-white">Günlük Hatırlatma</span></div>
+                 <Toggle on={settings.notificationsOn} onToggle={() => settings.setNotifications(!settings.notificationsOn)} />
+               </div>
+             )}
              <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>
                <div className="flex items-center gap-3"><Moon size={18} /><span className="font-bold text-sm text-white">Koyu Mod</span></div>
                <button onClick={() => settings.setDarkMode(!settings.darkMode)} className={`w-12 h-6 rounded-full relative transition-colors ${settings.darkMode ? 'bg-green-500' : 'bg-gray-400'}`}>

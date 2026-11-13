@@ -1,5 +1,5 @@
 import './styles/injectStyles';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import { getFunctions, httpsCallable } from 'firebase/functions';
@@ -26,6 +26,17 @@ import { DefinitionModal } from './components/modals/DefinitionModal';
 import { PrivacyModal } from './components/modals/PrivacyModal';
 import { ContactModal } from './components/modals/ContactModal';
 import { Logo } from './components/Logo';
+import { AchievementToast } from './components/AchievementToast';
+import { useProgress } from './lib/useProgress';
+import { loadStats } from './lib/progress';
+import { NotificationPrompt } from './components/modals/NotificationPrompt';
+import {
+  scheduleReminders, maybeAskForReview, shouldAskNotifications, notificationsEnabled,
+  enableNotifications, disableNotifications,
+} from './lib/native';
+
+const readPref = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+const writePref = (k, v) => { try { localStorage.setItem(k, v); } catch { /* depolama kapalı */ } };
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(() => Capacitor.isNativePlatform());
@@ -137,9 +148,10 @@ const handleStartUnlimited = async (length, level) => {
       setIsPuzzleLoading(false);
     }
   };
-  const [userAvatar, setUserAvatar] = useState(AVATARS[0]);
-  const [darkMode, setDarkMode] = useState(false);
-  const [colorBlindMode, setColorBlindMode] = useState(false);
+  // Tercihler artık cihazda kalıcı (önceden her açılışta sıfırlanıyordu)
+  const [userAvatar, setUserAvatarState] = useState(() => AVATARS.find(a => a.id === Number(readPref('evolvo_avatar_id'))) || AVATARS[0]);
+  const [darkMode, setDarkModeState] = useState(() => readPref('evolvo_dark') === '1');
+  const [colorBlindMode, setColorBlindModeState] = useState(() => readPref('evolvo_colorblind') === '1');
   const [sozlukSeti, setSozlukSeti] = useState(new Set());
   const [leaderboardData, setLeaderboardData] = useState({ daily: [], weekly: [], monthly: [], daily_user: null, weekly_user: null, monthly_user: null });
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
@@ -173,16 +185,27 @@ const handleStartUnlimited = async (length, level) => {
     return () => unsubscribe();
   }, []);
   
-  const [stats, setStats] = useState(() => {
-    try {
-      const savedStats = localStorage.getItem('evolvo_stats');
-      return savedStats ? JSON.parse(savedStats) : {
-        played: 0, wins: 0, currentStreak: 0, maxStreak: 0, dictionaryLookups: 0, hintsUsed: 0
-      };
-    } catch(e) {
-      return { played: 0, wins: 0, currentStreak: 0, maxStreak: 0, dictionaryLookups: 0, hintsUsed: 0 };
-    }
-  });
+  const [unlockedQueue, setUnlockedQueue] = useState([]);
+  const handleUnlock = useCallback((achievement) => {
+    setUnlockedQueue(q => [...q, achievement]);
+  }, []);
+  const { stats, recordGameEnd, recordEvent } = useProgress(user, handleUnlock);
+  useEffect(() => { scheduleReminders(loadStats()); }, []);
+
+  const setUserAvatar = (av) => {
+    setUserAvatarState(av);
+    writePref('evolvo_avatar_id', String(av.id));
+    recordEvent('avatar');
+  };
+  const setDarkMode = (on) => {
+    setDarkModeState(on);
+    writePref('evolvo_dark', on ? '1' : '0');
+    if (on) recordEvent(null, { darkMode: true });
+  };
+  const setColorBlindMode = (on) => {
+    setColorBlindModeState(on);
+    writePref('evolvo_colorblind', on ? '1' : '0');
+  };
   
   const [modalState, setModalState] = useState({
     leaderboard: false, howToPlay: false, calendar: false, stats: false, achievements: false, definition: null, avatar: false, challenge: false, privacy: false, contact: false
@@ -417,37 +440,41 @@ const handleStartUnlimited = async (length, level) => {
     fetchDailyPuzzle();
   }, []); 
 
+  // GamePage'den gelen olaylar. 'game_end' payload'ı: { win, hints, score, time, moves, maxMoves,
+  // invalidAttempts, isTodaysDaily, words }. Diğerleri: 'dictionary' | 'share'.
+  // (Eski sürüm sınırsız mod skorlarını da yerel günlük tabloya ekliyordu; sunucu tablosu zaten doğru.)
   const updateStats = (type, payload) => {
-    setStats(prev => {
-      const newStats = { ...prev };
-      
-      if (type === 'game_end') {
-        newStats.played += 1;
-        newStats.hintsUsed += payload.hints;
-        if (payload.win) {
-          newStats.wins += 1;
-          newStats.currentStreak += 1;
-          if (newStats.currentStreak > newStats.maxStreak) {
-            newStats.maxStreak = newStats.currentStreak;
-          }
-          
-          setLeaderboardData(prevL => {
-             const newEntry = { name: username || "Misafir", score: payload.score, avatar: userAvatar, date: new Date().toISOString() };
-             const newDaily = [...(prevL.daily || []), newEntry].sort((a, b) => b.score - a.score).slice(0, 20);
-             localStorage.setItem('evolvo_leaderboard', JSON.stringify(newDaily));
-             return { ...prevL, daily: newDaily };
-          });
-        } else {
-          newStats.currentStreak = 0;
-        }
-      } else if (type === 'dictionary') {
-        newStats.dictionaryLookups += 1;
-      }
-
-      localStorage.setItem('evolvo_stats', JSON.stringify(newStats));
-      return newStats;
-    });
+    if (type !== 'game_end') { recordEvent(type); return; }
+    const next = recordGameEnd(payload);
+    scheduleReminders(next);
+    if (payload.win) {
+      maybeAskForReview(next);
+      if (shouldAskNotifications()) setTimeout(() => setShowNotifPrompt(true), 2500);
+    }
   };
+
+  const [showNotifPrompt, setShowNotifPrompt] = useState(false);
+  const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
+  const setNotifications = async (on) => {
+    if (on) setNotificationsOn(await enableNotifications(stats));
+    else { await disableNotifications(stats); setNotificationsOn(false); }
+  };
+  const notificationPrompt = (
+    <NotificationPrompt
+      isOpen={showNotifPrompt}
+      theme={theme}
+      onAccept={async () => { setShowNotifPrompt(false); const ok = await enableNotifications(stats); setNotificationsOn(ok); if (ok) showFeedback("Hatırlatmalar açık! 🔔", "success"); }}
+      onDecline={() => { setShowNotifPrompt(false); disableNotifications(stats); }}
+    />
+  );
+
+  const achievementToast = (
+    <AchievementToast
+      achievement={unlockedQueue[0]}
+      onDone={() => setUnlockedQueue(q => q.slice(1))}
+      onOpen={() => { setUnlockedQueue([]); toggleModal('achievements', true); }}
+    />
+  );
 
   const handleStartCustomGame = (puzzleData) => {
     setActivePuzzle(puzzleData);
@@ -455,7 +482,11 @@ const handleStartUnlimited = async (length, level) => {
   };
 
   const globalDefinitionModal = (
-    <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
+    <>
+      <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
+      {achievementToast}
+      {notificationPrompt}
+    </>
   );
 
   if (showSplash) return <SplashScreen onDone={() => setShowSplash(false)} />;
@@ -527,6 +558,8 @@ const handleStartUnlimited = async (length, level) => {
   }
   if (currentPage === 'unlimited_menu') {
     return (
+      <>
+      {achievementToast}
       <UnlimitedMenuPage 
         onBack={() => setCurrentPage('landing')} 
         theme={theme} 
@@ -536,6 +569,7 @@ const handleStartUnlimited = async (length, level) => {
         setUserAvatar={setUserAvatar}
         onPlay={(len, lvl) => handleStartUnlimited(len, lvl)}
       />
+      </>
     );
   }
   if (currentPage === 'challenge') {
@@ -567,7 +601,7 @@ const handleStartUnlimited = async (length, level) => {
           colors={currentColors}
           toggleModal={toggleModal}
           modalState={modalState}
-          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats }}
+          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats, notificationsOn, setNotifications }}
           updateStats={updateStats}
           puzzleData={activePuzzle} 
           leaderboardData={leaderboardData}
@@ -602,7 +636,7 @@ const handleStartUnlimited = async (length, level) => {
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={currentColors} />
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={currentColors} stats={stats} />
-      <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={currentColors} />
+      <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={currentColors} stats={stats} />
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={currentColors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
       {globalDefinitionModal}
       <UniqueNameModal 
@@ -651,7 +685,7 @@ const handleStartUnlimited = async (length, level) => {
         </div>
       </nav>
 
-      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
+      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, notificationsOn, setNotifications }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
 
       <section className="flex-1 flex flex-col justify-center pb-12 md:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">

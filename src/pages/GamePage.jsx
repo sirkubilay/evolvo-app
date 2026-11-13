@@ -13,6 +13,10 @@ import { HowToPlayModal } from '../components/modals/HowToPlayModal';
 import { CalendarModal } from '../components/modals/CalendarModal';
 import { DefinitionModal } from '../components/modals/DefinitionModal';
 import { Logo } from '../components/Logo';
+import { hapticTap, hapticMove, hapticError, isNative } from '../lib/native';
+import { shareImage, saveImage, shareLinks } from '../lib/share';
+import { PLAY_STORE_LIVE, PLAY_STORE_URL, WEB_URL } from '../data/constants';
+import { dayKey } from '../lib/progress';
 
 export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onStartCustomGame, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
   const [history, setHistory] = useState([puzzleData.start]);
@@ -22,6 +26,8 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   const [isWon, setIsWon] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const shareCardRef = useRef(null);
+  // "Keskin Nişancı" başarımı için: bu oyunda girilen geçersiz kelime sayısı
+  const invalidAttemptsRef = useRef(0);
   const [hintsLeft, setHintsLeft] = useState(3);
   const [lockedIndices, setLockedIndices] = useState([0]); 
   const [rowAnimation, setRowAnimation] = useState(null);
@@ -32,6 +38,11 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   
   const playSuccessSound = () => { try { new Audio('/success.mp3').play().catch(e=>console.log(e)); } catch(e){} };
   const playErrorSound = () => { try { new Audio('/error.mp3').play().catch(e=>console.log(e)); } catch(e){} };
+  const markInvalid = () => {
+    invalidAttemptsRef.current += 1;
+    playErrorSound();
+    hapticError();
+  };
   const playPopSound = () => {
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -205,7 +216,17 @@ useEffect(() => {
     const finalStats = { score: score, timer: timer, hintsUsed: hintsUsed };
     localStorage.setItem("evolvo_last_stats", JSON.stringify(finalStats));  
     setScoreDetails({ total: score, penalty: hintsUsed * 150 });
-    updateStats('game_end', { win: didWin, hints: hintsUsed, score: score });
+    updateStats('game_end', {
+      win: didWin,
+      hints: hintsUsed,
+      score: score,
+      time: Number(timer),
+      moves: finalHistory.length - 1,
+      maxMoves,
+      invalidAttempts: invalidAttemptsRef.current,
+      isTodaysDaily: puzzleData.type === 'daily' && puzzleData.date === dayKey(),
+      words: finalHistory.slice(1),
+    });
   };
 
 const handleHint = async (e) => {
@@ -306,12 +327,12 @@ const handleHint = async (e) => {
       }
       if (diffCount !== 1) {
         showFeedback("Sadece 1 harf değiştirebilirsiniz!", "error");
-        playErrorSound(); 
+        markInvalid(); 
         return; 
       }
       if (!isOneLetterDifferent(previousWord, currentGuess)) {
         showFeedback("Geçersiz Kelime", "error");
-        playErrorSound();
+        markInvalid();
         setRowAnimation('shake');
         setTimeout(() => setRowAnimation(null), 500);
         return;
@@ -320,7 +341,7 @@ const handleHint = async (e) => {
       // 🔥 İŞTE YENİ EKLENEN KISIM: KELİME TEKRARI KONTROLÜ 🔥
       if (history.includes(currentGuess)) {
         showFeedback("Bu kelimeyi zaten kullandın!", "error");
-        playErrorSound();
+        markInvalid();
         setRowAnimation('shake');
         setTimeout(() => setRowAnimation(null), 500);
         return;
@@ -332,7 +353,7 @@ const handleHint = async (e) => {
 
       if (!isValid) {
         showFeedback("Geçersiz Kelime", "error");
-        playErrorSound();
+        markInvalid();
         setRowAnimation('shake');
         setTimeout(() => setRowAnimation(null), 500);
         return;
@@ -353,6 +374,7 @@ const handleHint = async (e) => {
         }, 1500);
       } else {
         playPopSound();
+        hapticMove();
         setHistory(newHistory);
         setCurrentGuess("");
 
@@ -382,6 +404,7 @@ const handleHint = async (e) => {
         }
       }
     } else if (currentGuess.length < wordLength && /^[A-ZÇĞİÖŞÜ]$/.test(key)) {
+      hapticTap();
       setCurrentGuess(p => p + key);
     }
   }, [currentGuess, history, isGameOver, isLoading, winningRowAnimation, lockedIndices, maxMoves, timer, hintsLeft, wordLength]);
@@ -399,39 +422,42 @@ const handleHint = async (e) => {
 
   const handleDictClick = (word) => {
     toggleModal('definition', word);
-    if (puzzleData.type === 'daily') updateStats('dictionary'); 
+    updateStats('dictionary');
   };
 
   const buildCanvas = () =>
     html2canvas(shareCardRef.current, { backgroundColor: '#070e1c', scale: 2, logging: false });
 
-  const GAME_URL = 'https://tr.evolvogame.com';
+  const shareCaption = () =>
+    `🏆 EVOLVO — ${scoreDetails?.total || 0} Puan!
+${puzzleData.start} → ${puzzleData.target} | ${history.length - 1} hamle
+
+Sen de çözebilir misin? 👇
+${shareLinks()}`;
+
+  const afterShare = (ok) => { if (ok) updateStats('share'); };
 
   const handleShareWhatsApp = async () => {
     if (!shareCardRef.current) return;
     try {
       const canvas = await buildCanvas();
-      canvas.toBlob(async (blob) => {
-        const file = new File([blob], 'evolvo-skor.png', { type: 'image/png' });
-        const caption = `🏆 EVOLVO — ${scoreDetails?.total || 0} Puan!\n${puzzleData.start} → ${puzzleData.target} | ${history.length - 1} hamle\n\nSen de çözebilir misin? 👇\n${GAME_URL}`;
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], text: caption });
-        } else {
-          window.open(`https://wa.me/?text=${encodeURIComponent(caption)}`, '_blank');
-        }
-      });
+      const caption = shareCaption();
+      afterShare(await shareImage({ canvas, text: caption, fallbackUrl: `https://wa.me/?text=${encodeURIComponent(caption)}` }));
     } catch (e) { console.error(e); }
   };
 
   const handleShareTwitter = () => {
-    const tweet = `🏆 EVOLVO'da ${scoreDetails?.total || 0} puan aldım!\n${puzzleData.start} → ${puzzleData.target} | ${history.length - 1} hamle | ${formatTime(timer)}\n\nSen de dene 👇`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(GAME_URL)}`, '_blank');
+    const tweet = `🏆 EVOLVO'da ${scoreDetails?.total || 0} puan aldım!
+${puzzleData.start} → ${puzzleData.target} | ${history.length - 1} hamle | ${formatTime(timer)}
+
+Sen de dene 👇`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(PLAY_STORE_LIVE && isNative() ? PLAY_STORE_URL : WEB_URL)}`, '_blank');
+    afterShare(true);
   };
 
   const handleShareCopyLink = () => {
-    const text = `🏆 EVOLVO — ${scoreDetails?.total || 0} Puan!\n${puzzleData.start} → ${puzzleData.target} | ${history.length - 1} hamle\n\nSen de oyna: ${GAME_URL}`;
-    navigator.clipboard.writeText(text)
-      .then(() => showFeedback("Panoya kopyalandı!", "success"))
+    navigator.clipboard.writeText(shareCaption())
+      .then(() => { showFeedback("Panoya kopyalandı!", "success"); afterShare(true); })
       .catch(() => showFeedback("Kopyalanamadı.", "error"));
   };
 
@@ -439,11 +465,8 @@ const handleHint = async (e) => {
     if (!shareCardRef.current) return;
     try {
       const canvas = await buildCanvas();
-      const link = document.createElement('a');
-      link.download = `evolvo-${scoreDetails?.total || 0}puan.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-      showFeedback("Resim indirildi!", "success");
+      await saveImage(canvas, `evolvo-${scoreDetails?.total || 0}puan.png`);
+      if (!isNative()) showFeedback("Resim indirildi!", "success");
     } catch (e) { console.error(e); }
   };
 
@@ -461,7 +484,7 @@ const handleHint = async (e) => {
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={colors} />
       <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
-      <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={colors} />
+      <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
 
       <div className={`flex-none z-20 ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'}`}>
