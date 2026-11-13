@@ -1,0 +1,43 @@
+# EVOLVO
+
+> Türkçe kelime zinciri bulmaca oyunu. Bir kelimeden diğerine tek harf değiştirerek ulaş.
+
+## Oyun Hakkında
+
+EVOLVO, her gün yeni bir Türkçe kelime bulmacası sunan ücretsiz bir web oyunudur.
+Wordle benzeri günlük format + kelime merdiveni (word ladder) mekaniği bir arada.
+
+- **URL:** https://tr.evolvogame.com
+- **Dil:** Türkçe
+- **Platform:** Web (PWA), Android
+- **Geliştirici:** Kubilay Bayrak
+
+## Oynanış
+
+1. Ekranda bir başlangıç ve bitiş kelimesi gösterilir (örn: KALE → DUVAR)
+2. Her adımda yalnızca 1 harf değiştirerek geçerli bir Türkçe kelime yazılmalıdır
+3. Hedef: en az adımda ve en kısa sürede bitiş kelimesine ulaşmak
+4. Günlük mod tüm oyuncular için aynı bulmacayı sunar (Wordle formatı)
+5. Sınırsız mod: önceden üretilmiş 600+ bulmaca, 4-5-6 harfli kategoriler
+
+## Özellikler
+
+- Günlük bulmaca (her gün sıfırlanır)
+- Sınırsız offline mod (600+ bulmaca)
+- Özel meydan okuma: kendi bulmacaını yarat ve paylaş
+- Liderlik tablosu (Google hesabı ile)
+- İpucu sistemi (maks. 3 ipucu, skor düşer)
+- Geçmiş bulmacalar (Kasım 2025'ten itibaren)
+- Koyu mod, renk körlüğü modu
+- Türkçe klavye desteği (Ç, Ğ, İ, Ö, Ş, Ü)
+
+## Teknik
+
+- React 19, Vite, TailwindCSS
+- Firebase (Auth, Firestore, Functions)
+- Capacitor (Android)
+- Kelime sözlüğü: TDK Güncel Türkçe Sözlük tabanlı
+
+## İletişim
+
+- E-posta: tr.evolvogame@gmail.com
