@@ -4,7 +4,8 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import html2canvas from 'html2canvas';
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInWithPopup, signInWithCredential, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { 
@@ -189,113 +190,80 @@ function MountainMini({ size = 18 }) {
 
 const SplashScreen = ({ onDone }) => {
   const [fade, setFade] = useState(false);
+
   useEffect(() => {
     const t1 = setTimeout(() => setFade(true), 2400);
-    const t2 = setTimeout(onDone, 3000);
+    const t2 = setTimeout(onDone, 2900);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [onDone]);
 
-  const R = 140;
-  const circumference = +(2 * Math.PI * R).toFixed(1);
+  const R = 78;
+  const circ = +(2 * Math.PI * R).toFixed(1);
+  const mtnPath = "M46,122 L70,68 L85,87 L100,34 L116,84 L132,60 L154,122 Z";
 
   return (
     <>
       <style>{`
-        @keyframes splashMtnRise {
-          from { opacity:0; transform:translateY(45px); }
-          to   { opacity:1; transform:translateY(0); }
+        @keyframes spl-ring { from{stroke-dashoffset:${circ}} to{stroke-dashoffset:0} }
+        @keyframes spl-rise { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes spl-fade { from{opacity:0} to{opacity:1} }
+        @keyframes spl-glow {
+          0%,100% { filter:drop-shadow(0 0 10px rgba(201,162,39,.45)); }
+          50%      { filter:drop-shadow(0 0 28px rgba(220,180,60,.75)); }
         }
-        @keyframes splashRingDraw {
-          from { stroke-dashoffset: ${circumference}; }
-          to   { stroke-dashoffset: 0; }
-        }
-        @keyframes splashTextIn {
-          from { opacity:0; letter-spacing:8px; }
-          to   { opacity:1; letter-spacing:2px; }
-        }
-        @keyframes splashPulse {
-          0%,100% { filter:drop-shadow(0 0 8px #b4530088); }
-          50%     { filter:drop-shadow(0 0 22px #fde68acc); }
-        }
-        .spl-mtn-c { animation: splashMtnRise 0.7s cubic-bezier(.22,1,.36,1) 0.1s both; }
-        .spl-mtn-l { animation: splashMtnRise 0.7s cubic-bezier(.22,1,.36,1) 0.35s both; }
-        .spl-mtn-r { animation: splashMtnRise 0.7s cubic-bezier(.22,1,.36,1) 0.5s both; }
-        .spl-ring  { stroke-dasharray:${circumference}; stroke-dashoffset:${circumference};
-                     animation: splashRingDraw 1.3s ease-in-out 0.7s forwards; }
-        .spl-text  { opacity:0; animation: splashTextIn 1s ease-out 1.8s forwards; }
-        .spl-wrap  { animation: splashPulse 2.2s ease-in-out 2s infinite; }
+        .s-ring { stroke-dasharray:${circ}; stroke-dashoffset:${circ};
+                  animation:spl-ring 1.2s ease-in-out .3s forwards; }
+        .s-mtn  { animation:spl-rise .65s cubic-bezier(.22,1,.36,1) .2s both; }
+        .s-t1   { opacity:0; animation:spl-fade .5s ease 1.4s forwards; }
+        .s-t2   { opacity:0; animation:spl-fade .5s ease 1.6s forwards; }
+        .s-sep  { opacity:0; animation:spl-fade .4s ease 1.35s forwards; }
+        .s-gold { animation:spl-glow 3s ease-in-out 1.6s infinite; }
       `}</style>
-      <div className={`fixed inset-0 bg-[#06071a] flex items-center justify-center z-[9999] transition-opacity duration-600 ${fade ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        {/* SVG 340×340, ring cx=170 cy=155 r=140 → bottom=295
-            Text "ALTAY" y=242 → corner (125,242): dist=√(45²+87²)=√(2025+7569)=√9594≈98 < 140 ✓
-            Text "INTERACTIVE" y=262 → corner (118,262): dist=√(52²+107²)=√(2704+11449)=√14153≈119 < 140 ✓
-            Ring bottom y=295 > text bottom 266 ✓ */}
-        <svg width="300" height="300" viewBox="0 0 340 340" className="spl-wrap">
+      <div
+        className={`fixed inset-0 flex items-center justify-center z-[9999] transition-opacity duration-500 ${fade ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        style={{ background: '#001f3f' }}
+      >
+        <svg width="290" height="290" viewBox="0 0 200 200">
           <defs>
-            <linearGradient id="splGold" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"   stopColor="#fde68a"/>
-              <stop offset="42%"  stopColor="#d97706"/>
-              <stop offset="100%" stopColor="#fde68a"/>
+            <linearGradient id="sGold" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stopColor="#e8bc4e"/>
+              <stop offset="50%"  stopColor="#b8880e"/>
+              <stop offset="100%" stopColor="#e8bc4e"/>
             </linearGradient>
-            <linearGradient id="splMtnC" x1="25%" y1="0%" x2="75%" y2="100%">
-              <stop offset="0%"   stopColor="#f1f5f9"/>
-              <stop offset="55%"  stopColor="#94a3b8"/>
-              <stop offset="100%" stopColor="#334155"/>
-            </linearGradient>
-            <linearGradient id="splMtnS" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"   stopColor="#cbd5e1"/>
-              <stop offset="100%" stopColor="#2d3748"/>
-            </linearGradient>
-            <linearGradient id="splSnow" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%"   stopColor="#ffffff"/>
-              <stop offset="100%" stopColor="#dbeafe"/>
-            </linearGradient>
-            <radialGradient id="splMist" cx="50%" cy="100%" r="55%">
-              <stop offset="0%"   stopColor="#1e3a5f" stopOpacity="0.55"/>
-              <stop offset="100%" stopColor="#06071a"  stopOpacity="0"/>
-            </radialGradient>
+            <clipPath id="sMtnClip">
+              <path d="M46,122 L70,68 L85,87 L100,34 L116,84 L132,60 L154,122 Z"/>
+            </clipPath>
           </defs>
 
-          {/* Ground mist */}
-          <ellipse cx="170" cy="215" rx="120" ry="22" fill="url(#splMist)"/>
-
-          {/* Left mountain */}
-          <g className="spl-mtn-l">
-            <polygon points="95,210 50,210 95,122" fill="url(#splMtnS)" opacity="0.75"/>
-            <polygon points="95,122 78,156 112,156" fill="url(#splSnow)" opacity="0.86"/>
-            <line x1="95" y1="122" x2="50" y2="210" stroke="#0f172a" strokeWidth="1" opacity="0.20"/>
+          {/* Dağ gövdesi — glow yok, arka planla birebir aynı renk */}
+          <g className="s-mtn">
+            <path d={mtnPath} fill="#001f3f"/>
+            <polygon points="100,34 90,55 110,55"  fill="white" opacity="0.95" clipPath="url(#sMtnClip)"/>
+            <polygon points="70,68 61,83 79,83"    fill="white" opacity="0.80" clipPath="url(#sMtnClip)"/>
+            <polygon points="132,60 123,74 141,74" fill="white" opacity="0.80" clipPath="url(#sMtnClip)"/>
           </g>
 
-          {/* Right mountain */}
-          <g className="spl-mtn-r">
-            <polygon points="245,122 200,210 290,210" fill="url(#splMtnS)" opacity="0.75"/>
-            <polygon points="245,122 228,156 262,156" fill="url(#splSnow)" opacity="0.86"/>
-            <line x1="245" y1="122" x2="290" y2="210" stroke="#0f172a" strokeWidth="1" opacity="0.20"/>
+          {/* Altın elemanlar — glow sadece bunlara uygulanıyor */}
+          <g className="s-gold">
+            <circle cx="100" cy="100" r={R} fill="none"
+              stroke="url(#sGold)" strokeWidth="2.2" className="s-ring"/>
+            <path d="M46,122 L70,68 L85,87 L100,34 L116,84 L132,60 L154,122"
+              fill="none" stroke="url(#sGold)" strokeWidth="2.5"
+              strokeLinejoin="round" strokeLinecap="round" className="s-mtn"/>
           </g>
 
-          {/* Center mountain — tallest */}
-          <g className="spl-mtn-c">
-            <polygon points="170,36 104,210 236,210" fill="url(#splMtnC)"/>
-            <polygon points="170,36 236,210 170,210" fill="#0f172a" opacity="0.17"/>
-            <path d="M170,36 Q154,60 142,84 Q155,74 170,77 Q185,74 198,84 Q186,60 170,36 Z" fill="url(#splSnow)" opacity="0.97"/>
-            <path d="M170,36 Q162,53 156,68" stroke="white" strokeWidth="1.4" opacity="0.50" fill="none" strokeLinecap="round"/>
-          </g>
+          <line x1="68" y1="133" x2="132" y2="133"
+            stroke="url(#sGold)" strokeWidth="0.8" opacity="0.55" className="s-sep"/>
 
-          {/* Golden ring — draws itself */}
-          <circle cx="170" cy="155" r={R} fill="none" stroke="url(#splGold)" strokeWidth="4" className="spl-ring"/>
-          <circle cx="170" cy="155" r={R} fill="none" stroke="#fde68a" strokeWidth="1" opacity="0.20"/>
+          <text x="100" y="147" textAnchor="middle"
+            fontFamily="'Arial Black',Impact,sans-serif"
+            fontWeight="900" fontSize="14" letterSpacing="5"
+            fill="white" className="s-t1">ALTAY</text>
 
-          {/* ALTAY — y=242, corner (125,242) dist≈98 < 140 ✓ */}
-          <text x="170" y="242" textAnchor="middle"
-            fontFamily="'Arial Black','Impact',sans-serif"
-            fontWeight="900" fontSize="18" letterSpacing="5"
-            fill="url(#splGold)" className="spl-text">ALTAY</text>
-
-          {/* INTERACTIVE — y=262, corner (118,262) dist≈119 < 140 ✓ */}
-          <text x="170" y="262" textAnchor="middle"
-            fontFamily="'Arial Black','Impact',sans-serif"
-            fontWeight="900" fontSize="12" letterSpacing="1.5"
-            fill="url(#splGold)" className="spl-text" style={{ animationDelay: '1.95s' }}>INTERACTIVE</text>
+          <text x="100" y="159" textAnchor="middle"
+            fontFamily="'Arial Black',Impact,sans-serif"
+            fontWeight="400" fontSize="6.5" letterSpacing="3.5"
+            fill="url(#sGold)" className="s-t2">INTERACTIVE</text>
         </svg>
       </div>
     </>
@@ -303,10 +271,7 @@ const SplashScreen = ({ onDone }) => {
 };
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(() => {
-    if (!Capacitor.isNativePlatform()) return false;
-    return !sessionStorage.getItem('evolvo_splash_shown');
-  });
+  const [showSplash, setShowSplash] = useState(() => Capacitor.isNativePlatform());
   const [message, setMessage] = useState(null);
   const showFeedback = (msg, type = "info") => {
     setMessage({ text: msg, type });
@@ -430,6 +395,7 @@ const handleStartUnlimited = async (length, level) => {
   
   useEffect(() => {
     const auth = getAuth();
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
@@ -531,18 +497,50 @@ const handleStartUnlimited = async (length, level) => {
 
   const handleGoogleLogin = async () => {
     const auth = getAuth();
+
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const googleUser = await GoogleAuth.signIn();
+        const idToken = googleUser.authentication.idToken;
+        const credential = GoogleAuthProvider.credential(idToken);
+        const result = await signInWithCredential(auth, credential);
+        const loggedInUser = result.user;
+
+        const db = getFirestore(app);
+        const userDocRef = doc(db, 'users', loggedInUser.uid);
+        try {
+          const userDocSnap = await getDoc(userDocRef);
+          if (userDocSnap.exists() && userDocSnap.data().username) {
+            const dbUsername = userDocSnap.data().username;
+            setUser(loggedInUser);
+            setUsername(dbUsername);
+            showFeedback(`Tekrar hoş geldin, ${dbUsername}!`, "success");
+            setCurrentPage('game');
+          } else {
+            setTempUser(loggedInUser);
+            setShowUniqueNameModal(true);
+          }
+        } catch (dbError) {
+          console.error("Firestore Okuma Hatası:", dbError);
+          setTempUser(loggedInUser);
+          setShowUniqueNameModal(true);
+        }
+      } catch (error) {
+        console.error("Native Giriş Hatası:", error);
+        showFeedback("Google girişi başarısız oldu.", "error");
+      }
+      return;
+    }
+
     const provider = new GoogleAuthProvider();
-    
     try {
       const result = await signInWithPopup(auth, provider);
       const loggedInUser = result.user;
-      
+
       const db = getFirestore(app);
       const userDocRef = doc(db, 'users', loggedInUser.uid);
-      
       try {
         const userDocSnap = await getDoc(userDocRef);
-
         if (userDocSnap.exists() && userDocSnap.data().username) {
           const dbUsername = userDocSnap.data().username;
           setUser(loggedInUser);
@@ -550,15 +548,14 @@ const handleStartUnlimited = async (length, level) => {
           showFeedback(`Tekrar hoş geldin, ${dbUsername}!`, "success");
           setCurrentPage('game');
         } else {
-          setTempUser(loggedInUser); 
+          setTempUser(loggedInUser);
           setShowUniqueNameModal(true);
         }
       } catch (dbError) {
         console.error("Firestore Okuma Hatası:", dbError);
-        setTempUser(loggedInUser); 
+        setTempUser(loggedInUser);
         setShowUniqueNameModal(true);
       }
-      
     } catch (error) {
       console.error("Giriş Hatası:", error);
       showFeedback("Google penceresi kapandı veya giriş başarısız oldu.", "error");
@@ -704,7 +701,7 @@ const handleStartUnlimited = async (length, level) => {
     <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
   );
 
-  if (showSplash) return <SplashScreen onDone={() => { sessionStorage.setItem('evolvo_splash_shown', '1'); setShowSplash(false); }} />;
+  if (showSplash) return <SplashScreen onDone={() => setShowSplash(false)} />;
 
   if (window.location.pathname === '/privacy') {
     return (

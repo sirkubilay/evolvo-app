@@ -30,3 +30,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+.env*.local
+
+# Firebase deploy cache & local session logs
+.firebase/
+production/session-logs/
+.claude/settings.local.json

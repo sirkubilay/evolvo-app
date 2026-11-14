@@ -1,0 +1,12 @@
+{
+  "appId": "com.altayinteractive.evolvo",
+  "appName": "Evolvo",
+  "webDir": "dist",
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "serverClientId": "64945678615-2ue4ldom23ghchbtgr59b5mnpg7olmuk.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    }
+  }
+}

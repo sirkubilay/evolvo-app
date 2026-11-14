@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Altay Interactive — Splash Preview</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      width:100vw; height:100vh; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(ellipse at 50% 42%, #2e1f72 0%, #1a1050 45%, #0c0830 80%, #060520 100%);
+    }
+    canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    svg { position:relative; z-index:1; }
+
+    @keyframes spl-ring { from{stroke-dashoffset:452.4} to{stroke-dashoffset:0} }
+    @keyframes spl-rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spl-fade { from{opacity:0} to{opacity:1} }
+    @keyframes spl-glow {
+      0%,100% { filter:drop-shadow(0 0 10px rgba(210,150,8,.5)); }
+      50%      { filter:drop-shadow(0 0 30px rgba(250,200,50,.85)); }
+    }
+    .s-ring { stroke-dasharray:452.4; stroke-dashoffset:452.4;
+              animation:spl-ring 1.0s ease-in-out .3s forwards; }
+    .s-mtn  { animation:spl-rise .5s cubic-bezier(.22,1,.36,1) .2s both; }
+    .s-t1   { opacity:0; animation:spl-fade .5s ease 1.3s forwards; }
+    .s-t2   { opacity:0; animation:spl-fade .5s ease 1.5s forwards; }
+    .s-sep  { opacity:0; animation:spl-fade .5s ease 1.25s forwards; }
+    .s-wrap { animation:spl-glow 3s ease-in-out 1.5s infinite; }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <svg width="270" height="270" viewBox="0 0 200 200" class="s-wrap">
+    <defs>
+      <linearGradient id="sGold" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#f7ce50"/>
+        <stop offset="48%"  stop-color="#c98c0c"/>
+        <stop offset="100%" stop-color="#f7ce50"/>
+      </linearGradient>
+      <clipPath id="sMtnClip">
+        <path d="M52,113 L72,75 L86,89 L100,43 L114,87 L130,64 L149,113 Z"/>
+      </clipPath>
+    </defs>
+    <circle cx="100" cy="91" r="72" fill="none" stroke="url(#sGold)" stroke-width="2.4" class="s-ring"/>
+    <g class="s-mtn">
+      <path d="M52,113 L72,75 L86,89 L100,43 L114,87 L130,64 L149,113 Z" fill="#2b1c6a"/>
+      <polygon points="100,43 88,62 112,62" fill="white" opacity="0.88" clip-path="url(#sMtnClip)"/>
+      <polygon points="72,75 60,90 84,90"   fill="white" opacity="0.72" clip-path="url(#sMtnClip)"/>
+      <polygon points="130,64 118,80 142,80" fill="white" opacity="0.72" clip-path="url(#sMtnClip)"/>
+      <path d="M52,113 L72,75 L86,89 L100,43 L114,87 L130,64 L149,113"
+        fill="none" stroke="url(#sGold)" stroke-width="2.5"
+        stroke-linejoin="round" stroke-linecap="round"/>
+    </g>
+    <line x1="65" y1="121" x2="135" y2="121" stroke="url(#sGold)" stroke-width="0.75" opacity="0.4" class="s-sep"/>
+    <text x="100" y="132" text-anchor="middle" font-family="'Arial Black',Impact,sans-serif"
+      font-weight="900" font-size="14" letter-spacing="5" fill="white" class="s-t1">ALTAY</text>
+    <text x="100" y="146" text-anchor="middle" font-family="'Arial Black',Impact,sans-serif"
+      font-weight="700" font-size="7.5" letter-spacing="3.5" fill="url(#sGold)" class="s-t2">INTERACTIVE</text>
+  </svg>
+
+  <script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let raf;
+    function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+    resize();
+    new ResizeObserver(resize).observe(canvas);
+    const W = () => canvas.width, H = () => canvas.height;
+    const pts = Array.from({length:9}, () => ({
+      x: 40+Math.random()*(W()-80), y: 40+Math.random()*(H()-80),
+      vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35
+    }));
+    const edges=[[0,1],[1,2],[2,3],[0,3],[3,4],[4,5],[1,5],[5,6],[6,7],[7,8],[0,8],[2,6],[4,8]];
+    const tris=[[0,1,3],[1,2,5],[3,4,8],[5,6,7]];
+    let t=0;
+    function draw() {
+      ctx.clearRect(0,0,W(),H()); t+=0.005;
+      pts.forEach(p => {
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<30||p.x>W()-30) p.vx*=-1;
+        if(p.y<30||p.y>H()-30) p.vy*=-1;
+      });
+      edges.forEach(([a,b],i) => {
+        ctx.beginPath(); ctx.moveTo(pts[a].x,pts[a].y); ctx.lineTo(pts[b].x,pts[b].y);
+        ctx.strokeStyle=`rgba(129,140,248,${0.10+0.07*Math.sin(t+i*.5)})`;
+        ctx.lineWidth=1.2; ctx.stroke();
+      });
+      tris.forEach(([a,b,c],i) => {
+        ctx.beginPath(); ctx.moveTo(pts[a].x,pts[a].y); ctx.lineTo(pts[b].x,pts[b].y);
+        ctx.lineTo(pts[c].x,pts[c].y); ctx.closePath();
+        ctx.fillStyle=`rgba(129,140,248,${0.04+0.03*Math.sin(t*1.3+i)})`; ctx.fill();
+      });
+      pts.forEach(p => {
+        ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2);
+        ctx.fillStyle='rgba(129,140,248,0.3)'; ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>

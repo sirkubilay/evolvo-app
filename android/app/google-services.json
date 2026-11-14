@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "64945678615",
+    "project_id": "evolvogame-21a23",
+    "storage_bucket": "evolvogame-21a23.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64945678615:android:37013452a3a3ba02306f52",
+        "android_client_info": {
+          "package_name": "com.altayinteractive.evolvo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "64945678615-2ue4ldom23ghchbtgr59b5mnpg7olmuk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnGCN-S4qFZCEz6Ed6zqRLFdS-8ElapT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "64945678615-2ue4ldom23ghchbtgr59b5mnpg7olmuk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
