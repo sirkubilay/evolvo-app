@@ -761,3 +761,161 @@ exports.apiDailyPuzzle = onRequest({ cors: true }, async (req, res) => {
         res.status(500).json({ error: "Sunucu hatası." });
     }
 });
+
+
+// =====================================================================
+// ARKADAŞLAR: arkadaş kodu, karşılıklı ekleme ve arkadaş liderlik tablosu
+// Veri: users/{uid}.friendCode, users/{uid}.friends = [{ uid, username }]
+//       friendCodes/{KOD} = { uid, username }  (istemci erişemez, sadece bu fonksiyonlar)
+// =====================================================================
+const crypto = require("crypto");
+const FRIEND_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 0/O, 1/I karışmasın
+const FRIEND_CODE_LEN = 6;
+const MAX_FRIENDS = 50;
+
+function normalizeFriendCode(input) {
+    if (typeof input !== "string") return null;
+    const code = input.toUpperCase().replace(/^EVO[-\s]?/, "").replace(/[^A-Z0-9]/g, "");
+    if (code.length !== FRIEND_CODE_LEN) return null;
+    for (const ch of code) if (!FRIEND_CODE_ALPHABET.includes(ch)) return null;
+    return code;
+}
+
+function randomFriendCode() {
+    const bytes = crypto.randomBytes(FRIEND_CODE_LEN);
+    let out = "";
+    for (let i = 0; i < FRIEND_CODE_LEN; i++) out += FRIEND_CODE_ALPHABET[bytes[i] % FRIEND_CODE_ALPHABET.length];
+    return out;
+}
+
+function requireAuth(request) {
+    if (!request.auth) throw new HttpsError("unauthenticated", "Arkadaş özellikleri için giriş yapmalısın.");
+    return request.auth.uid;
+}
+
+async function getUsernameOrThrow(uid) {
+    const snap = await db.doc(`users/${uid}`).get();
+    const username = snap.exists ? snap.data().username : null;
+    if (!username) throw new HttpsError("failed-precondition", "Önce bir kullanıcı adı seçmelisin.");
+    return { snap, username };
+}
+
+/** Oyuncunun kodunu (yoksa oluşturarak) ve arkadaş listesini döner. */
+exports.getFriends = onCall(async (request) => {
+    const uid = requireAuth(request);
+    const { snap, username } = await getUsernameOrThrow(uid);
+    let code = snap.data().friendCode;
+
+    if (!code) {
+        for (let attempt = 0; attempt < 5 && !code; attempt++) {
+            const candidate = randomFriendCode();
+            try {
+                await db.doc(`friendCodes/${candidate}`).create({ uid, username, createdAt: FieldValue.serverTimestamp() });
+                code = candidate;
+            } catch (e) {
+                if (e.code !== 6 /* ALREADY_EXISTS: bu kod alınmış, yenisini dene */) throw e;
+            }
+        }
+        if (!code) throw new HttpsError("internal", "Arkadaş kodu oluşturulamadı, tekrar dene.");
+        await db.doc(`users/${uid}`).set({ friendCode: code }, { merge: true });
+    }
+
+    return { code: `EVO-${code}`, username, friends: snap.data().friends || [] };
+});
+
+/** Koda sahip oyuncuyu ekler; ekleme karşılıklıdır. */
+exports.addFriend = onCall(async (request) => {
+    const uid = requireAuth(request);
+    const code = normalizeFriendCode(request.data && request.data.code);
+    if (!code) throw new HttpsError("invalid-argument", "Geçersiz arkadaş kodu.");
+
+    const codeSnap = await db.doc(`friendCodes/${code}`).get();
+    if (!codeSnap.exists) throw new HttpsError("not-found", "Bu koda sahip oyuncu bulunamadı.");
+    const friendUid = codeSnap.data().uid;
+    if (friendUid === uid) throw new HttpsError("invalid-argument", "Kendi kodunu ekleyemezsin.");
+
+    const meRef = db.doc(`users/${uid}`);
+    const friendRef = db.doc(`users/${friendUid}`);
+
+    return db.runTransaction(async (tx) => {
+        const [me, friend] = await Promise.all([tx.get(meRef), tx.get(friendRef)]);
+        const myName = me.exists ? me.data().username : null;
+        const friendName = friend.exists ? friend.data().username : null;
+        if (!myName) throw new HttpsError("failed-precondition", "Önce bir kullanıcı adı seçmelisin.");
+        if (!friendName) throw new HttpsError("not-found", "Bu oyuncunun hesabı bulunamadı.");
+
+        const myFriends = me.data().friends || [];
+        const theirFriends = friend.data().friends || [];
+        if (myFriends.some((f) => f.uid === friendUid)) {
+            return { status: "exists", friend: { uid: friendUid, username: friendName } };
+        }
+        if (myFriends.length >= MAX_FRIENDS || theirFriends.length >= MAX_FRIENDS) {
+            throw new HttpsError("resource-exhausted", `En fazla ${MAX_FRIENDS} arkadaş eklenebilir.`);
+        }
+
+        tx.set(meRef, { friends: [...myFriends, { uid: friendUid, username: friendName }] }, { merge: true });
+        if (!theirFriends.some((f) => f.uid === uid)) {
+            tx.set(friendRef, { friends: [...theirFriends, { uid, username: myName }] }, { merge: true });
+        }
+        return { status: "added", friend: { uid: friendUid, username: friendName } };
+    });
+});
+
+/** Arkadaşlığı iki taraftan da siler. */
+exports.removeFriend = onCall(async (request) => {
+    const uid = requireAuth(request);
+    const friendUid = request.data && request.data.uid;
+    if (typeof friendUid !== "string" || !friendUid) throw new HttpsError("invalid-argument", "Geçersiz arkadaş.");
+
+    const meRef = db.doc(`users/${uid}`);
+    const friendRef = db.doc(`users/${friendUid}`);
+    await db.runTransaction(async (tx) => {
+        const [me, friend] = await Promise.all([tx.get(meRef), tx.get(friendRef)]);
+        if (me.exists) tx.set(meRef, { friends: (me.data().friends || []).filter((f) => f.uid !== friendUid) }, { merge: true });
+        if (friend.exists) tx.set(friendRef, { friends: (friend.data().friends || []).filter((f) => f.uid !== uid) }, { merge: true });
+    });
+    return { status: "removed" };
+});
+
+/** Oyuncu + arkadaşlarının sıralaması. period: 'daily' | 'weekly' | 'monthly' */
+exports.getFriendsLeaderboard = onCall(async (request) => {
+    const uid = requireAuth(request);
+    const { period, puzzleId } = request.data || {};
+    if (!["daily", "weekly", "monthly"].includes(period)) throw new HttpsError("invalid-argument", "Geçersiz dönem.");
+    if (period === "daily" && (typeof puzzleId !== "string" || puzzleId.length < 3)) {
+        throw new HttpsError("invalid-argument", "Geçersiz bulmaca ID.");
+    }
+
+    const { snap, username } = await getUsernameOrThrow(uid);
+    const people = [{ uid, username }, ...(snap.data().friends || [])];
+    const names = [...new Set(people.map((p) => p.username.toLowerCase()))];
+    const rows = [];
+
+    if (period === "daily") {
+        for (let i = 0; i < names.length; i += 30) { // Firestore 'in' sınırı 30
+            const chunk = names.slice(i, i + 30);
+            const qs = await db.collection("scores").where("puzzleId", "==", puzzleId).where("lowerCaseName", "in", chunk).get();
+            qs.forEach((d) => {
+                const s = d.data();
+                rows.push({ name: s.name, lowerCaseName: s.lowerCaseName, score: s.score, time: s.time, steps: s.steps, avatar: s.avatar || "👤" });
+            });
+        }
+        rows.sort((a, b) => b.score - a.score || a.time - b.time);
+    } else {
+        const periodId = period === "weekly" ? getWeekId(new Date()) : getMonthId(new Date());
+        const refs = names.map((n) => db.doc(`leaderboards/${periodId}/players/${n}`));
+        const docs = refs.length ? await db.getAll(...refs) : [];
+        docs.forEach((d) => {
+            if (!d.exists) return;
+            const s = d.data();
+            rows.push({ name: s.name, lowerCaseName: s.lowerCaseName, score: s.score, gamesPlayed: s.gamesPlayed, avatar: s.avatar || "👤" });
+        });
+        rows.sort((a, b) => b.score - a.score);
+    }
+
+    const played = new Set(rows.map((r) => r.lowerCaseName));
+    return {
+        scores: rows.map((r, i) => ({ ...r, rank: i + 1 })),
+        notPlayed: people.filter((p) => !played.has(p.username.toLowerCase())).map((p) => p.username),
+    };
+});

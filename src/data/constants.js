@@ -1,6 +1,8 @@
+
+
 export const TURKISH_DICTIONARY_MOCK = [
   "YATAK", "YASAK", "YANAK", "YANIK", "TANIK", "SANIK", "SADIK", "SAZIK", "KAZIK", "KAZAK",
-  "EVRAK", "EVRAT", "EVKAT", "EUKAT", "KUKAT", "KONAT", "KONAK",
+  "EVRAK", "EVRAT", "EVKAT", "EUKAT", "KUKAT", "KONAT", "KONAK", 
   "KONUK", "KONUT", "KOMUT", "VURAK", "DURAK", "DORAK", "KORAK", "TARAK", "YARAK", "BARAK", "KABAK", "TABAK",
   "KALEM", "KELAM", "SELAM", "SALAM", "SALIM", "SALIK", "BALIK"
 ];
@@ -18,7 +20,7 @@ export const ACHIEVEMENTS = [
   { id: 8, title: "İstikrarlı", desc: "3 gün üst üste oyna.", icon: '📅', xp: 25, category: 'medium' },
   { id: 9, title: "Keskin Nişancı", desc: "Hatalı kelime girmeden bitir.", icon: '🎯', xp: 25, category: 'medium' },
   { id: 10, title: "Erkenci Kuş", desc: "Sabah 06:00 - 09:00 arası oyna.", icon: '🌅', xp: 25, category: 'medium' },
-  { id: 11, title: "Efsane", desc: "Tam 1000 puan al (Optimal + 0 sn).", icon: '🏆', xp: 50, category: 'hard' },
+  { id: 11, title: "Efsane", desc: "980+ puan al (optimal hamle, ipuçsuz, çok hızlı).", icon: '🏆', xp: 50, category: 'hard' },
   { id: 12, title: "Maratoncu", desc: "30 gün üst üste oyna.", icon: '🏅', xp: 50, category: 'hard' },
   { id: 13, title: "Zamanı Durduran", desc: "30 saniyenin altında bitir.", icon: '⚡', xp: 50, category: 'hard' },
   { id: 14, title: "Kelime Hazinesi", desc: "Toplam 100 farklı kelime türet.", icon: '🧠', xp: 50, category: 'hard' },
@@ -65,11 +67,11 @@ export const AVATARS = [
   { id: 27, icon: '🦋', label: 'Kelebek' },
   { id: 28, icon: '🍄', label: 'Mantar' },
   { id: 29, icon: '🍕', label: 'Pizza' },
-  { id: 30, icon: '⚽', label: 'Futbol' },
+  { id: 30, icon: '⚽', label: 'Futbol' }, // DÜZELTİLDİ!
 ];
 
-const ADJECTIVES = ["Hızlı", "Cesur", "Bilge", "Çılgın", "Gizemli", "Zehirli", "Vahşi", "Gölge", "Parlak", "Buzlu", "Ateşli", "Sessiz", "Kayıp", "Efsane", "Yırtıcı", "Demir", "Çelik", "Uçan", "Altın", "Bordo"];
-const NOUNS = ["Dinozor", "Porsuk", "Baykuş", "Kedi", "Kaplan", "Kurt", "Şahin", "Ejderha", "Yılan", "Panter", "Akrep", "Kartal", "Boğa", "Ayı", "Timsah", "Kuzgun", "Anka", "Korsan", "Ninja", "Robot"];
+export const ADJECTIVES = ["Hızlı", "Cesur", "Bilge", "Çılgın", "Gizemli", "Zehirli", "Vahşi", "Gölge", "Parlak", "Buzlu", "Ateşli", "Sessiz", "Kayıp", "Efsane", "Yırtıcı", "Demir", "Çelik", "Uçan", "Altın", "Bordo"];
+export const NOUNS = ["Dinozor", "Porsuk", "Baykuş", "Kedi", "Kaplan", "Kurt", "Şahin", "Ejderha", "Yılan", "Panter", "Akrep", "Kartal", "Boğa", "Ayı", "Timsah", "Kuzgun", "Anka", "Korsan", "Ninja", "Robot"];
 
 export const generateRandomName = () => {
   const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
@@ -119,3 +121,25 @@ export const COLOR_BLIND_THEME = {
   logoSuccess: "bg-blue-600",
   logoError: "bg-orange-600"
 };
+
+// --- Mağaza / paylaşım linkleri ---
+export const WEB_URL = 'https://tr.evolvogame.com';
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.altayinteractive.evolvo';
+// Uygulama Play'de herkese açık (üretim) olunca true yap: paylaşımlara Play linki eklenir.
+// Kapalı testteyken link testçi olmayanlara "bulunamadı" gösterir.
+export const PLAY_STORE_LIVE = false;
+
+// --- Reklam (AdMob) ---
+// ŞU AN GOOGLE'IN RESMİ TEST KİMLİKLERİ. AdMob hesabı açılınca gerçek kimliklerle değiştir,
+// android/app/src/main/res/values/strings.xml içindeki admob_app_id'yi de güncelle ve USE_TEST_ADS=false yap.
+export const ADMOB = {
+  USE_TEST_ADS: true,
+  REWARDED_ID: 'ca-app-pub-3940256099942544/5224354917',
+  INTERSTITIAL_ID: 'ca-app-pub-3940256099942544/1033173712',
+};
+// Sınırsız modda kaç bölümde bir geçiş reklamı gösterilsin
+export const INTERSTITIAL_EVERY = 5;
+// Bir bulmacada reklamla kazanılabilecek en fazla ek ipucu
+export const MAX_BONUS_HINTS = 2;
+// Play Console > Para kazanma > Ürünler > Uygulama içi ürünler'de bu kimlikle oluşturulmalı
+export const REMOVE_ADS_PRODUCT_ID = 'remove_ads';

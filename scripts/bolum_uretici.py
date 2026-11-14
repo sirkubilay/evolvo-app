@@ -1,3 +1,6 @@
+# public/ klasöründeki veri dosyaları üzerinde çalışır (script nereden çalıştırılırsa çalıştırılsın)
+import os as _os
+_os.chdir(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "public"))
 import os
 import json
 import random
@@ -168,7 +171,7 @@ for harf_sayisi in [4, 5, 6]:
     )
 
 # 3. Kaydet
-klasor_yolu = os.path.dirname(os.path.abspath(__file__))
+klasor_yolu = os.getcwd()  # = public/
 dosya_yolu = os.path.join(klasor_yolu, 'offline_puzzles.json')
 
 with open(dosya_yolu, 'w', encoding='utf-8') as f:

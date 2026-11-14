@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,11 @@
 
         </activity>
 
+        <!-- AdMob uygulama kimliği: res/values/strings.xml > admob_app_id -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -38,4 +44,9 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Android 13+ bildirim izni (günlük hatırlatma) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Hatırlatmalar için tam zamanlı alarm gerekmiyor; Play bu izni sadece alarm/takvim uygulamalarına veriyor.
+         Kaldırınca bildirim eklentisi esnek (birkaç dk sapmalı) zamanlamaya geçer. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" tools:node="remove" />
 </manifest>

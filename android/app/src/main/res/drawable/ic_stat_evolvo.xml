@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bildirim çubuğu ikonu: tek renk (Android beyaza boyar). İki kutu = başlangıç → hedef kelime -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M3,5h7a1,1 0,0 1,1 1v7a1,1 0,0 1,-1 1H3a1,1 0,0 1,-1 -1V6a1,1 0,0 1,1 -1zM5,8v3h3V8z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M14,10h7a1,1 0,0 1,1 1v7a1,1 0,0 1,-1 1h-7a1,1 0,0 1,-1 -1v-7a1,1 0,0 1,1 -1z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M11.5,16.5l-2,-2 1,-1 1,1 V12h1.5v2.5l1,-1 1,1 -2,2z" />
+</vector>
