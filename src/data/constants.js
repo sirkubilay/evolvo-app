@@ -138,7 +138,7 @@ export const ADMOB = {
   INTERSTITIAL_ID: 'ca-app-pub-3940256099942544/1033173712',
 };
 // Sınırsız modda kaç bölümde bir geçiş reklamı gösterilsin
-export const INTERSTITIAL_EVERY = 3;
+export const INTERSTITIAL_EVERY = 5;
 // Bir bulmacada reklamla kazanılabilecek en fazla ek ipucu
 export const MAX_BONUS_HINTS = 2;
 // Play Console > Para kazanma > Ürünler > Uygulama içi ürünler'de bu kimlikle oluşturulmalı
