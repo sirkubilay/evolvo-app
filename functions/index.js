@@ -17,6 +17,8 @@ admin.initializeApp();
 
 // --- Firestore Veritabanı Referansı ---
 const db = admin.firestore();
+const { botsForDay, botsForPeriod, mergeWithBots, isBotName } = require("./bots");
+
 function getWeekId(date) {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const dayNum = d.getUTCDay() || 7;
@@ -334,13 +336,10 @@ exports.getLeaderboard = onCall(async (request) => {
         }
 
         logger.info(`Liderlik tablosu başarıyla çekildi: ${puzzleId}`);
-        return {
-            topScores: topScores,
-            userScore: userScoreData ? {
-                name: userScoreData.name, score: userScoreData.score,
-                steps: userScoreData.steps, time: userScoreData.time, rank: userRank
-            } : null
-        };
+        return mergeWithBots(topScores, userScoreData ? {
+            name: userScoreData.name, score: userScoreData.score,
+            steps: userScoreData.steps, time: userScoreData.time, rank: userRank
+        } : null, botsForDay(puzzleId));
 
     } catch (error) {
         logger.error("Firestore'dan liderlik tablosu çekilirken HATA (Tek Koleksiyon):", error);
@@ -443,7 +442,7 @@ exports.getAggregateLeaderboard = onCall(async (request) => {
         }
         
         logger.info(`Aggregate Liderlik Tablosu (${period}) başarıyla çekildi.`);
-        return { topScores, userScore };
+        return mergeWithBots(topScores, userScore, botsForPeriod(period));
 
     } catch (error) {
         // Bu sorgu için de index gerekebilir:
@@ -935,6 +934,7 @@ exports.claimUsername = onCall(async (request) => {
         throw new HttpsError("invalid-argument", "İsim 3-12 karakter olmalı; sadece harf, rakam ve _ kullanılabilir.");
     }
     const lower = name.toLocaleLowerCase("tr-TR");
+    if (isBotName(name)) throw new HttpsError("already-exists", "Bu efsanevi isim zaten alınmış. Başka bir tane dene!");
 
     // Kilit sisteminden önce alınmış eski isimler (usernames kaydı olmayanlar) için tek seferlik tarama
     const legacy = await db.collection("users").select("username").get();

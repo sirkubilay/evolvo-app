@@ -739,7 +739,7 @@ const handleStartUnlimited = async (length, level) => {
               <Play fill="currentColor" size={18} /> GÜNÜN BULMACASI
             </button>
             <div className="grid grid-cols-2 gap-2.5">
-              {isNative && (
+              {(isNative || import.meta.env.DEV) && (
                 <button onClick={() => setCurrentPage('unlimited_menu')} className="py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white active:scale-[0.97] transition-all shadow-md shadow-purple-900/30">
                   <InfinityIcon size={16} /> Sınırsız
                 </button>
