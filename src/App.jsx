@@ -6,7 +6,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import { getAuth, signInWithPopup, signInWithCredential, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Capacitor } from '@capacitor/core';
-import { Play, Trophy, Menu, X, Star, CheckCircle2, AlertCircle, Loader2, Infinity as InfinityIcon } from 'lucide-react';
+import { Play, Trophy, Menu, X, Star, ShoppingBag, CheckCircle2, AlertCircle, Loader2, Infinity as InfinityIcon } from 'lucide-react';
 import { AVATARS, generateRandomName, THEMES, COLOR_BLIND_THEME, GOOGLE_WEB_CLIENT_ID } from './data/constants';
 import { app } from './firebase';
 import { MountainMini } from './components/MountainMini';
@@ -31,7 +31,8 @@ import { useProgress } from './lib/useProgress';
 import { loadStats, dayKey } from './lib/progress';
 import { FriendsModal } from './components/modals/FriendsModal';
 import { takeFriendCodeFromUrl } from './lib/friends';
-import { RemoveAdsModal } from './components/modals/RemoveAdsModal';
+import { StoreModal } from './components/modals/StoreModal';
+import { recordUnlimitedSolved } from './lib/hints';
 import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial } from './lib/monetization';
 import {
   scheduleReminders, maybeAskForReview, shouldAskNotifications, notificationsEnabled,
@@ -91,6 +92,9 @@ const App = () => {
       currentScores[length][level] = { score: finalScore, steps: finalSteps, time: finalTime };
       localStorage.setItem('evolvo_offline_scores', JSON.stringify(currentScores));
       setOfflineScores(currentScores);
+      // Her UNLIMITED_BONUS_EVERY yeni bölümde ipucu cüzdanına bonus
+      const bonus = recordUnlimitedSolved();
+      if (bonus) setTimeout(() => showFeedback(`🎁 ${bonus} ipucu kazandın!`, 'success'), 1800);
     }
 
     setOfflineProgress(prev => {
@@ -205,7 +209,6 @@ const handleStartUnlimited = async (length, level) => {
   }, []);
   const [adsRemovedState, setAdsRemovedState] = useState(adsRemoved);
   const [privacyOptions, setPrivacyOptions] = useState(false);
-  const [showRemoveAds, setShowRemoveAds] = useState(false);
   // Davet linki (?arkadas=EVO-XXXXXX) ile gelindiyse arkadaşlar penceresini kod dolu açar
   const [pendingFriendCode] = useState(takeFriendCodeFromUrl);
   useEffect(() => {
@@ -514,7 +517,7 @@ const handleStartUnlimited = async (length, level) => {
         initialCode={pendingFriendCode}
         onRecordShare={() => recordEvent('share')}
       />
-      <RemoveAdsModal isOpen={showRemoveAds} onClose={() => setShowRemoveAds(false)} onPurchased={() => setAdsRemovedState(true)} theme={theme} showFeedback={showFeedback} />
+      <StoreModal isOpen={!!modalState.store} onClose={() => toggleModal('store', false)} adsRemoved={adsRemovedState} onAdsRemoved={() => setAdsRemovedState(true)} theme={theme} showFeedback={showFeedback} />
     </>
   );
 
@@ -630,7 +633,7 @@ const handleStartUnlimited = async (length, level) => {
           colors={currentColors}
           toggleModal={toggleModal}
           modalState={modalState}
-          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onRemoveAds: () => setShowRemoveAds(true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }}
+          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onOpenStore: () => toggleModal('store', true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }}
           updateStats={updateStats}
           puzzleData={activePuzzle} 
           leaderboardData={leaderboardData}
@@ -713,7 +716,7 @@ const handleStartUnlimited = async (length, level) => {
         </div>
       </nav>
 
-      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onRemoveAds: () => setShowRemoveAds(true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
+      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onOpenStore: () => toggleModal('store', true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
 
       <section className="flex-1 flex flex-col justify-center pb-12 md:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -745,6 +748,11 @@ const handleStartUnlimited = async (length, level) => {
                 <Trophy size={16} className="text-yellow-400" /> Sıralama
               </button>
             </div>
+            {isNative && (
+              <button onClick={() => toggleModal('store', true)} className="py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-yellow-400/10 border border-yellow-400/40 text-yellow-200 active:scale-[0.97] transition-all">
+                <ShoppingBag size={16} className="text-yellow-400" /> Mağaza
+              </button>
+            )}
             <button onClick={() => toggleModal('howToPlay', true)} className="py-2 text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-80">Nasıl oynanır?</button>
           </div>
         </div>

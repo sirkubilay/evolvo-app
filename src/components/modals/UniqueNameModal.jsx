@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { getFirestore, doc, setDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Loader2 } from 'lucide-react';
 
-export const UniqueNameModal = ({ isOpen, tempUser, onComplete, theme, colors }) => {
+export const UniqueNameModal = ({ isOpen, onComplete, theme, colors }) => {
   const [chosenName, setChosenName] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState(null);
@@ -22,28 +22,17 @@ export const UniqueNameModal = ({ isOpen, tempUser, onComplete, theme, colors })
 
     setIsChecking(true);
     try {
-      const db = getFirestore(getApp());
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('username', '==', nameToSave));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        setError("Bu efsanevi isim zaten alınmış. Başka bir tane dene!");
-        setIsChecking(false);
-        return;
-      }
-
-      await setDoc(doc(db, 'users', tempUser.uid), {
-        username: nameToSave,
-        createdAt: new Date().toISOString()
-      }, { merge: true }); // merge: ilerleme ve arkadaş verisini silmesin
-
+      // Benzersizlik kontrolü sunucuda (büyük/küçük harf duyarsız): istemci diğer kullanıcıları okuyamaz.
+      const claim = httpsCallable(getFunctions(getApp(), 'europe-west1'), 'claimUsername');
+      const { data } = await claim({ name: nameToSave });
       setIsChecking(false);
-      onComplete(nameToSave);
-
+      onComplete(data.name);
     } catch (err) {
       console.error("İsim kontrol hatası:", err);
-      setError("Sunucuya bağlanılamadı, lütfen tekrar dene.");
+      const code = String(err?.code || '');
+      setError(code.includes('already-exists') || code.includes('invalid-argument')
+        ? err.message
+        : "Sunucuya bağlanılamadı, lütfen tekrar dene.");
       setIsChecking(false);
     }
   };

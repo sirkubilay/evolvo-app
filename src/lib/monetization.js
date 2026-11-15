@@ -2,7 +2,8 @@
 import { AdMob, AdmobConsentStatus } from '@capacitor-community/admob';
 import { NativePurchases, PURCHASE_TYPE } from '@capgo/native-purchases';
 import { isNative } from './native';
-import { ADMOB, INTERSTITIAL_EVERY, REMOVE_ADS_PRODUCT_ID } from '../data/constants';
+import { ADMOB, INTERSTITIAL_EVERY, REMOVE_ADS_PRODUCT_ID, HINT_PACKS } from '../data/constants';
+import { addHints } from './hints';
 
 const ADS_REMOVED_KEY = 'evolvo_ads_removed';
 const LEVEL_COUNT_KEY = 'evolvo_levels_since_ad';
@@ -60,11 +61,11 @@ export const needsPrivacyOptions = () => privacyOptionsRequired;
 export const showPrivacyOptions = () => AdMob.showPrivacyOptionsForm().catch(() => {});
 
 /**
- * Ödüllü reklam: izlenirse true döner. "Reklamları Kaldır" alan oyuncu reklam izlemeden ödülü alır.
+ * Ödüllü reklam (oyuncunun kendi isteğiyle izlediği +1 ipucu): izlenirse true döner.
+ * "Reklamları Kaldır" sadece sınırsız moddaki zorunlu geçiş reklamlarını kaldırır, bunu değil.
  */
 export const watchRewardedAd = async () => {
   if (!isNative()) return false;
-  if (adsRemoved()) return true;
   await initMonetization();
   if (!canRequestAds) return false;
   try {
@@ -138,4 +139,36 @@ export const purchaseRemoveAds = async () => {
 export const restoreRemoveAds = async () => {
   try { await NativePurchases.restorePurchases(); } catch { /* yok say */ }
   return refreshPurchaseState();
+};
+
+// ---------- Mağaza: ipucu paketleri (tüketilebilir) ----------
+
+/** { [ürünKimliği]: '₺29,90' } — Play'den güncel yerel fiyatlar. */
+export const getStorePrices = async () => {
+  if (!isNative()) return {};
+  const ids = [REMOVE_ADS_PRODUCT_ID, ...HINT_PACKS.map((p) => p.id)];
+  try {
+    const { products } = await NativePurchases.getProducts({ productIdentifiers: ids, productType: PURCHASE_TYPE.INAPP });
+    return Object.fromEntries((products || []).map((p) => [p.identifier || p.productIdentifier, p.priceString]));
+  } catch {
+    return {};
+  }
+};
+
+/** İpucu paketi satın alır; başarılıysa ipuçlarını cüzdana ekler. 'ok' | 'pending' | 'cancelled' | 'error' */
+export const purchaseHintPack = async (pack) => {
+  try {
+    const tx = await NativePurchases.purchaseProduct({
+      productIdentifier: pack.id,
+      productType: PURCHASE_TYPE.INAPP,
+      isConsumable: true,
+      autoAcknowledgePurchases: true,
+    });
+    if (tx.purchaseState === '0') return 'pending';
+    addHints(pack.count);
+    return 'ok';
+  } catch (e) {
+    const msg = String(e?.message || e).toLowerCase();
+    return msg.includes('cancel') ? 'cancelled' : 'error';
+  }
 };

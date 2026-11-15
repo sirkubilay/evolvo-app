@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { getApp } from 'firebase/app';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { Menu, X, Star, BarChart2, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
+import { Menu, X, Star, BarChart2, HelpCircle, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
 import { AchievementsModal } from '../components/modals/AchievementsModal';
 import { AvatarModal } from '../components/modals/AvatarModal';
 import { StatsModal } from '../components/modals/StatsModal';
@@ -15,9 +15,10 @@ import { Logo } from '../components/Logo';
 import { hapticTap, hapticMove, hapticError, isNative } from '../lib/native';
 import { shareImage, saveImage, shareLinks } from '../lib/share';
 import { drawShareCard } from '../lib/shareCard';
-import { watchRewardedAd, adsRemoved } from '../lib/monetization';
-import { PLAY_STORE_LIVE, PLAY_STORE_URL, SHARE_URL, MAX_BONUS_HINTS } from '../data/constants';
+import { watchRewardedAd } from '../lib/monetization';
+import { PLAY_STORE_LIVE, PLAY_STORE_URL, SHARE_URL, MAX_BONUS_HINTS, DAILY_HINTS } from '../data/constants';
 import { dayKey } from '../lib/progress';
+import { useHintWallet, spendHint, addHints } from '../lib/hints';
 
 export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
   const [history, setHistory] = useState([puzzleData.start]);
@@ -28,13 +29,16 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   const [isLoading, setIsLoading] = useState(false);
   // "Keskin Nişancı" başarımı için: bu oyunda girilen geçersiz kelime sayısı
   const invalidAttemptsRef = useRef(0);
-  const [hintsLeft, setHintsLeft] = useState(3);
-  // Reklam izleyerek kazanılan ek ipuçları (ceza hesabı için kullanılan toplam = 3 + bonus - kalan)
+  // İpuçları: günlük bulmacada bulmaca başına DAILY_HINTS (+ reklamla en fazla MAX_BONUS_HINTS),
+  // sınırsız modda oyuncunun ortak cüzdanı (lib/hints.js).
+  const isUnlimited = puzzleData.type === 'unlimited';
+  const [hintsUsedCount, setHintsUsedCount] = useState(0);
   const [bonusHints, setBonusHints] = useState(0);
+  const wallet = useHintWallet();
+  const hintsLeft = isUnlimited ? wallet : Math.max(0, DAILY_HINTS + bonusHints - hintsUsedCount);
   const [rewardSheetOpen, setRewardSheetOpen] = useState(false);
   const [rewardLoading, setRewardLoading] = useState(false);
-  const hintsUsedCount = 3 + bonusHints - hintsLeft;
-  const canEarnHint = isNative() && puzzleData.type !== 'custom' && bonusHints < MAX_BONUS_HINTS;
+  const canEarnHint = isNative() && puzzleData.type !== 'custom' && (isUnlimited || bonusHints < MAX_BONUS_HINTS);
   const [lockedIndices, setLockedIndices] = useState([0]); 
   const [rowAnimation, setRowAnimation] = useState(null);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
@@ -247,7 +251,8 @@ const handleHint = async (e) => {
     }
     if (isGameOver) return;
     if (hintsLeft <= 0) {
-      if (canEarnHint) setRewardSheetOpen(true);
+      if (canEarnHint || isUnlimited) setRewardSheetOpen(true);
+      else showFeedback("Bu bulmacadaki ipucu hakkın bitti.", "info");
       return;
     }
 
@@ -273,7 +278,8 @@ const handleHint = async (e) => {
         const newHistory = [...history.slice(0, backtrackIdx + 1), nextWord];
         setHistory(newHistory);
         setCurrentGuess("");
-        setHintsLeft(prev => prev - 1);
+        spendHint();
+        setHintsUsedCount(c => c + 1);
         setLockedIndices(prev => {
           const filtered = prev.filter(idx => idx <= backtrackIdx);
           return [...filtered, backtrackIdx + 1];
@@ -308,7 +314,7 @@ const handleHint = async (e) => {
       
       setHistory(newHistory);
       setCurrentGuess("");
-      setHintsLeft(prev => prev - 1);
+      setHintsUsedCount(c => c + 1);
       setLockedIndices(prev => [...prev, newHistory.length - 1]);
       showFeedback("İpucu Kullanıldı (-150 Puan)", "success");
 
@@ -329,8 +335,7 @@ const handleHint = async (e) => {
     setRewardLoading(false);
     setRewardSheetOpen(false);
     if (ok) {
-      setBonusHints(b => b + 1);
-      setHintsLeft(h => h + 1);
+      if (isUnlimited) addHints(1); else setBonusHints(b => b + 1);
       showFeedback("+1 ipucu kazandın! Ampule dokun.", "success");
     } else {
       showFeedback("Şu an reklam yok, biraz sonra tekrar dene.", "error");
@@ -556,10 +561,21 @@ Sen de dene 👇`;
             <div onClick={onBack} className="cursor-pointer transform hover:scale-105 transition-transform absolute left-1/2 -translate-x-1/2 top-3 z-10">
                <Logo colors={colors} />
             </div>
+
+            {/* Bildirim balonu: EVOLVO yazısının hemen altında, içeriği itmeden süzülür */}
+            {message && (
+                <div className={`absolute left-1/2 -translate-x-1/2 top-[3.1rem] z-50 max-w-[60vw] px-3.5 py-1.5 rounded-xl shadow-lg animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 font-bold text-xs border whitespace-nowrap pointer-events-none ${message.type === 'success' ? colors.success : colors.error}`}>
+                  {message.type === 'success' ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                  {message.text}
+                </div>
+            )}
             
             {/* SAĞ KISIM: Menü ve Altında Sonraki Bölüm Tuşu */}
             <div className="flex flex-col items-end gap-2 z-10 w-28 sm:w-32">
                 <div className="flex items-center gap-0.5">
+                  <button onClick={() => toggleModal('howToPlay', true)} aria-label="Nasıl oynanır" className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors">
+                     <HelpCircle size={21} />
+                  </button>
                   <button onClick={() => toggleModal('stats', true)} aria-label="İstatistikler" className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors">
                      <BarChart2 size={22} />
                   </button>
@@ -599,15 +615,7 @@ Sen de dene 👇`;
             </div>
          </header>
 
-         {/* Bildirim balonu: yer kaplamasın diye içeriğin üstünde süzülür */}
-         <div className="relative w-full h-0 flex justify-center pointer-events-none">
-            {message && (
-                <div className={`absolute top-2 z-40 px-4 py-2 rounded-xl shadow-lg animate-in fade-in slide-in-from-top-2 flex items-center gap-2 font-bold text-xs border ${message.type === 'success' ? colors.success : colors.error}`}>
-                  {message.type === 'success' ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                  {message.text}
-                </div>
-            )}
-         </div>
+
          {/* SINIRSIZ MOD BİLGİ BARI */}
          {puzzleData.type === 'unlimited' && (
             <div className="w-full bg-gradient-to-r from-purple-900/60 to-indigo-900/60 text-purple-200 text-center py-1.5 text-[11px] font-black tracking-widest uppercase border-y border-purple-500/20 shadow-inner">
@@ -767,10 +775,21 @@ Sen de dene 👇`;
           <div className="w-full max-w-md bg-[#0d1829] rounded-t-3xl p-6 pb-10 border-t border-white/10 shadow-2xl animate-in slide-in-from-bottom-6 duration-300 text-center" onClick={e => e.stopPropagation()}>
             <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-yellow-400 flex items-center justify-center"><Lightbulb size={28} className="text-black" fill="currentColor" /></div>
             <h3 className="font-black text-xl uppercase italic mb-1">İpuçların Bitti</h3>
-            <p className="text-sm opacity-60 mb-6">{adsRemoved() ? 'Reklamsız sürüm sende — ek ipucun hazır.' : 'Kısa bir reklam izle, +1 ipucu kazan.'} (İpucu yine −150 puan.)</p>
-            <button disabled={rewardLoading} onClick={handleEarnHint} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60">
-              {rewardLoading ? <Loader2 className="animate-spin" /> : (adsRemoved() ? '+1 İPUCU AL' : '🎬 İZLE, +1 İPUCU')}
-            </button>
+            <p className="text-sm opacity-60 mb-6">
+              {isUnlimited
+                ? 'Kısa bir reklam izleyerek +1 ipucu kazan ya da mağazadan ipucu paketi al.'
+                : 'Kısa bir reklam izle, bu bulmaca için +1 ipucu kazan.'} (Her ipucu −150 puan.)
+            </p>
+            {canEarnHint && (
+              <button disabled={rewardLoading} onClick={handleEarnHint} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60">
+                {rewardLoading ? <Loader2 className="animate-spin" /> : '🎬 İZLE, +1 İPUCU'}
+              </button>
+            )}
+            {isUnlimited && isNative() && (
+              <button disabled={rewardLoading} onClick={() => { setRewardSheetOpen(false); toggleModal('store', true); }} className="w-full mt-2.5 py-3.5 rounded-xl font-black text-base bg-yellow-400 text-black flex items-center justify-center gap-2 active:scale-95">
+                💡 İPUCU PAKETİ AL
+              </button>
+            )}
             <button disabled={rewardLoading} onClick={() => setRewardSheetOpen(false)} className="w-full py-3 mt-2 text-sm font-bold text-white/50">Vazgeç</button>
           </div>
         </div>

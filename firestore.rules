@@ -28,6 +28,11 @@ service cloud.firestore {
       allow write: if false; // Sadece sunucu (saveScore) yazabilir
     }
 
+    // 'usernames' (isim kilitleri): sadece sunucu (claimUsername) yazar/okur.
+    match /usernames/{name} {
+      allow read, write: if false;
+    }
+
     // 'users' (Kullanıcı Nickname'leri):
     // Bir kullanıcı sadece KENDİ belgesini okuyabilir veya güncelleyebilir.
     match /users/{userId} {

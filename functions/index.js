@@ -919,3 +919,47 @@ exports.getFriendsLeaderboard = onCall(async (request) => {
         notPlayed: people.filter((p) => !played.has(p.username.toLowerCase())).map((p) => p.username),
     };
 });
+
+// ============================================================================
+// KULLANICI ADI: benzersiz isim ayırtma (büyük/küçük harf duyarsız)
+// İstemci diğer kullanıcıların belgelerini okuyamadığı için (firestore.rules) kontrol sunucuda yapılır.
+// usernames/{küçükHarfİsim} = { uid, name } → isim kilidi.
+// ============================================================================
+const USERNAME_RE = /^[\p{L}0-9_]{3,12}$/u;
+
+exports.claimUsername = onCall(async (request) => {
+    if (!request.auth) throw new HttpsError("unauthenticated", "İsim seçmek için giriş yapmalısın.");
+    const uid = request.auth.uid;
+    const name = String(request.data?.name || "").trim();
+    if (!USERNAME_RE.test(name)) {
+        throw new HttpsError("invalid-argument", "İsim 3-12 karakter olmalı; sadece harf, rakam ve _ kullanılabilir.");
+    }
+    const lower = name.toLocaleLowerCase("tr-TR");
+
+    // Kilit sisteminden önce alınmış eski isimler (usernames kaydı olmayanlar) için tek seferlik tarama
+    const legacy = await db.collection("users").select("username").get();
+    const takenByOther = legacy.docs.some((d) => d.id !== uid && typeof d.data().username === "string"
+        && d.data().username.toLocaleLowerCase("tr-TR") === lower);
+    if (takenByOther) throw new HttpsError("already-exists", "Bu efsanevi isim zaten alınmış. Başka bir tane dene!");
+
+    await db.runTransaction(async (tx) => {
+        const lockRef = db.collection("usernames").doc(lower);
+        const userRef = db.doc(`users/${uid}`);
+        const [lock, user] = await Promise.all([tx.get(lockRef), tx.get(userRef)]);
+        if (lock.exists && lock.data().uid !== uid) {
+            throw new HttpsError("already-exists", "Bu efsanevi isim zaten alınmış. Başka bir tane dene!");
+        }
+        // Eski ismin kilidini bırak
+        const oldName = user.exists ? user.data().username : null;
+        if (oldName && oldName.toLocaleLowerCase("tr-TR") !== lower) {
+            tx.delete(db.collection("usernames").doc(oldName.toLocaleLowerCase("tr-TR")));
+        }
+        tx.set(lockRef, { uid, name, createdAt: FieldValue.serverTimestamp() });
+        tx.set(userRef, {
+            username: name,
+            usernameLower: lower,
+            ...(user.exists && user.data().createdAt ? {} : { createdAt: new Date().toISOString() }),
+        }, { merge: true });
+    });
+    return { name };
+});

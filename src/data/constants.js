@@ -144,8 +144,21 @@ export const ADMOB = {
   INTERSTITIAL_ID: 'ca-app-pub-1031567725841036/6826858602',
 };
 // Sınırsız modda kaç bölümde bir geçiş reklamı gösterilsin
-export const INTERSTITIAL_EVERY = 5;
-// Bir bulmacada reklamla kazanılabilecek en fazla ek ipucu
+export const INTERSTITIAL_EVERY = 3;
+// Bir günlük bulmacada reklamla kazanılabilecek en fazla ek ipucu
 export const MAX_BONUS_HINTS = 2;
+// --- İpuçları ---
+// Günlük bulmaca: her bulmacada bu kadar ücretsiz ipucu (sıralama adil kalsın diye satın alınan ipuçları kullanılamaz)
+export const DAILY_HINTS = 1;
+// Sınırsız mod: oyuncunun ortak ipucu cüzdanı
+export const UNLIMITED_START_HINTS = 10;
+export const UNLIMITED_BONUS_EVERY = 10; // her 10 yeni bölümde
+export const UNLIMITED_BONUS_HINTS = 3;  // +3 ipucu
+// Play Console > Tek seferlik ürünler: bu kimliklerle "tüketilebilir" ürünler
+export const HINT_PACKS = [
+  { id: 'hints_5', count: 5 },
+  { id: 'hints_10', count: 10 },
+  { id: 'hints_20', count: 20 },
+];
 // Play Console > Para kazanma > Ürünler > Uygulama içi ürünler'de bu kimlikle oluşturulmalı
 export const REMOVE_ADS_PRODUCT_ID = 'remove_ads';
