@@ -5,5 +5,5 @@
     <string name="package_name">com.evolvogame.app</string>
     <string name="custom_url_scheme">com.evolvogame.app</string>
     <!-- ŞU AN GOOGLE'IN TEST UYGULAMA KİMLİĞİ. AdMob hesabındaki gerçek "Uygulama kimliği" (ca-app-pub-XXXX~YYYY) ile değiştir. -->
-    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_app_id">ca-app-pub-1031567725841036~8989987517</string>
 </resources>

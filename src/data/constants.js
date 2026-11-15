@@ -135,12 +135,13 @@ export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com
 export const PLAY_STORE_LIVE = false;
 
 // --- Reklam (AdMob) ---
-// ŞU AN GOOGLE'IN RESMİ TEST KİMLİKLERİ. AdMob hesabı açılınca gerçek kimliklerle değiştir,
-// android/app/src/main/res/values/strings.xml içindeki admob_app_id'yi de güncelle ve USE_TEST_ADS=false yap.
+// Gerçek AdMob kimlikleri (yayıncı pub-1031567725841036, uygulama ~8989987517).
+// Uygulama kimliği android/app/src/main/res/values/strings.xml → admob_app_id içinde.
+// Geliştirirken test reklamı görmek için USE_TEST_ADS'i geçici olarak true yap; kendi reklamlarına asla tıklama.
 export const ADMOB = {
-  USE_TEST_ADS: true,
-  REWARDED_ID: 'ca-app-pub-3940256099942544/5224354917',
-  INTERSTITIAL_ID: 'ca-app-pub-3940256099942544/1033173712',
+  USE_TEST_ADS: false,
+  REWARDED_ID: 'ca-app-pub-1031567725841036/8139940278',
+  INTERSTITIAL_ID: 'ca-app-pub-1031567725841036/6826858602',
 };
 // Sınırsız modda kaç bölümde bir geçiş reklamı gösterilsin
 export const INTERSTITIAL_EVERY = 5;
