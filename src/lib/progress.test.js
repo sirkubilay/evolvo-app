@@ -109,3 +109,35 @@ describe('bulut birleştirme', () => {
 it('dayKey yerel tarih formatı', () => {
   expect(dayKey(new Date(2026, 0, 5))).toBe('2026-01-05');
 });
+
+describe('günlük (online) istatistikler', () => {
+  const day = new Date(2026, 10, 15, 12);
+  const base = () => ({ ...DEFAULT_STATS, achievements: {}, dailyDist: {} });
+
+  it('sadece günün bulmacasını sayar, sınırsız modu saymaz', () => {
+    let s = applyGameEnd(base(), { win: true, moves: 5, optimal: 4, isTodaysDaily: false }, day);
+    expect(s.dailyPlayed).toBe(0);
+    s = applyGameEnd(s, { win: true, moves: 5, optimal: 4, isTodaysDaily: true }, day);
+    expect(s.dailyPlayed).toBe(1);
+    expect(s.dailyWins).toBe(1);
+    expect(s.dailyDist['1']).toBe(1);
+    expect(s.lastDailyExtra).toBe('1');
+  });
+
+  it('kayıpta galibiyet sayılmaz, 4+ fazla hamle aynı kovaya düşer', () => {
+    let s = applyGameEnd(base(), { win: false, moves: 8, optimal: 4, isTodaysDaily: true }, day);
+    expect(s.dailyPlayed).toBe(1);
+    expect(s.dailyWins).toBe(0);
+    s = applyGameEnd(base(), { win: true, moves: 11, optimal: 4, isTodaysDaily: true }, day);
+    expect(s.dailyDist['4']).toBe(1);
+  });
+
+  it('bulutla birleştirirken dağılımda büyük olanı alır', () => {
+    const local = { ...base(), dailyPlayed: 3, dailyDist: { 0: 2 } };
+    const cloud = { dailyPlayed: 5, dailyDist: { 0: 1, 2: 3 } };
+    const m = mergeStats(local, cloud);
+    expect(m.dailyPlayed).toBe(5);
+    expect(m.dailyDist['0']).toBe(2);
+    expect(m.dailyDist['2']).toBe(3);
+  });
+});

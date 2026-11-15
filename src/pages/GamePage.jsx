@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { getApp } from 'firebase/app';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { Menu, X, Star, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
+import { Menu, X, Star, BarChart2, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
 import { AchievementsModal } from '../components/modals/AchievementsModal';
 import { AvatarModal } from '../components/modals/AvatarModal';
 import { StatsModal } from '../components/modals/StatsModal';
@@ -228,10 +228,15 @@ useEffect(() => {
       time: Number(timer),
       moves: finalHistory.length - 1,
       maxMoves,
+      optimal: puzzleData.optimalSteps,
       invalidAttempts: invalidAttemptsRef.current,
       isTodaysDaily: puzzleData.type === 'daily' && puzzleData.date === dayKey(),
       words: finalHistory.slice(1),
     });
+    // Wordle gibi: günün bulmacası bitince istatistikler kendiliğinden açılır
+    if (puzzleData.type === 'daily' && puzzleData.date === dayKey()) {
+      setTimeout(() => toggleModal('stats', true), 2200);
+    }
   };
 
 const handleHint = async (e) => {
@@ -505,14 +510,13 @@ Sen de dene 👇`;
     } catch (e) { console.error(e); }
   };
 
-  // Standart Türkçe Q klavye: harfler telefon klavyesindeki yerlerinde. Q, W, X Türkçede olmadığından
-  // yerleri korunur ama soluk ve basılamaz (yoksa bütün harfler kayar ve kullanıcı aradığını bulamaz).
+  // Wordle düzeni (Türkçe): Türkçede olmayan Q, W, X yok. Her harf tuşu aynı genişlikte; kısa sıralar
+  // yarım tuşluk boşlukla ortalanır, Enter solda ve silme sağda 1,5 tuş genişliğinde.
   const keyboardRows = [
-    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'Ğ', 'Ü'],
+    ['E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'Ğ', 'Ü'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ş', 'İ'],
-    ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ö', 'Ç', 'Backspace'],
+    ['Enter', 'Z', 'C', 'V', 'B', 'N', 'M', 'Ö', 'Ç', 'Backspace'],
   ];
-  const DEAD_KEYS = ['Q', 'W', 'X'];
 
   return (
     <div className={`h-screen flex flex-col font-sans overflow-hidden ${theme.bg} ${theme.text}`}>
@@ -555,9 +559,14 @@ Sen de dene 👇`;
             
             {/* SAĞ KISIM: Menü ve Altında Sonraki Bölüm Tuşu */}
             <div className="flex flex-col items-end gap-2 z-10 w-28 sm:w-32">
-                <button onClick={() => setIsSideMenuOpen(true)} className={`p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors`}>
-                   <Menu size={24} />
-                </button>
+                <div className="flex items-center gap-0.5">
+                  <button onClick={() => toggleModal('stats', true)} aria-label="İstatistikler" className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors">
+                     <BarChart2 size={22} />
+                  </button>
+                  <button onClick={() => setIsSideMenuOpen(true)} aria-label="Menü" className={`p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors`}>
+                     <Menu size={24} />
+                  </button>
+                </div>
 
                 {/* AKILLI SONRAKİ BÖLÜM OKU */}
                 {puzzleData.type === 'unlimited' && (
@@ -708,6 +717,11 @@ Sen de dene 👇`;
     >
       <Share2 size={20} /> SKORUNU PAYLAŞ
     </button>
+    {puzzleData.type === 'daily' && (
+      <button onClick={() => toggleModal('stats', true)} className="w-full mt-2.5 py-3 rounded-xl font-bold text-sm bg-white/10 border border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all">
+        <BarChart2 size={18} /> İSTATİSTİKLER
+      </button>
+    )}
 
   </div>
 )}
@@ -722,28 +736,25 @@ Sen de dene 👇`;
 
       {!isGameOver && (
         <div className={`fixed bottom-0 left-0 w-full ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'} p-1 pb-2 border-t ${theme.panelBorder} z-30`}>
-           <div className="max-w-xl mx-auto space-y-1.5 px-0.5">
+           <div className="max-w-lg mx-auto space-y-[6px] px-1">
               {keyboardRows.map((row, i) => (
-                 <div key={i} className="flex justify-center gap-[3px] sm:gap-1">
-                   {i === 1 && <div className="flex-[0.5]" />}
+                 <div key={i} className="flex justify-center gap-[5px]">
+                   {i === 0 && <div className="flex-[0.5]" />}
                    {row.map(key => {
-                     const dead = DEAD_KEYS.includes(key);
-                     const base = 'h-12 md:h-12 rounded-lg font-bold flex items-center justify-center select-none transition-transform shadow-sm';
+                     const base = 'h-[54px] rounded-[5px] font-bold flex items-center justify-center select-none active:scale-95 transition-transform';
                      if (key === 'Enter') {
-                       return <button key={key} onClick={() => handleKeyPress('Enter')} className={`${base} flex-[1.55] text-[11px] tracking-wide uppercase ${colors.btnPrimary} active:scale-95`}>Enter</button>;
+                       return <button key={key} onClick={() => handleKeyPress('Enter')} className={`${base} flex-[1.5] text-[11px] tracking-wide ${colors.btnPrimary}`}>ENTER</button>;
                      }
                      if (key === 'Backspace') {
-                       return <button key={key} aria-label="Sil" onClick={() => handleKeyPress('Backspace')} className={`${base} flex-[1.55] bg-red-900/50 text-red-100 hover:bg-red-900/70 active:scale-95`}><Delete size={20} /></button>;
+                       return <button key={key} aria-label="Sil" onClick={() => handleKeyPress('Backspace')} className={`${base} flex-[1.5] ${theme.key} ${theme.keyText} hover:brightness-110`}><Delete size={22} /></button>;
                      }
                      return (
-                       <button key={key} disabled={dead} tabIndex={dead ? -1 : 0} aria-hidden={dead || undefined}
-                         onClick={() => handleKeyPress(key)}
-                         className={`${base} flex-1 text-[15px] ${theme.key} ${theme.keyText} ${dead ? 'opacity-25 shadow-none' : 'hover:brightness-110 active:scale-95'}`}>
+                       <button key={key} onClick={() => handleKeyPress(key)} className={`${base} flex-1 text-[17px] ${theme.key} ${theme.keyText} hover:brightness-110`}>
                          {key}
                        </button>
                      );
                    })}
-                   {i === 1 && <div className="flex-[0.5]" />}
+                   {i === 0 && <div className="flex-[0.5]" />}
                  </div>
               ))}
            </div>

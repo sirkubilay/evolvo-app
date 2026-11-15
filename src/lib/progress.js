@@ -33,6 +33,12 @@ export const DEFAULT_STATS = {
   lastNoLossDate: null,
   lastLossDate: null,
   lastSaturday: null,
+  // Sadece günlük (online) bulmaca: Wordle tarzı istatistik ekranı için
+  dailyPlayed: 0,
+  dailyWins: 0,
+  // En kısa çözüme göre fazladan hamle → kaç kez ("0" = en kısa yoldan, "4" = 4 ve üstü)
+  dailyDist: {},
+  lastDailyExtra: null,
   shares: 0,
   avatarChanges: 0,
   uniqueWords: 0,
@@ -44,11 +50,14 @@ export const DEFAULT_STATS = {
 export const loadStats = () => {
   try {
     const saved = JSON.parse(localStorage.getItem(STATS_KEY) || 'null');
-    return { ...DEFAULT_STATS, ...(saved || {}), achievements: { ...(saved?.achievements || {}) } };
+    return { ...DEFAULT_STATS, ...(saved || {}), achievements: { ...(saved?.achievements || {}) }, dailyDist: { ...(saved?.dailyDist || {}) } };
   } catch {
-    return { ...DEFAULT_STATS, achievements: {} };
+    return { ...DEFAULT_STATS, achievements: {}, dailyDist: {} };
   }
 };
+
+/** Fazladan hamle sayısını dağılım kovasına çevirir (0..4, 4 = "4+"). */
+export const extraBucket = (moves, optimal) => String(Math.min(4, Math.max(0, (moves || 0) - (optimal || moves || 0))));
 
 export const saveStats = (stats) => {
   try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch { /* depolama kapalı olabilir */ }
@@ -78,7 +87,7 @@ export const recordWords = (words) => {
  * game: { win, hints, score, time, moves, maxMoves, invalidAttempts, isTodaysDaily, uniqueWords }
  */
 export const applyGameEnd = (prev, game, now = new Date()) => {
-  const s = { ...prev, achievements: { ...prev.achievements } };
+  const s = { ...prev, achievements: { ...prev.achievements }, dailyDist: { ...(prev.dailyDist || {}) } };
   const today = dayKey(now);
 
   s.played += 1;
@@ -95,6 +104,15 @@ export const applyGameEnd = (prev, game, now = new Date()) => {
 
   // Günlük bulmaca serisi — sadece BUGÜNÜN günlük bulmacası sayılır (geçmiş bulmacalar değil)
   if (game.isTodaysDaily) {
+    s.dailyPlayed = (s.dailyPlayed || 0) + 1;
+    if (game.win) {
+      s.dailyWins = (s.dailyWins || 0) + 1;
+      const b = extraBucket(game.moves, game.optimal);
+      s.dailyDist[b] = (s.dailyDist[b] || 0) + 1;
+      s.lastDailyExtra = b;
+    } else {
+      s.lastDailyExtra = null;
+    }
     if (game.win) {
       if (s.lastDailyWinDate !== today) {
         s.currentStreak = isYesterday(s.lastDailyWinDate, today) ? s.currentStreak + 1 : 1;
@@ -218,6 +236,9 @@ export const mergeStats = (local, cloud) => {
     shares: max('shares'),
     avatarChanges: max('avatarChanges'),
     uniqueWords: max('uniqueWords'),
+    dailyPlayed: max('dailyPlayed'),
+    dailyWins: max('dailyWins'),
+    dailyDist: Object.fromEntries(['0', '1', '2', '3', '4'].map((k) => [k, Math.max(local.dailyDist?.[k] || 0, c.dailyDist?.[k] || 0)])),
     maxStreak: max('maxStreak'),
     maxPlayStreak: max('maxPlayStreak'),
     currentStreak: newerDaily.currentStreak,

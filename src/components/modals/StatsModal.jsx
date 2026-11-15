@@ -1,43 +1,101 @@
 import { useState, useEffect } from 'react';
-import { X, BarChart2 } from 'lucide-react';
-import { effectiveStreak } from '../../lib/progress';
+import { X } from 'lucide-react';
+import { effectiveStreak, playedDailyToday } from '../../lib/progress';
+
+// Wordle tarzı istatistik ekranı — SADECE günlük (online) bulmaca sayılır; sınırsız mod ve meydan okuma dahil değil.
+const BUCKETS = [
+  { key: '0', label: 'En kısa' },
+  { key: '1', label: '+1' },
+  { key: '2', label: '+2' },
+  { key: '3', label: '+3' },
+  { key: '4', label: '+4 ve üstü' },
+];
+
+const useCountdown = (active) => {
+  const [left, setLeft] = useState('');
+  useEffect(() => {
+    if (!active) return undefined;
+    const tick = () => {
+      const now = new Date();
+      const next = new Date(now);
+      next.setHours(24, 0, 0, 0);
+      const d = next - now;
+      const p = (n) => String(n).padStart(2, '0');
+      setLeft(`${p(Math.floor(d / 3.6e6))}:${p(Math.floor((d % 3.6e6) / 6e4))}:${p(Math.floor((d % 6e4) / 1000))}`);
+    };
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [active]);
+  return left;
+};
 
 export const StatsModal = ({ isOpen, onClose, stats, theme }) => {
-  const [timeLeft, setTimeLeft] = useState("");
-  useEffect(() => {
-    if (!isOpen) return;
-    const timer = setInterval(() => {
-      const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setHours(24, 0, 0, 0);
-      const diff = tomorrow - now;
-      const h = Math.floor(diff / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
-      setTimeLeft(`${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isOpen]);
-
+  const timeLeft = useCountdown(isOpen);
   if (!isOpen) return null;
-  const winRate = stats.played > 0 ? Math.round((stats.wins / stats.played) * 100) : 0;
+
+  const played = stats.dailyPlayed || 0;
+  const wins = stats.dailyWins || 0;
+  const winRate = played > 0 ? Math.round((wins / played) * 100) : 0;
+  const dist = stats.dailyDist || {};
+  const maxCount = Math.max(1, ...BUCKETS.map((b) => dist[b.key] || 0));
+  const highlight = playedDailyToday(stats) ? stats.lastDailyExtra : null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/70 backdrop-blur-md" onClick={onClose}>
-      <div className={`${theme.panel} w-full max-w-md rounded-[2rem] p-8 border border-white/10 text-white shadow-2xl`} onClick={e => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-8"><h2 className="text-2xl font-black flex items-center gap-2 italic uppercase tracking-tighter"><BarChart2 className="text-green-400" /> İSTATİSTİKLER</h2><button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors"><X /></button></div>
-        <div className="grid grid-cols-4 gap-4 text-center mb-8 bg-black/20 p-4 rounded-2xl border border-white/5 shadow-inner">
-          {[{ label: 'OYNANAN', val: stats.played }, { label: 'KAZANMA ORANI', val: `%${winRate}` }, { label: 'GÜNLÜK SERİ 🔥', val: effectiveStreak(stats) }, { label: 'EN UZUN SERİ', val: stats.maxStreak || 0 }].map((s, i) => (
-            <div key={i} className="flex flex-col items-center"><span className="text-4xl font-black text-blue-100">{s.val}</span><span className="text-[9px] font-bold opacity-60 mt-1.5 leading-tight uppercase tracking-widest">{s.label}</span></div>
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-5 bg-black/70 backdrop-blur-md" onClick={onClose}>
+      <div className={`${theme.panel} w-full max-w-sm rounded-3xl px-6 pt-5 pb-6 border border-white/10 text-white shadow-2xl animate-in zoom-in-95 duration-200`} onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-end -mr-2 -mt-1">
+          <button onClick={onClose} aria-label="Kapat" className="p-2 hover:bg-white/10 rounded-full transition-colors"><X size={20} /></button>
+        </div>
+
+        <h2 className="text-center text-sm font-black uppercase tracking-[0.2em] mb-1">İstatistikler</h2>
+        <p className="text-center text-[10px] font-bold uppercase tracking-widest opacity-40 mb-5">Günlük bulmaca</p>
+
+        <div className="grid grid-cols-4 gap-1 text-center mb-7">
+          {[
+            { label: 'Oynanan', val: played },
+            { label: 'Galibiyet %', val: winRate },
+            { label: 'Mevcut seri', val: effectiveStreak(stats) },
+            { label: 'En uzun seri', val: stats.maxStreak || 0 },
+          ].map((s) => (
+            <div key={s.label} className="flex flex-col items-center">
+              <span className="text-[2.1rem] leading-none font-black tabular-nums">{s.val}</span>
+              <span className="text-[10px] leading-tight opacity-70 mt-1.5">{s.label}</span>
+            </div>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-4 text-center mb-8 border-t border-white/10 pt-6">
-           <div className="flex flex-col"><span className="text-4xl font-black text-green-100">{stats.dictionaryLookups || 0}</span><span className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Sözlük Bakma</span></div>
-           <div className="flex flex-col"><span className="text-4xl font-black text-yellow-100">{stats.hintsUsed || 0}</span><span className="text-[10px] font-bold opacity-60 uppercase tracking-widest">İpucu</span></div>
+
+        <h3 className="text-center text-xs font-black uppercase tracking-[0.2em] mb-3">Hamle dağılımı</h3>
+        {wins === 0 ? (
+          <p className="text-center text-xs opacity-50 mb-6">Henüz kazanılmış günlük bulmaca yok.</p>
+        ) : (
+          <div className="space-y-1.5 mb-6">
+            {BUCKETS.map((b) => {
+              const n = dist[b.key] || 0;
+              const pct = Math.max(7, Math.round((n / maxCount) * 100));
+              const hot = highlight === b.key;
+              return (
+                <div key={b.key} className="flex items-center gap-2 text-xs">
+                  <span className="w-[4.5rem] text-right opacity-70 shrink-0">{b.label}</span>
+                  <div className="flex-1">
+                    <div
+                      className={`h-5 rounded-sm flex items-center justify-end px-1.5 font-black text-[11px] transition-all duration-700 ${hot ? 'bg-green-600' : 'bg-white/15'}`}
+                      style={{ width: `${pct}%` }}
+                    >
+                      {n}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div className="border-t border-white/10 pt-4 text-center">
+          <p className="text-[10px] font-bold uppercase opacity-50 tracking-widest mb-1">Sonraki Evolvo</p>
+          <div className="text-3xl font-black tabular-nums tracking-wide">{timeLeft}</div>
         </div>
-        <div className="bg-black/20 rounded-2xl p-6 text-center border border-white/5 shadow-inner"><p className="text-[10px] font-bold uppercase opacity-60 mb-2 tracking-widest">SONRAKİ EVOLVO</p><div className="text-5xl font-mono font-bold text-green-400 tracking-wider shadow-green-500/20 drop-shadow-md">{timeLeft}</div></div>
       </div>
     </div>
   );
 };
-
