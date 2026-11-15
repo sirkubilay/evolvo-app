@@ -21,11 +21,11 @@ export const ContactModal = ({ isOpen, onClose, theme }) => {
           
           {/* mailto: etiketi tıklandığında otomatik mail uygulamasını açar */}
           <a 
-            href="mailto:tr.evolvogame@gmail.com" 
+            href="mailto:info@altaygaming.com" 
             className="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 p-4 rounded-2xl font-bold text-white transition-all active:scale-95 w-full justify-center border border-white/5 shadow-inner"
           >
             <Mail size={24} className="text-blue-400" />
-            <span className="tracking-wide">tr.evolvogame@gmail.com</span>
+            <span className="tracking-wide">info@altaygaming.com</span>
           </a>
         </div>
 

@@ -40,4 +40,4 @@ Wordle benzeri günlük format + kelime merdiveni (word ladder) mekaniği bir ar
 
 ## İletişim
 
-- E-posta: tr.evolvogame@gmail.com
+- E-posta: info@altaygaming.com

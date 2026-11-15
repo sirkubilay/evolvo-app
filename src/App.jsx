@@ -539,7 +539,7 @@ const handleStartUnlimited = async (length, level) => {
               <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Toplanan Veriler:</strong> Google ile giriş yaptığınızda Google UID, ad/soyad ve e-posta adresiniz Firebase'e aktarılır. Kullanıcı adınız liderlik tablosu için herkese açık görünür.</li>
               <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Kullanım Amacı:</strong> Veriler yalnızca skor kaydı, hile önleme (reCAPTCHA) ve cihazlar arası ilerleme eşitleme için kullanılır.</li>
               <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Veri Paylaşımı:</strong> Hesap verileriniz satılmaz veya pazarlama amacıyla paylaşılmaz. Android uygulamasındaki reklamlar Google AdMob ile sunulur; ayrıntılar için <a href="/privacy.html" style={{color:'#60a5fa'}}>tam gizlilik politikası</a>.</li>
-              <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Veri Silme:</strong> KVKK kapsamındaki haklarınız için <a href="mailto:tr.evolvogame@gmail.com" style={{color:'#60a5fa'}}>tr.evolvogame@gmail.com</a> adresine yazabilirsiniz.</li>
+              <li style={{marginBottom:8}}><strong style={{color:'#e2e8f0'}}>Veri Silme:</strong> KVKK kapsamındaki haklarınız için <a href="mailto:info@altaygaming.com" style={{color:'#60a5fa'}}>info@altaygaming.com</a> adresine yazabilirsiniz.</li>
             </ul>
           </section>
 
@@ -565,11 +565,11 @@ const handleStartUnlimited = async (length, level) => {
 
           <section>
             <h2 style={{fontSize:18,fontWeight:800,color:'#93c5fd',marginBottom:12,textTransform:'uppercase'}}>4. İletişim</h2>
-            <p style={{fontSize:14,lineHeight:1.7}}>E-posta: <a href="mailto:tr.evolvogame@gmail.com" style={{color:'#60a5fa'}}>tr.evolvogame@gmail.com</a></p>
+            <p style={{fontSize:14,lineHeight:1.7}}>E-posta: <a href="mailto:info@altaygaming.com" style={{color:'#60a5fa'}}>info@altaygaming.com</a></p>
           </section>
 
           <footer style={{marginTop:60,paddingTop:24,borderTop:'1px solid rgba(255,255,255,0.08)',textAlign:'center',fontSize:12,color:'rgba(255,255,255,0.3)'}}>
-            <p>© 2026 Evolvo — Altay Interactive. Tüm hakları saklıdır.</p>
+            <p>© 2026 Evolvo — Altay Gaming. Tüm hakları saklıdır.</p>
             <p style={{marginTop:8}}><a href="/" style={{color:'#60a5fa',textDecoration:'none'}}>Ana Sayfa</a></p>
           </footer>
         </div>

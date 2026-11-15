@@ -39,7 +39,7 @@ export const PrivacyModal = ({ isOpen, onClose, theme }) => {
               <ul className="list-disc pl-5 mt-2 space-y-2">
                 <li><strong>Toplanan Veriler:</strong> Google ile giriş yaptığınızda Google UID (Benzersiz Kimlik), Ad/Soyad ve E-posta adresiniz arka planda güvenli veritabanımıza (Firebase) aktarılır. Ekranda oluşturduğunuz "Kullanıcı Adı" liderlik tablosu için herkese açık şekilde yayınlanır.</li>
                 <li><strong>Kullanım Amacı:</strong> Bu veriler sadece oyun içi skorlarınızı kaydetmek, hileleri önlemek (reCAPTCHA) ve cihazlar arası ilerlemenizi eşitlemek için kullanılır.</li>
-                <li><strong>Veri Paylaşımı:</strong> Hesap verileriniz satılmaz veya pazarlama amacıyla 3. şahıslarla paylaşılmaz. Android uygulamasında reklamlar Google AdMob ile sunulur; AdMob reklam kimliği gibi cihaz verilerini işleyebilir. Ayrıntılar: tr.evolvogame.com/privacy</li>
+                <li><strong>Veri Paylaşımı:</strong> Hesap verileriniz satılmaz veya pazarlama amacıyla 3. şahıslarla paylaşılmaz. Android uygulamasında reklamlar Google AdMob ile sunulur; AdMob reklam kimliği gibi cihaz verilerini işleyebilir. Ayrıntılar: altaygaming.com/evolvo/gizlilik</li>
                 <li><strong>Veri Silme:</strong> Hesabınızı ve skorlarınızı sistemden tamamen sildirmek isterseniz iletişim kanallarımız üzerinden bizimle irtibata geçebilirsiniz.</li>
               </ul>
             </div>
