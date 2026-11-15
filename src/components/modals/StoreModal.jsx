@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { X, Ban, Loader2, Lightbulb, ShoppingBag, Check } from 'lucide-react';
-import { getStorePrices, purchaseRemoveAds, purchaseHintPack, restoreRemoveAds } from '../../lib/monetization';
+import { getStorePrices, purchaseRemoveAds, purchaseHintPack } from '../../lib/monetization';
 import { useHintWallet } from '../../lib/hints';
 import { HINT_PACKS, REMOVE_ADS_PRODUCT_ID } from '../../data/constants';
 
@@ -46,13 +46,6 @@ export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, s
     report(r, `+${pack.count} ipucu hesabına eklendi! 💡`);
   };
 
-  const restore = async () => {
-    setBusy('restore');
-    const owned = await restoreRemoveAds();
-    setBusy(null);
-    if (owned) { onAdsRemoved(); showFeedback('Reklamsız sürüm geri yüklendi!', 'success'); }
-    else showFeedback('Bu Google hesabında "Reklamları Kaldır" satın alması bulunamadı.', 'error');
-  };
 
   return (
     <div className="fixed inset-0 z-[400] flex items-end sm:items-center justify-center sm:p-6 bg-black/75 backdrop-blur-md" onClick={() => !busy && onClose()}>
@@ -104,11 +97,7 @@ export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, s
             </button>
           )}
         </div>
-        {!adsRemoved && (
-          <button onClick={restore} disabled={!!busy} className="w-full py-3 mt-2 text-[11px] font-bold text-white/50 hover:text-white/80 uppercase tracking-widest">
-            {busy === 'restore' ? <Loader2 size={14} className="animate-spin mx-auto" /> : 'Satın almayı geri yükle'}
-          </button>
-        )}
+
       </div>
     </div>
   );

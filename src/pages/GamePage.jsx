@@ -558,9 +558,9 @@ Sen de dene 👇`;
             </div>
 
             {/* ORTA KISIM: Logo (Tam Ortalanmış) */}
-            <div onClick={onBack} className="cursor-pointer transform hover:scale-105 transition-transform absolute left-1/2 -translate-x-1/2 top-3 z-10">
+            <button onClick={onBack} aria-label="Ana sayfaya dön" className="cursor-pointer transform hover:scale-105 active:scale-95 transition-transform absolute left-1/2 -translate-x-1/2 top-2 z-30 px-2 py-1">
                <Logo colors={colors} />
-            </div>
+            </button>
 
             {/* Bildirim balonu: EVOLVO yazısının hemen altında, içeriği itmeden süzülür */}
             {message && (
@@ -571,7 +571,8 @@ Sen de dene 👇`;
             )}
             
             {/* SAĞ KISIM: Menü ve Altında Sonraki Bölüm Tuşu */}
-            <div className="flex flex-col items-end gap-2 z-10 w-28 sm:w-32">
+            {/* Kap dokunuşu yutmasın (ortadaki EVOLVO'nun üstüne biniyor); sadece butonlar tıklanır */}
+            <div className="flex flex-col items-end gap-2 z-10 w-28 sm:w-32 pointer-events-none [&_button]:pointer-events-auto">
                 <div className="flex items-center gap-0.5">
                   <button onClick={() => toggleModal('howToPlay', true)} aria-label="Nasıl oynanır" className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors">
                      <HelpCircle size={21} />

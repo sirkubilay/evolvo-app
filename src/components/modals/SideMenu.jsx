@@ -1,4 +1,4 @@
-import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye, Bell, Users, ShoppingBag, ShieldCheck } from 'lucide-react';
+import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye, Bell, Users, ShieldCheck } from 'lucide-react';
 import { isNative } from '../../lib/native';
 import { Logo } from '../Logo';
 
@@ -46,11 +46,6 @@ export const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, 
              </button>
            ))}
 
-           {native && settings.onOpenStore && (
-             <button onClick={() => { settings.onOpenStore(); onClose(); }} className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-500/20 to-amber-600/20 border border-yellow-500/30 text-yellow-200 rounded-xl font-bold text-sm hover:brightness-110 transition-all flex-shrink-0">
-               <ShoppingBag size={18} className="text-yellow-400" /> Mağaza
-             </button>
-           )}
 
            <div className="border-t border-white/5 my-4 pt-4 space-y-2">
              {native && settings.onPrivacyOptions && (
