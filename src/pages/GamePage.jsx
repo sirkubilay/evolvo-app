@@ -505,11 +505,14 @@ Sen de dene 👇`;
     } catch (e) { console.error(e); }
   };
 
+  // Standart Türkçe Q klavye: harfler telefon klavyesindeki yerlerinde. Q, W, X Türkçede olmadığından
+  // yerleri korunur ama soluk ve basılamaz (yoksa bütün harfler kayar ve kullanıcı aradığını bulamaz).
   const keyboardRows = [
-    ['E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'Ğ', 'Ü'],
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'Ğ', 'Ü'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ş', 'İ'],
-    ['Z', 'C', 'V', 'B', 'N', 'M', 'Ö', 'Ç', 'Enter']
+    ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Ö', 'Ç', 'Backspace'],
   ];
+  const DEAD_KEYS = ['Q', 'W', 'X'];
 
   return (
     <div className={`h-screen flex flex-col font-sans overflow-hidden ${theme.bg} ${theme.text}`}>
@@ -719,15 +722,28 @@ Sen de dene 👇`;
 
       {!isGameOver && (
         <div className={`fixed bottom-0 left-0 w-full ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'} p-1 pb-2 border-t ${theme.panelBorder} z-30`}>
-           <div className="max-w-xl mx-auto space-y-1">
+           <div className="max-w-xl mx-auto space-y-1.5 px-0.5">
               {keyboardRows.map((row, i) => (
-                 <div key={i} className="flex justify-center gap-1">
-                   {row.map(key => (
-                     <button key={key} onClick={() => handleKeyPress(key === 'Enter' ? 'Enter' : key === 'Backspace' ? 'Backspace' : key)} className={`h-11 md:h-12 flex-1 rounded-md font-bold text-sm md:text-base transition-colors shadow-sm ${key === 'Enter' ? `px-2 md:px-3 ${colors.btnPrimary}` : key === 'Ö' || key === 'Ç' ? 'flex-[0.8]' : ''} ${key !== 'Enter' ? `${theme.key} ${theme.keyText} hover:brightness-110 active:scale-95` : ''}`}>{key}</button>
-                  ))}
-                  {i === 2 && (
-                     <button key="backspace" onClick={() => handleKeyPress('Backspace')} className="h-11 md:h-12 px-3 md:px-4 bg-red-900/50 text-red-100 rounded-md flex items-center justify-center hover:bg-red-900/70 transition-colors active:scale-95 shadow-sm"><Delete size={20} /></button>
-                  )}
+                 <div key={i} className="flex justify-center gap-[3px] sm:gap-1">
+                   {i === 1 && <div className="flex-[0.5]" />}
+                   {row.map(key => {
+                     const dead = DEAD_KEYS.includes(key);
+                     const base = 'h-12 md:h-12 rounded-lg font-bold flex items-center justify-center select-none transition-transform shadow-sm';
+                     if (key === 'Enter') {
+                       return <button key={key} onClick={() => handleKeyPress('Enter')} className={`${base} flex-[1.55] text-[11px] tracking-wide uppercase ${colors.btnPrimary} active:scale-95`}>Enter</button>;
+                     }
+                     if (key === 'Backspace') {
+                       return <button key={key} aria-label="Sil" onClick={() => handleKeyPress('Backspace')} className={`${base} flex-[1.55] bg-red-900/50 text-red-100 hover:bg-red-900/70 active:scale-95`}><Delete size={20} /></button>;
+                     }
+                     return (
+                       <button key={key} disabled={dead} tabIndex={dead ? -1 : 0} aria-hidden={dead || undefined}
+                         onClick={() => handleKeyPress(key)}
+                         className={`${base} flex-1 text-[15px] ${theme.key} ${theme.keyText} ${dead ? 'opacity-25 shadow-none' : 'hover:brightness-110 active:scale-95'}`}>
+                         {key}
+                       </button>
+                     );
+                   })}
+                   {i === 1 && <div className="flex-[0.5]" />}
                  </div>
               ))}
            </div>
