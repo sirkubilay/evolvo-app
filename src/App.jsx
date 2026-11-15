@@ -7,7 +7,7 @@ import { getAuth, signInWithPopup, signInWithCredential, GoogleAuthProvider, sig
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Capacitor } from '@capacitor/core';
 import { Play, Trophy, Menu, X, Star, CheckCircle2, AlertCircle, Loader2, Infinity as InfinityIcon } from 'lucide-react';
-import { AVATARS, generateRandomName, THEMES, COLOR_BLIND_THEME } from './data/constants';
+import { AVATARS, generateRandomName, THEMES, COLOR_BLIND_THEME, GOOGLE_WEB_CLIENT_ID } from './data/constants';
 import { app } from './firebase';
 import { MountainMini } from './components/MountainMini';
 import { SplashScreen } from './components/SplashScreen';
@@ -31,7 +31,6 @@ import { useProgress } from './lib/useProgress';
 import { loadStats, dayKey } from './lib/progress';
 import { FriendsModal } from './components/modals/FriendsModal';
 import { takeFriendCodeFromUrl } from './lib/friends';
-import { NotificationPrompt } from './components/modals/NotificationPrompt';
 import { RemoveAdsModal } from './components/modals/RemoveAdsModal';
 import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial } from './lib/monetization';
 import {
@@ -198,6 +197,11 @@ const handleStartUnlimited = async (length, level) => {
   useEffect(() => {
     scheduleReminders(loadStats());
     initMonetization().then(() => { setAdsRemovedState(adsRemoved()); setPrivacyOptions(needsPrivacyOptions()); });
+    // Google giriş eklentisi kullanılmadan önce bir kez kurulmalı; kurulmazsa signIn() uygulamayı çökertir.
+    if (Capacitor.isNativePlatform()) {
+      GoogleAuth.initialize({ clientId: GOOGLE_WEB_CLIENT_ID, scopes: ['profile', 'email'], grantOfflineAccess: true })
+        .catch((e) => console.warn('GoogleAuth kurulamadı:', e));
+    }
   }, []);
   const [adsRemovedState, setAdsRemovedState] = useState(adsRemoved);
   const [privacyOptions, setPrivacyOptions] = useState(false);
@@ -322,6 +326,8 @@ const handleStartUnlimited = async (length, level) => {
           setShowUniqueNameModal(true);
         }
       } catch (error) {
+        // Kullanıcı hesap seçiciyi kapattıysa (kod 12501) hata gösterme
+        if (/cancel|12501/i.test(`${error?.message} ${error?.code}`)) return;
         console.error("Native Giriş Hatası:", error);
         showFeedback("Google girişi başarısız oldu.", "error");
       }
@@ -463,26 +469,21 @@ const handleStartUnlimited = async (length, level) => {
     if (type !== 'game_end') { recordEvent(type); return; }
     const next = recordGameEnd(payload);
     scheduleReminders(next);
-    if (payload.win) {
-      maybeAskForReview(next);
-      if (shouldAskNotifications()) setTimeout(() => setShowNotifPrompt(true), 2500);
-    }
+    if (payload.win) maybeAskForReview(next);
   };
 
-  const [showNotifPrompt, setShowNotifPrompt] = useState(false);
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
   const setNotifications = async (on) => {
     if (on) setNotificationsOn(await enableNotifications(stats));
     else { await disableNotifications(stats); setNotificationsOn(false); }
   };
-  const notificationPrompt = (
-    <NotificationPrompt
-      isOpen={showNotifPrompt}
-      theme={theme}
-      onAccept={async () => { setShowNotifPrompt(false); const ok = await enableNotifications(stats); setNotificationsOn(ok); if (ok) showFeedback("Hatırlatmalar açık! 🔔", "success"); }}
-      onDecline={() => { setShowNotifPrompt(false); disableNotifications(stats); }}
-    />
-  );
+  // Bildirimler varsayılan olarak açık: ilk açılışta (açılış animasyonu bitince) sistemin izin penceresi
+  // doğrudan gelir. Android 12 ve öncesinde izin zaten verili olduğundan pencere bile çıkmaz.
+  useEffect(() => {
+    if (showSplash || !shouldAskNotifications()) return;
+    const t = setTimeout(() => { enableNotifications(loadStats()).then(setNotificationsOn); }, 600);
+    return () => clearTimeout(t);
+  }, [showSplash]);
 
   const achievementToast = (
     <AchievementToast
@@ -501,7 +502,6 @@ const handleStartUnlimited = async (length, level) => {
     <>
       <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
       {achievementToast}
-      {notificationPrompt}
       <FriendsModal
         isOpen={!!modalState.friends}
         onClose={() => toggleModal('friends', false)}
@@ -717,43 +717,43 @@ const handleStartUnlimited = async (length, level) => {
 
       <section className="flex-1 flex flex-col justify-center pb-12 md:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <div className={`inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full mb-6 md:mb-8 animate-bounce`}>
-            <Star size={16} className="text-yellow-500 fill-yellow-500" />
-            <span className="text-sm font-bold tracking-wide uppercase">Günün Kelime Zinciri Hazır!</span>
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full mb-5 md:mb-8">
+            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" /><span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" /></span>
+            <span className="text-[11px] font-bold tracking-widest uppercase opacity-90">Günün kelime zinciri hazır</span>
           </div>
-          
-          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black mb-6 tracking-tighter uppercase italic leading-none">
-            Kelimeleri <br className="hidden md:block" />
+
+          <h1 className="text-[2.6rem] md:text-6xl lg:text-8xl font-black mb-4 md:mb-6 tracking-tighter uppercase italic leading-[0.95]">
+            Kelimeleri <br />
             <span className={colorBlindMode ? 'text-blue-500' : 'text-green-500'}>Evrimleştir</span>
           </h1>
-          
-          <p className="text-lg md:text-2xl text-blue-200/80 mb-8 md:mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-            Başlangıç kelimesinden hedef kelimeye sadece birer harf değiştirerek ulaşabilir misin?
+
+          <p className="text-base md:text-2xl text-blue-200/75 mb-8 md:mb-12 max-w-md md:max-w-2xl mx-auto font-medium leading-relaxed">
+            Başlangıç kelimesinden hedefe, her adımda tek harf değiştirerek ulaş.
           </p>
 
-         <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button onClick={() => setCurrentPage('game')} className={`${currentColors.btnPrimary} px-10 py-5 rounded-3xl font-black text-xl flex items-center justify-center gap-3 transition-all hover:scale-105 shadow-xl`}>
-              <Play fill="currentColor" size={24} /> HEMEN OYNA
+          <div className="w-full max-w-xs sm:max-w-sm mx-auto flex flex-col gap-2.5">
+            <button onClick={() => setCurrentPage('game')} className={`${currentColors.btnPrimary} w-full py-3.5 rounded-2xl font-black text-base tracking-wide flex items-center justify-center gap-2 transition-all active:scale-[0.97] shadow-lg shadow-green-900/30`}>
+              <Play fill="currentColor" size={18} /> GÜNÜN BULMACASI
             </button>
-            <button onClick={() => toggleModal('leaderboard', true)} className={`${currentColors.btnSecondary} px-10 py-5 rounded-3xl font-bold text-xl flex items-center justify-center gap-3 transition-all`}>
-              <Trophy size={24} className="text-yellow-500" /> SIRALAMA
-            </button>
-          </div>
-
-          {isNative && (
-            <div className="mt-6 flex justify-center animate-in zoom-in duration-500">
-              <button onClick={() => setCurrentPage('unlimited_menu')} className="w-full sm:w-auto bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-600 hover:to-indigo-500 px-10 py-4 rounded-3xl font-black text-xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-purple-500/30 text-white">
-                <InfinityIcon size={24} /> SINIRSIZ MOD
+            <div className="grid grid-cols-2 gap-2.5">
+              {isNative && (
+                <button onClick={() => setCurrentPage('unlimited_menu')} className="py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white active:scale-[0.97] transition-all shadow-md shadow-purple-900/30">
+                  <InfinityIcon size={16} /> Sınırsız
+                </button>
+              )}
+              <button onClick={() => toggleModal('leaderboard', true)} className={`${isNative ? '' : 'col-span-2'} py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-white/10 border border-white/10 active:scale-[0.97] transition-all`}>
+                <Trophy size={16} className="text-yellow-400" /> Sıralama
               </button>
             </div>
-          )}
+            <button onClick={() => toggleModal('howToPlay', true)} className="py-2 text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-80">Nasıl oynanır?</button>
+          </div>
         </div>
       </section>
 
       <footer className={`py-8 text-center border-t ${theme.panelBorder} text-sm mt-auto`}>
         <div className="flex items-center justify-center gap-2 mb-3" style={{animation:'altayBrandIn 1s ease 0.7s forwards', opacity:0}}>
           <MountainMini size={14} />
-          <span className="text-[11px] text-slate-400 tracking-[0.25em] font-medium">ALTAY INTERACTIVE</span>
+          <span className="text-[11px] text-slate-400 tracking-[0.25em] font-medium">ALTAY GAMING</span>
         </div>
         <p className="opacity-50">© 2026 Evolvo. Tüm hakları saklıdır.</p>
         <div className="flex justify-center gap-4 mt-2 font-bold text-xs uppercase tracking-widest opacity-50">

@@ -123,7 +123,12 @@ export const COLOR_BLIND_THEME = {
 };
 
 // --- Mağaza / paylaşım linkleri ---
-export const WEB_URL = 'https://tr.evolvogame.com';
+// Web sürümü (davet linkleri buraya gider; ?arkadas=KOD burada okunur)
+export const WEB_URL = 'https://evolvo-app.vercel.app';
+// Paylaşımlarda gösterilen tanıtım sayfası (web'de oyna + Google Play linki)
+export const SHARE_URL = 'https://altaygaming.com/evolvo';
+// Google ile giriş: Firebase projesinin "Web client" OAuth kimliği (capacitor.config.json'daki serverClientId ile aynı)
+export const GOOGLE_WEB_CLIENT_ID = '64945678615-2ue4ldom23ghchbtgr59b5mnpg7olmuk.apps.googleusercontent.com';
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.altayinteractive.evolvo';
 // Uygulama Play'de herkese açık (üretim) olunca true yap: paylaşımlara Play linki eklenir.
 // Kapalı testteyken link testçi olmayanlara "bulunamadı" gösterir.

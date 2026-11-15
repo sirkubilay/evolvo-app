@@ -2,10 +2,11 @@
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { isNative } from './native';
-import { PLAY_STORE_LIVE, PLAY_STORE_URL, WEB_URL } from '../data/constants';
+import { PLAY_STORE_LIVE, PLAY_STORE_URL, SHARE_URL } from '../data/constants';
 
 /** Paylaşım metninin sonuna eklenecek linkler. Play linki, uygulama herkese açılınca eklenir. */
-export const shareLinks = () => (PLAY_STORE_LIVE ? `🌐 ${WEB_URL}\n📱 Android: ${PLAY_STORE_URL}` : WEB_URL);
+export const shareLinks = () => (PLAY_STORE_LIVE ? `📱 ${PLAY_STORE_URL}
+🌐 ${SHARE_URL}` : SHARE_URL);
 
 const canvasToBase64 = (canvas) => canvas.toDataURL('image/png').split(',')[1];
 

@@ -77,7 +77,9 @@ export const scheduleReminders = async (stats) => {
       list.push({ id: 201, ...NOTIFICATION_TEXTS.evening(streak), schedule: { at: at(now, 1, EVENING_HOUR), allowWhileIdle: true } });
     }
 
-    list.forEach((n) => { n.smallIcon = 'ic_stat_evolvo'; n.iconColor = '#16a34a'; });
+    // isExactNotification:false → Android'in "Alarmlar ve hatırlatıcılar" iznini istemez, o ayar ekranını açmaz.
+    // Hatırlatmanın birkaç dakika kayması sorun değil.
+    list.forEach((n) => { n.smallIcon = 'ic_stat_evolvo'; n.iconColor = '#16a34a'; n.isExactNotification = false; });
     if (list.length) await LocalNotifications.schedule({ notifications: list });
   } catch (e) {
     console.warn('Bildirimler kurulamadı:', e);

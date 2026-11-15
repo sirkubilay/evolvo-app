@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { getApp } from 'firebase/app';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import html2canvas from 'html2canvas';
 import { Menu, X, Star, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
 import { AchievementsModal } from '../components/modals/AchievementsModal';
 import { AvatarModal } from '../components/modals/AvatarModal';
@@ -15,8 +14,9 @@ import { DefinitionModal } from '../components/modals/DefinitionModal';
 import { Logo } from '../components/Logo';
 import { hapticTap, hapticMove, hapticError, isNative } from '../lib/native';
 import { shareImage, saveImage, shareLinks } from '../lib/share';
+import { drawShareCard } from '../lib/shareCard';
 import { watchRewardedAd, adsRemoved } from '../lib/monetization';
-import { PLAY_STORE_LIVE, PLAY_STORE_URL, WEB_URL, MAX_BONUS_HINTS } from '../data/constants';
+import { PLAY_STORE_LIVE, PLAY_STORE_URL, SHARE_URL, MAX_BONUS_HINTS } from '../data/constants';
 import { dayKey } from '../lib/progress';
 
 export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
@@ -26,7 +26,6 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   const [isGameOver, setIsGameOver] = useState(false);
   const [isWon, setIsWon] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const shareCardRef = useRef(null);
   // "Keskin Nişancı" başarımı için: bu oyunda girilen geçersiz kelime sayısı
   const invalidAttemptsRef = useRef(0);
   const [hintsLeft, setHintsLeft] = useState(3);
@@ -41,6 +40,7 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [scoreDetails, setScoreDetails] = useState(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [sharePreview, setSharePreview] = useState(null);
   const earnedStars = !scoreDetails?.total ? 0 : scoreDetails.total >= 800 ? 3 : scoreDetails.total >= 500 ? 2 : 1;
   
   const playSuccessSound = () => { try { new Audio('/success.mp3').play().catch(e=>console.log(e)); } catch(e){} };
@@ -157,14 +157,12 @@ useEffect(() => {
         const optimal = puzzleData.optimalSteps || Math.max(1, stepsUsed - 2); 
         const diff = stepsUsed - optimal;
 
-        let wordScore = 800;
-        if (diff <= 0) wordScore = 1000;
-        else if (diff === 1) wordScore = 900;
-
-        const timeScore = Math.max(0, 1000 - (timer * 0.6));
-        const weightedScore = (wordScore * 0.6) + (timeScore * 0.4);
-        const penalty = hintsUsed * 100;
-        score = Math.max(0, Math.floor(weightedScore - penalty));
+        // Sunucudaki (functions/index.js → saveScore) formülün birebir aynısı; ekrandaki puan ile
+        // sıralamaya yazılan puan farklı çıkmasın.
+        const stepPoints = diff <= 0 ? 1000 : diff === 1 ? 900 : diff === 2 ? 800 : diff === 3 ? 700 : diff === 4 ? 600 : 250;
+        const timePoints = Math.max(0, 1000 - timer);
+        const baseScore = Math.floor(timePoints * 0.6 + stepPoints * 0.4);
+        score = Math.max(0, baseScore - hintsUsed * 150);
         
         showFeedback("TEBRİKLER!", "success");
         if(!skipSound) playSuccessSound(); 
@@ -450,8 +448,17 @@ const handleHint = async (e) => {
     updateStats('dictionary');
   };
 
-  const buildCanvas = () =>
-    html2canvas(shareCardRef.current, { backgroundColor: '#070e1c', scale: 2, logging: false });
+  const buildCanvas = () => drawShareCard({
+    puzzle: puzzleData,
+    moves: history.length - 1,
+    time: formatTime(timer),
+    hints: hintsUsedCount,
+    score: scoreDetails?.total || 0,
+    stars: earnedStars,
+    username,
+    avatarIcon: userAvatar?.icon,
+    url: SHARE_URL,
+  });
 
   const shareCaption = () =>
     `🏆 EVOLVO — ${scoreDetails?.total || 0} Puan!
@@ -460,10 +467,14 @@ ${puzzleData.start} → ${puzzleData.target} | ${history.length - 1} hamle
 Sen de çözebilir misin? 👇
 ${shareLinks()}`;
 
+  const openShare = () => {
+    try { setSharePreview(buildCanvas().toDataURL('image/png')); } catch (e) { console.error(e); }
+    setShareModalOpen(true);
+  };
+
   const afterShare = (ok) => { if (ok) updateStats('share'); };
 
   const handleShareWhatsApp = async () => {
-    if (!shareCardRef.current) return;
     try {
       const canvas = await buildCanvas();
       const caption = shareCaption();
@@ -476,7 +487,7 @@ ${shareLinks()}`;
 ${puzzleData.start} → ${puzzleData.target} | ${history.length - 1} hamle | ${formatTime(timer)}
 
 Sen de dene 👇`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(PLAY_STORE_LIVE && isNative() ? PLAY_STORE_URL : WEB_URL)}`, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(PLAY_STORE_LIVE ? PLAY_STORE_URL : SHARE_URL)}`, '_blank');
     afterShare(true);
   };
 
@@ -487,7 +498,6 @@ Sen de dene 👇`;
   };
 
   const handleShareDownload = async () => {
-    if (!shareCardRef.current) return;
     try {
       const canvas = await buildCanvas();
       await saveImage(canvas, `evolvo-${scoreDetails?.total || 0}puan.png`);
@@ -513,7 +523,7 @@ Sen de dene 👇`;
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
 
       <div className={`flex-none z-20 ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'}`}>
-         <header className={`px-4 py-3 flex items-start justify-between border-b ${theme.panelBorder} ${settings.darkMode ? 'bg-black/95' : 'bg-[#001f3f]/95'} backdrop-blur-md relative`}>
+         <header className={`px-4 py-2 flex items-start justify-between border-b ${theme.panelBorder} ${settings.darkMode ? 'bg-black/95' : 'bg-[#001f3f]/95'} backdrop-blur-md relative`}>
             
             {/* SOL KISIM: Avatar Paneli ve Altında Geri Tuşu */}
             <div className="flex flex-col items-start gap-2 z-10 w-28 sm:w-32">
@@ -577,18 +587,14 @@ Sen de dene 👇`;
             </div>
          </header>
 
-         <div className="relative h-10 w-full flex items-center justify-center"> 
+         {/* Bildirim balonu: yer kaplamasın diye içeriğin üstünde süzülür */}
+         <div className="relative w-full h-0 flex justify-center pointer-events-none">
             {message && (
-                <div className={`absolute top-1 z-30 px-4 py-2 rounded-xl shadow-lg animate-in fade-in slide-in-from-top-2 flex items-center gap-2 font-bold text-xs border ${message.type === 'success' ? colors.success : colors.error}`}>
+                <div className={`absolute top-2 z-40 px-4 py-2 rounded-xl shadow-lg animate-in fade-in slide-in-from-top-2 flex items-center gap-2 font-bold text-xs border ${message.type === 'success' ? colors.success : colors.error}`}>
                   {message.type === 'success' ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
                   {message.text}
                 </div>
             )}
-         </div>
-
-         <div className={`py-1 flex justify-center gap-12 font-black text-xs uppercase tracking-tighter ${theme.bg}`}>
-            <div className="text-center"><p className="opacity-50 mb-0.5">Hak</p><span className="text-lg">{history.length - 1} / {maxMoves}</span></div>
-            <div className="text-center"><p className="opacity-50 mb-0.5">Süre</p><span className="text-lg font-variant-numeric">{formatTime(timer)}</span></div>
          </div>
          {/* SINIRSIZ MOD BİLGİ BARI */}
          {puzzleData.type === 'unlimited' && (
@@ -596,39 +602,40 @@ Sen de dene 👇`;
                {puzzleData.length} HARFLİ • {puzzleData.level}. BÖLÜM
             </div>
          )}
-         <div className="w-full max-w-md mx-auto px-4 pb-4 pt-1">
+         <div className="w-full max-w-md mx-auto px-4 pb-2 pt-2">
             <div className="flex items-center justify-between gap-2 text-center">
-               <div className={`flex-1 ${theme.emptyCell} rounded-xl p-2`}>
+               <div className={`flex-1 ${theme.emptyCell} rounded-xl px-2 py-1.5`}>
                   <span className="text-[9px] opacity-50 uppercase tracking-widest block">Başlangıç</span>
-                  <span className="text-lg font-black tracking-tight">{puzzleData.start}</span>
+                  <span className="text-lg font-black tracking-tight leading-tight">{puzzleData.start}</span>
                </div>
-               {/* Orijinal tasarımlı İpucu Butonu ve Kırmızı Rozet */}
-              <div className="flex flex-col items-center justify-center mx-4">
-                <div className="relative">
-                  <button 
-                    onClick={handleHint} 
-                    disabled={hintsLeft <= 0 && !canEarnHint} 
-                    className="p-3 bg-yellow-400 rounded-full hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:hover:scale-100 shadow-lg"
-                  >
-                    <Lightbulb size={28} className="text-black" fill="currentColor" />
-                  </button>
-                  
-                  {/* Kırmızı x3 Rozeti (Sadece hak varsa görünür) */}
-                  {hintsLeft > 0 ? (
-                    <span className="absolute -bottom-1 -right-2 bg-red-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-[#0B1121] shadow-md z-10">
-                      x{hintsLeft}
-                    </span>
-                  ) : canEarnHint && !isGameOver && (
-                    <span className="absolute -bottom-1 -right-2 bg-purple-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-[#0B1121] shadow-md z-10">
-                      +1
-                    </span>
-                  )}
-                </div>
+              {/* İpucu: kelimelerle aynı boyda, kompakt */}
+              <div className="relative mx-1 flex-none">
+                <button
+                  onClick={handleHint}
+                  disabled={hintsLeft <= 0 && !canEarnHint}
+                  aria-label="İpucu"
+                  className="p-2 bg-yellow-400 rounded-full hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:hover:scale-100 shadow-md"
+                >
+                  <Lightbulb size={18} className="text-black" fill="currentColor" />
+                </button>
+                {hintsLeft > 0 ? (
+                  <span className="absolute -bottom-1 -right-2 bg-red-600 text-white text-[9px] font-black px-1 rounded-full border-2 border-[#0B1121] shadow-md z-10">
+                    x{hintsLeft}
+                  </span>
+                ) : canEarnHint && !isGameOver && (
+                  <span className="absolute -bottom-1 -right-2 bg-purple-600 text-white text-[9px] font-black px-1 rounded-full border-2 border-[#0B1121] shadow-md z-10">
+                    +1
+                  </span>
+                )}
               </div>
-               <div className={`flex-1 ${theme.emptyCell} rounded-xl p-2`}>
+               <div className={`flex-1 ${theme.emptyCell} rounded-xl px-2 py-1.5`}>
                   <span className="text-[9px] opacity-50 uppercase tracking-widest block">Bitiş</span>
-                  <span className="text-lg font-black tracking-tight">{puzzleData.target}</span>
+                  <span className="text-lg font-black tracking-tight leading-tight">{puzzleData.target}</span>
                </div>
+            </div>
+            <div className="mt-1.5 flex justify-center gap-6 text-[11px] font-black uppercase tracking-wider">
+               <span><span className="opacity-50">Hak </span>{history.length - 1} / {maxMoves}</span>
+               <span className="tabular-nums"><span className="opacity-50">Süre </span>{formatTime(timer)}</span>
             </div>
          </div>
       </div>
@@ -693,87 +700,11 @@ Sen de dene 👇`;
 
     {/* PAYLAŞIM BUTONU */}
     <button
-      onClick={() => setShareModalOpen(true)}
+      onClick={openShare}
       className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:brightness-110 py-4 rounded-xl font-black text-lg transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30"
     >
       <Share2 size={20} /> SKORUNU PAYLAŞ
     </button>
-
-    {/* GİZLİ SKOR KARTI — html2canvas hedefi, tüm inline style */}
-    <div style={{ position: 'fixed', left: -9999, top: 0 }}>
-      <div ref={shareCardRef} style={{ width: 420, background: '#070e1c', padding: '32px 28px 28px', borderRadius: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', overflow: 'hidden', position: 'relative', fontFamily: 'sans-serif' }}>
-
-        {/* BG gradient */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,rgba(37,99,235,0.22) 0%,#070e1c 55%,rgba(16,185,129,0.18) 100%)' }} />
-        <div style={{ position: 'absolute', top: -60, left: -60, width: 220, height: 220, background: 'rgba(59,130,246,0.28)', borderRadius: '50%', filter: 'blur(70px)' }} />
-        <div style={{ position: 'absolute', bottom: -60, right: -60, width: 220, height: 220, background: 'rgba(16,185,129,0.18)', borderRadius: '50%', filter: 'blur(70px)' }} />
-
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          {['E','V','O','L','V','O'].map((l, i) => (
-            <div key={i} style={{ width: 40, height: 40, lineHeight: '40px', textAlign: 'center', fontWeight: 900, fontSize: 19, color: 'white', borderRadius: 9, margin: '0 3px', background: i === 2 ? '#dc2626' : i === 5 ? '#16a34a' : 'rgba(255,255,255,0.07)', border: i === 2 || i === 5 ? 'none' : '1px solid rgba(255,255,255,0.1)' }}>
-              {l}
-            </div>
-          ))}
-        </div>
-
-        {/* Mode */}
-        <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 22, position: 'relative', zIndex: 1 }}>
-          {puzzleData?.type === 'unlimited' ? `${puzzleData.length} Harfli · Bölüm ${puzzleData.level}` : 'Günlük Meydan Okuma'}
-        </div>
-
-        {/* Word pair boxes */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 26, position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', gap: 4 }}>
-            {puzzleData.start.split('').map((c, i) => (
-              <div key={i} style={{ width: 44, height: 44, lineHeight: '44px', textAlign: 'center', background: '#2563eb', borderRadius: 9, fontWeight: 900, fontSize: 19, color: 'white' }}>{c}</div>
-            ))}
-          </div>
-          <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: 24, margin: '0 14px', fontWeight: 300, lineHeight: '44px' }}>→</div>
-          <div style={{ display: 'flex', gap: 4 }}>
-            {puzzleData.target.split('').map((c, i) => (
-              <div key={i} style={{ width: 44, height: 44, lineHeight: '44px', textAlign: 'center', background: '#16a34a', borderRadius: 9, fontWeight: 900, fontSize: 19, color: 'white' }}>{c}</div>
-            ))}
-          </div>
-        </div>
-
-        {/* Stars */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 10, position: 'relative', zIndex: 1 }}>
-          {[1,2,3].map(s => (
-            <div key={s} style={{ fontSize: 26, color: s <= earnedStars ? '#facc15' : 'rgba(255,255,255,0.12)', textShadow: s <= earnedStars ? '0 0 12px rgba(250,204,21,0.6)' : 'none' }}>★</div>
-          ))}
-        </div>
-
-        {/* Score */}
-        <div style={{ textAlign: 'center', marginBottom: 22, position: 'relative', zIndex: 1 }}>
-          <div style={{ fontSize: 84, fontWeight: 900, color: '#4ade80', lineHeight: 1, textShadow: '0 0 40px rgba(74,222,128,0.45)' }}>
-            {scoreDetails?.total || 0}
-          </div>
-          <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 5 }}>PUAN</div>
-        </div>
-
-        {/* Stats */}
-        <div style={{ display: 'flex', width: '100%', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 16, marginBottom: 18, position: 'relative', zIndex: 1 }}>
-          {[{ label: 'HAMLE', value: history.length - 1 }, { label: 'SÜRE', value: formatTime(timer) }, { label: 'İPUCU', value: hintsUsedCount }].map((s, i) => (
-            <div key={i} style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{ color: 'white', fontSize: 24, fontWeight: 900 }}>{s.value}</div>
-              <div style={{ color: 'rgba(255,255,255,0.28)', fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 3 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Player */}
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-          <span style={{ fontSize: 22 }}>{userAvatar.icon}</span>
-          <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: 13, fontWeight: 700 }}>{username}</span>
-        </div>
-
-        {/* URL */}
-        <div style={{ color: 'rgba(255,255,255,0.18)', fontSize: 10, letterSpacing: '0.35em', textTransform: 'uppercase', position: 'relative', zIndex: 1, fontWeight: 600 }}>
-          tr.evolvogame.com
-        </div>
-      </div>
-    </div>
 
   </div>
 )}
@@ -838,69 +769,10 @@ Sen de dene 👇`;
               </button>
             </div>
 
-            {/* Kart Önizleme */}
-            <div className="w-full bg-[#070e1c] rounded-2xl p-5 mb-5 border border-white/8 overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-emerald-900/15 pointer-events-none" />
-
-              {/* Logo + mod */}
-              <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className="flex items-center gap-0.5">
-                  {['E','V','O','L','V','O'].map((l, i) => (
-                    <div key={i} className={`w-6 h-6 flex items-center justify-center font-black text-xs text-white rounded-md ${i === 2 ? 'bg-red-600' : i === 5 ? 'bg-green-500' : ''}`}>{l}</div>
-                  ))}
-                </div>
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/35">
-                  {puzzleData?.type === 'unlimited' ? `${puzzleData.length} Hrf · Blm ${puzzleData.level}` : 'Günlük'}
-                </span>
-              </div>
-
-              {/* Kelime kutuları */}
-              <div className="flex items-center justify-center gap-2 mb-4 relative z-10">
-                <div className="flex gap-0.5">
-                  {puzzleData.start.split('').map((c, i) => (
-                    <div key={i} className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center font-black text-white text-xs">{c}</div>
-                  ))}
-                </div>
-                <ChevronRightIcon size={14} className="text-white/25 flex-shrink-0" />
-                <div className="flex gap-0.5">
-                  {puzzleData.target.split('').map((c, i) => (
-                    <div key={i} className="w-8 h-8 bg-green-600 rounded-md flex items-center justify-center font-black text-white text-xs">{c}</div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Yıldız + puan */}
-              <div className="text-center mb-3 relative z-10">
-                <div className="flex justify-center gap-1 mb-1.5">
-                  {[1,2,3].map(s => (
-                    <Star key={s} size={16} className={s <= earnedStars ? 'text-yellow-400 fill-yellow-400' : 'text-white/15'} />
-                  ))}
-                </div>
-                <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-green-300 to-emerald-500 leading-none">
-                  {scoreDetails?.total || 0}
-                </div>
-                <div className="text-[9px] font-bold uppercase tracking-widest text-white/35 mt-0.5">PUAN</div>
-              </div>
-
-              {/* İstatistikler */}
-              <div className="flex justify-around border-t border-white/8 pt-3 relative z-10">
-                {[
-                  { label: 'HAMLE', value: history.length - 1 },
-                  { label: 'SÜRE', value: formatTime(timer) },
-                  { label: 'İPUCU', value: hintsUsedCount }
-                ].map((s, i) => (
-                  <div key={i} className="text-center">
-                    <div className="text-white font-black text-base">{s.value}</div>
-                    <div className="text-[8px] uppercase tracking-widest text-white/30 font-bold">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* URL */}
-              <div className="text-center mt-3 text-[9px] tracking-[0.3em] uppercase text-white/20 font-medium relative z-10">
-                tr.evolvogame.com
-              </div>
-            </div>
+            {/* Kart Önizleme: paylaşılacak görselin birebir kendisi */}
+            {sharePreview && (
+              <img src={sharePreview} alt="Paylaşılacak skor kartı" className="w-full max-w-[300px] mx-auto rounded-2xl mb-5 border border-white/10 shadow-xl" />
+            )}
 
             {/* Paylaşım Butonları */}
             <div className="grid grid-cols-2 gap-3">
