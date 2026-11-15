@@ -5,6 +5,7 @@ import { app } from '../firebase';
 import {
   applyEvent, applyGameEnd, checkAchievements, loadStats, mergeStats, recordWords, saveStats,
 } from './progress';
+import { HINTS_EVENT } from './hints';
 
 const SYNC_DELAY_MS = 2000;
 
@@ -32,6 +33,8 @@ export const useProgress = (user, onUnlock) => {
     saveStats(checked);
     setStats(checked);
     pushToCloud(checked);
+    // İpucu bakiyesi gösteren yerler (bulutla birleşme sonrası dahil) güncellensin
+    window.dispatchEvent(new CustomEvent(HINTS_EVENT, { detail: checked }));
     unlocked.forEach((a) => onUnlockRef.current?.(a));
     return checked;
   }, [pushToCloud]);
@@ -65,6 +68,19 @@ export const useProgress = (user, onUnlock) => {
     })();
     return () => { cancelled = true; };
   }, [user, commit]);
+
+  // İpucu harcama/kazanma (lib/hints.js) istatistikleri doğrudan günceller: buradaki kopyayı tazele ve
+  // buluta yedekle. statsRef güncellenmezse sonraki oyun sonu eski bakiyeyi geri yazardı.
+  useEffect(() => {
+    const onHints = (e) => {
+      if (e.detail === statsRef.current) return;
+      statsRef.current = e.detail;
+      setStats(e.detail);
+      pushToCloud(e.detail);
+    };
+    window.addEventListener(HINTS_EVENT, onHints);
+    return () => window.removeEventListener(HINTS_EVENT, onHints);
+  }, [pushToCloud]);
 
   useEffect(() => () => clearTimeout(syncTimer.current), []);
 

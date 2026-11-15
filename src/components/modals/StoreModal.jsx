@@ -11,7 +11,7 @@ const PACK_STYLE = {
 };
 
 /** Mağaza: "Reklamları Kaldır" (tek seferlik) + ipucu paketleri (tüketilebilir). Ödeme Google Play üzerinden. */
-export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, showFeedback }) => {
+export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, showFeedback, isLoggedIn }) => {
   const [prices, setPrices] = useState({});
   const [busy, setBusy] = useState(null);
   const wallet = useHintWallet();
@@ -77,6 +77,11 @@ export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, s
             );
           })}
         </div>
+        {!isLoggedIn && (
+          <p className="text-[11px] font-bold text-yellow-200 bg-yellow-400/10 border border-yellow-400/30 rounded-xl px-3 py-2 mb-2">
+            💾 Satın aldığın ipuçları telefon değişse ya da uygulama silinse de kaybolmasın diye menüden <b>İlerlemeyi Kaydet</b> ile giriş yap.
+          </p>
+        )}
         <p className="text-[11px] opacity-50 mb-6">İpuçları sınırsız modda kullanılır. Günlük bulmacada sıralama adil kalsın diye her bulmacada 1 ücretsiz ipucu var.</p>
 
         {/* Reklamları kaldır */}

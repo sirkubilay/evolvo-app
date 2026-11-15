@@ -517,7 +517,7 @@ const handleStartUnlimited = async (length, level) => {
         initialCode={pendingFriendCode}
         onRecordShare={() => recordEvent('share')}
       />
-      <StoreModal isOpen={!!modalState.store} onClose={() => toggleModal('store', false)} adsRemoved={adsRemovedState} onAdsRemoved={() => setAdsRemovedState(true)} theme={theme} showFeedback={showFeedback} />
+      <StoreModal isOpen={!!modalState.store} onClose={() => toggleModal('store', false)} adsRemoved={adsRemovedState} onAdsRemoved={() => setAdsRemovedState(true)} theme={theme} showFeedback={showFeedback} isLoggedIn={!!user} />
     </>
   );
 

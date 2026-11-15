@@ -141,3 +141,15 @@ describe('günlük (online) istatistikler', () => {
     expect(m.dailyDist['2']).toBe(3);
   });
 });
+
+describe('ipucu cüzdanı bulut birleştirme', () => {
+  it('kazanılan ve harcanan sayaçlarında büyük olanı alır; bakiye kaybolmaz, çoğalmaz', () => {
+    const local = { ...DEFAULT_STATS, achievements: {}, hintsEarned: 30, hintsSpent: 12 }; // telefon A: paket aldı, harcadı
+    const cloud = { hintsEarned: 30, hintsSpent: 15 };                                       // telefon B: daha çok harcadı
+    const m = mergeStats(local, cloud);
+    expect(m.hintsEarned - m.hintsSpent).toBe(15);
+  });
+  it('yeni kullanıcı başlangıç ipuçlarıyla gelir', () => {
+    expect(DEFAULT_STATS.hintsEarned - DEFAULT_STATS.hintsSpent).toBe(10);
+  });
+});

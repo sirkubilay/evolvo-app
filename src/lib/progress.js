@@ -1,6 +1,6 @@
 // Oyuncu ilerlemesi: istatistikler, günlük seri ve başarımlar.
 // Saf fonksiyonlar — React'ten bağımsız, böylece test edilebilir ve bulutla birleştirilebilir.
-import { ACHIEVEMENTS } from '../data/constants';
+import { ACHIEVEMENTS, UNLIMITED_START_HINTS } from '../data/constants';
 
 export const STATS_KEY = 'evolvo_stats';
 export const WORDS_KEY = 'evolvo_words';
@@ -39,6 +39,11 @@ export const DEFAULT_STATS = {
   // En kısa çözüme göre fazladan hamle → kaç kez ("0" = en kısa yoldan, "4" = 4 ve üstü)
   dailyDist: {},
   lastDailyExtra: null,
+  // Sınırsız mod ipucu cüzdanı = hintsEarned - hintsSpent. İkisi de sadece artar; böylece bulutla
+  // birleştirirken "büyük olanı al" kuralı iki cihazda da doğru bakiyeyi verir (satın alınanlar kaybolmaz).
+  hintsEarned: UNLIMITED_START_HINTS,
+  hintsSpent: 0,
+  unlimitedSolved: 0,
   shares: 0,
   avatarChanges: 0,
   uniqueWords: 0,
@@ -236,6 +241,9 @@ export const mergeStats = (local, cloud) => {
     shares: max('shares'),
     avatarChanges: max('avatarChanges'),
     uniqueWords: max('uniqueWords'),
+    hintsEarned: Math.max(local.hintsEarned ?? UNLIMITED_START_HINTS, c.hintsEarned ?? UNLIMITED_START_HINTS),
+    hintsSpent: max('hintsSpent'),
+    unlimitedSolved: max('unlimitedSolved'),
     dailyPlayed: max('dailyPlayed'),
     dailyWins: max('dailyWins'),
     dailyDist: Object.fromEntries(['0', '1', '2', '3', '4'].map((k) => [k, Math.max(local.dailyDist?.[k] || 0, c.dailyDist?.[k] || 0)])),
