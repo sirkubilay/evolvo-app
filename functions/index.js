@@ -259,13 +259,13 @@ exports.getHint = onCall(async (request) => {
 exports.getLeaderboard = onCall(async (request) => {
     const data = request.data;
     logger.info("getLeaderboard v2 (Tek Koleksiyon) data:", data);
-    const { puzzleId, currentPlayerName } = data;
+    const { puzzleId } = data;
+    // Uzun misafir isimleri (ör. "Yırtıcı_Boğa_953") listeyi bozmasın: geçersiz isim yok sayılır
+    const rawName = data.currentPlayerName;
+    const currentPlayerName = (typeof rawName === 'string' && rawName.length <= 30) ? rawName : null;
 
     if (!puzzleId || typeof puzzleId !== 'string' || puzzleId.length < 3) {
         throw new HttpsError("invalid-argument", "Geçersiz bulmaca ID.");
-    }
-    if (currentPlayerName && (typeof currentPlayerName !== 'string' || currentPlayerName.length > 15)) {
-        throw new HttpsError("invalid-argument", "Geçersiz oyuncu adı formatı.");
     }
 
     // --- DEĞİŞİKLİK 4: Tek bir "scores" koleksiyonu kullan ---
