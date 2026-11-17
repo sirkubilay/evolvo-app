@@ -535,95 +535,75 @@ Sen de dene 👇`;
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
 
       <div className={`flex-none z-20 ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'}`}>
-         <header className={`px-4 py-2 flex items-start justify-between border-b ${theme.panelBorder} ${settings.darkMode ? 'bg-black/95' : 'bg-[#001f3f]/95'} backdrop-blur-md relative`}>
-            
-            {/* SOL KISIM: Avatar Paneli ve Altında Geri Tuşu */}
-            <div className="flex flex-col items-start gap-2 z-10 w-28 sm:w-32">
-                <div onClick={() => toggleModal('avatar', true)} className={`flex items-center gap-1 sm:gap-2 ${settings.darkMode ? 'bg-gray-800' : 'bg-white/10'} px-2 sm:px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/20 transition-colors w-fit border border-white/5`}>
-                   <div className="text-lg sm:text-xl flex items-center justify-center flex-shrink-0">{userAvatar.icon}</div>
-                   <span className="font-bold text-[10px] sm:text-xs truncate max-w-[60px] sm:max-w-[100px]">{username}</span>
-                </div>
-
-                {puzzleData.type === 'unlimited' ? (
-                    <button onClick={onBackToMap} className="p-1.5 px-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1.5 w-fit border border-white/10 shadow-sm">
-                        <ChevronLeft size={14} className="text-white"/>
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/80">Harita</span>
-                    </button>
-                ) : (
-                    <button onClick={onBack} className="p-1.5 px-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1.5 w-fit border border-white/10 shadow-sm">
-                        <ChevronLeft size={14} className="text-white"/>
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/80">Ana Sayfa</span>
-                    </button>
-                )}
+         {/* ÜST MENÜ — tek satır: geri | ? ... EVOLVO ... istatistik | menü */}
+         <header className={`h-[52px] px-2 flex items-center justify-between border-b ${theme.panelBorder} ${settings.darkMode ? 'bg-black/95' : 'bg-[#001f3f]/95'} backdrop-blur-md relative`}>
+            <div className="flex items-center z-10">
+               <button onClick={puzzleData.type === 'unlimited' ? onBackToMap : onBack} aria-label={puzzleData.type === 'unlimited' ? 'Haritaya dön' : 'Ana sayfaya dön'} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                  <ChevronLeft size={24} />
+               </button>
+               <button onClick={() => toggleModal('howToPlay', true)} aria-label="Nasıl oynanır" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                  <HelpCircle size={22} />
+               </button>
             </div>
 
-            {/* ORTA KISIM: Logo (Tam Ortalanmış) */}
-            <button onClick={onBack} aria-label="Ana sayfaya dön" className="cursor-pointer transform hover:scale-105 active:scale-95 transition-transform absolute left-1/2 -translate-x-1/2 top-2 z-30 px-2 py-1">
+            <button onClick={onBack} aria-label="Ana sayfaya dön" className="absolute left-1/2 -translate-x-1/2 px-2 py-1 transform hover:scale-105 active:scale-95 transition-transform">
                <Logo colors={colors} />
             </button>
 
-            {/* Bildirim balonu: EVOLVO yazısının hemen altında, içeriği itmeden süzülür */}
-            {message && (
-                <div className={`absolute left-1/2 -translate-x-1/2 top-[3.1rem] z-50 max-w-[60vw] px-3.5 py-1.5 rounded-xl shadow-lg animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 font-bold text-xs border whitespace-nowrap pointer-events-none ${message.type === 'success' ? colors.success : colors.error}`}>
-                  {message.type === 'success' ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                  {message.text}
-                </div>
-            )}
-            
-            {/* SAĞ KISIM: Menü ve Altında Sonraki Bölüm Tuşu */}
-            {/* Kap dokunuşu yutmasın (ortadaki EVOLVO'nun üstüne biniyor); sadece butonlar tıklanır */}
-            <div className="flex flex-col items-end gap-2 z-10 w-28 sm:w-32 pointer-events-none [&_button]:pointer-events-auto">
-                <div className="flex items-center gap-0.5">
-                  <button onClick={() => toggleModal('howToPlay', true)} aria-label="Nasıl oynanır" className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors">
-                     <HelpCircle size={21} />
-                  </button>
-                  <button onClick={() => toggleModal('stats', true)} aria-label="İstatistikler" className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors">
-                     <BarChart2 size={22} />
-                  </button>
-                  <button onClick={() => setIsSideMenuOpen(true)} aria-label="Menü" className={`p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors`}>
-                     <Menu size={24} />
-                  </button>
-                </div>
-
-                {/* AKILLI SONRAKİ BÖLÜM OKU */}
-                {puzzleData.type === 'unlimited' && (
-                    (() => {
-                        const nextLevel = parseInt(puzzleData.level) + 1;
-                        // Sonraki bölümün kilidi açılmış mı?
-                        const isNextUnlocked = offlineProgress[puzzleData.length] >= nextLevel;
-                        // Sonraki bölüm bir Boss bölümü mü? (10, 20, 30...)
-                        const isNextBoss = nextLevel % 10 === 0;
-                        // Sonraki bölüm DAHA ÖNCE tamamlanmış mı?
-                        const isNextCompleted = offlineProgress[puzzleData.length] > nextLevel;
-                        
-                        // KURAL: Eğer sonraki bölüm açıksa GÖSTER.
-                        // AMA sonraki bölüm Boss ise ve daha TAMAMLANMAMIŞSA (ilk defa geliniyorsa) GİZLE.
-                        const showNext = isNextUnlocked && !(isNextBoss && !isNextCompleted);
-
-                        if (!showNext) return null;
-
-                        return (
-                            <button 
-                                onClick={() => onNextLevel(puzzleData.length, nextLevel)} 
-                                className="p-1.5 px-2 bg-gradient-to-r from-purple-600/50 to-blue-600/50 hover:from-purple-500 hover:to-blue-500 rounded-lg transition-colors flex items-center gap-1.5 w-fit border border-white/20 shadow-md animate-in fade-in zoom-in"
-                            >
-                                <span className="text-[9px] font-bold uppercase tracking-widest text-white">Sonraki</span>
-                                <ChevronRightIcon size={14} className="text-white"/>
-                            </button>
-                        );
-                    })()
-                )}
+            <div className="flex items-center z-10">
+               <button onClick={() => toggleModal('stats', true)} aria-label="İstatistikler" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                  <BarChart2 size={22} />
+               </button>
+               <button onClick={() => setIsSideMenuOpen(true)} aria-label="Menü" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                  <Menu size={24} />
+               </button>
             </div>
          </header>
 
+         {/* BİLGİ ŞERİDİ — normalde hak/süre; bildirim gelince aynı yerde mesaj (hiçbir şeyi kaydırmaz/kapatmaz) */}
+         <div
+            role="status"
+            aria-live="polite"
+            className={`h-[30px] w-full flex items-center justify-center gap-1.5 px-3 text-[12px] font-bold transition-colors duration-200 ${
+              message
+                ? message.type === 'success' ? 'bg-green-600 text-white' : message.type === 'error' ? 'bg-red-600 text-white' : 'bg-sky-600 text-white'
+                : 'bg-white/[0.03] border-b border-white/5'
+            }`}
+         >
+            {message ? (
+              <span key={message.text} className="flex items-center gap-1.5 truncate animate-in fade-in slide-in-from-top-1">
+                {message.type === 'success' ? <CheckCircle2 size={14} className="flex-none" /> : <AlertCircle size={14} className="flex-none" />}
+                <span className="truncate">{message.text}</span>
+              </span>
+            ) : (
+              <span className="flex gap-6 font-black uppercase tracking-wider text-[11px]">
+                <span><span className="opacity-50">Hak </span>{history.length - 1} / {maxMoves}</span>
+                <span className="tabular-nums"><span className="opacity-50">Süre </span>{formatTime(timer)}</span>
+              </span>
+            )}
+         </div>
 
-         {/* SINIRSIZ MOD BİLGİ BARI */}
-         {puzzleData.type === 'unlimited' && (
-            <div className="w-full bg-gradient-to-r from-purple-900/60 to-indigo-900/60 text-purple-200 text-center py-1.5 text-[11px] font-black tracking-widest uppercase border-y border-purple-500/20 shadow-inner">
-               {puzzleData.length} HARFLİ • {puzzleData.level}. BÖLÜM
-            </div>
-         )}
-         <div className="w-full max-w-md mx-auto px-4 pb-2 pt-2">
+         {/* SINIRSIZ MOD BİLGİ BARI + sonraki bölüm */}
+         {puzzleData.type === 'unlimited' && (() => {
+            const nextLevel = parseInt(puzzleData.level) + 1;
+            const isNextUnlocked = offlineProgress[puzzleData.length] >= nextLevel;
+            const isNextBoss = nextLevel % 10 === 0;
+            const isNextCompleted = offlineProgress[puzzleData.length] > nextLevel;
+            // Sonraki bölüm açıksa göster; ama ilk kez gelinen Boss bölümüyse gizle
+            const showNext = isNextUnlocked && !(isNextBoss && !isNextCompleted);
+            return (
+              <div className="relative w-full bg-gradient-to-r from-purple-900/60 to-indigo-900/60 text-purple-200 text-center py-1.5 text-[11px] font-black tracking-widest uppercase border-b border-purple-500/20">
+                 {puzzleData.length} HARFLİ • {puzzleData.level}. BÖLÜM
+                 {showNext && (
+                   <button onClick={() => onNextLevel(puzzleData.length, nextLevel)} className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded-md bg-white/10 hover:bg-white/20 flex items-center gap-0.5 text-[10px] text-white">
+                     Sonraki <ChevronRightIcon size={13} />
+                   </button>
+                 )}
+              </div>
+            );
+         })()}
+
+         <div className="w-full max-w-md mx-auto px-4 pb-2 pt-2.5">
             <div className="flex items-center justify-between gap-2 text-center">
                <div className={`flex-1 ${theme.emptyCell} rounded-xl px-2 py-1.5`}>
                   <span className="text-[9px] opacity-50 uppercase tracking-widest block">Başlangıç</span>
@@ -653,10 +633,6 @@ Sen de dene 👇`;
                   <span className="text-[9px] opacity-50 uppercase tracking-widest block">Bitiş</span>
                   <span className="text-lg font-black tracking-tight leading-tight">{puzzleData.target}</span>
                </div>
-            </div>
-            <div className="mt-1.5 flex justify-center gap-6 text-[11px] font-black uppercase tracking-wider">
-               <span><span className="opacity-50">Hak </span>{history.length - 1} / {maxMoves}</span>
-               <span className="tabular-nums"><span className="opacity-50">Süre </span>{formatTime(timer)}</span>
             </div>
          </div>
       </div>
