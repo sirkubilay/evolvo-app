@@ -24,6 +24,8 @@ export const hapticSuccess = () => safe(() => Haptics.notification({ type: Notif
 export const NOTIF_PREF = 'evolvo_notifications'; // 'on' | 'off' | null (henüz sorulmadı)
 const MORNING_HOUR = 9;
 const EVENING_HOUR = 20;
+const LAST_CALL = [22, 30]; // seri ≥ LAST_CALL_MIN_STREAK ise gece son hatırlatma
+const LAST_CALL_MIN_STREAK = 3;
 const DAYS_AHEAD = 7;
 
 export const NOTIFICATION_TEXTS = {
@@ -35,14 +37,18 @@ export const NOTIFICATION_TEXTS = {
     title: `🔥 ${streak} günlük serini kaybetme!`,
     body: 'Bugünün bulmacasını henüz çözmedin. Gece yarısına kadar vaktin var.',
   }),
+  lastCall: (streak) => ({
+    title: `⏰ Son 90 dakika! ${streak} günlük serin bitmek üzere`,
+    body: 'Tek bir bulmaca serini kurtarır. Hadi, bir dakikanı al!',
+  }),
 };
 
 export const notificationsEnabled = () => pref.get(NOTIF_PREF) === 'on';
 
-const at = (base, addDays, hour) => {
+const at = (base, addDays, hour, minute = 0) => {
   const d = new Date(base);
   d.setDate(d.getDate() + addDays);
-  d.setHours(hour, 0, 0, 0);
+  d.setHours(hour, minute, 0, 0);
   return d;
 };
 
@@ -72,9 +78,16 @@ export const scheduleReminders = async (stats) => {
     if (streak > 0 && !playedToday && tonight > now) {
       list.push({ id: 200, ...NOTIFICATION_TEXTS.evening(streak), schedule: { at: tonight, allowWhileIdle: true } });
     }
-    // Yarın akşam: bugün oynadıysa seri yarın da geçerli olacak
+    const lateTonight = at(now, 0, ...LAST_CALL);
+    if (streak >= LAST_CALL_MIN_STREAK && !playedToday && lateTonight > now) {
+      list.push({ id: 202, ...NOTIFICATION_TEXTS.lastCall(streak), schedule: { at: lateTonight, allowWhileIdle: true } });
+    }
+    // Yarın akşam: bugün oynadıysa seri yarın da geçerli olacak (yarın oynanınca uygulama bunları yeniden kurar)
     if (playedToday && streak > 0) {
       list.push({ id: 201, ...NOTIFICATION_TEXTS.evening(streak), schedule: { at: at(now, 1, EVENING_HOUR), allowWhileIdle: true } });
+      if (streak >= LAST_CALL_MIN_STREAK) {
+        list.push({ id: 203, ...NOTIFICATION_TEXTS.lastCall(streak), schedule: { at: at(now, 1, ...LAST_CALL), allowWhileIdle: true } });
+      }
     }
 
     // isExactNotification:false → Android'in "Alarmlar ve hatırlatıcılar" iznini istemez, o ayar ekranını açmaz.

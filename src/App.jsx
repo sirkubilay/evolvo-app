@@ -32,8 +32,8 @@ import { loadStats, dayKey } from './lib/progress';
 import { FriendsModal } from './components/modals/FriendsModal';
 import { takeFriendCodeFromUrl } from './lib/friends';
 import { StoreModal } from './components/modals/StoreModal';
-import { recordUnlimitedSolved } from './lib/hints';
-import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial } from './lib/monetization';
+import { recordUnlimitedSolved, claimDailyHintGift } from './lib/hints';
+import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial, recoverHintPurchases } from './lib/monetization';
 import {
   scheduleReminders, maybeAskForReview, shouldAskNotifications, notificationsEnabled,
   enableNotifications, disableNotifications,
@@ -200,12 +200,22 @@ const handleStartUnlimited = async (length, level) => {
   const { stats, recordGameEnd, recordEvent } = useProgress(user, handleUnlock);
   useEffect(() => {
     scheduleReminders(loadStats());
-    initMonetization().then(() => { setAdsRemovedState(adsRemoved()); setPrivacyOptions(needsPrivacyOptions()); });
     // Google giriş eklentisi kullanılmadan önce bir kez kurulmalı; kurulmazsa signIn() uygulamayı çökertir.
     if (Capacitor.isNativePlatform()) {
       GoogleAuth.initialize({ clientId: GOOGLE_WEB_CLIENT_ID, scopes: ['profile', 'email'], grantOfflineAccess: true })
         .catch((e) => console.warn('GoogleAuth kurulamadı:', e));
     }
+    initMonetization().then(() => { setAdsRemovedState(adsRemoved()); setPrivacyOptions(needsPrivacyOptions()); });
+    if (!Capacitor.isNativePlatform()) return undefined;
+    // Günlük hediye ipucu (sınırsız mod cüzdanına) — açılış ekranı bitince haber ver
+    const gift = (delay) => { if (claimDailyHintGift()) setTimeout(() => showFeedback('🎁 Günlük hediyen: +1 ipucu!', 'success'), delay); };
+    gift(4000);
+    // Onayı geciken ya da yarım kalan ipucu satın almalarını teslim et (açılışta ve uygulamaya her dönüşte)
+    const recover = () => recoverHintPurchases().then((n) => { if (n) showFeedback(`💡 Satın aldığın ${n} ipucu hesabına eklendi!`, 'success'); });
+    setTimeout(recover, 2500);
+    const onVisible = () => { if (document.visibilityState === 'visible') { recover(); gift(800); } };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
   }, []);
   const [adsRemovedState, setAdsRemovedState] = useState(adsRemoved);
   const [privacyOptions, setPrivacyOptions] = useState(false);

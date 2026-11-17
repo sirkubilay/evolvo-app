@@ -4,7 +4,7 @@
 // Başlangıç UNLIMITED_START_HINTS; her UNLIMITED_BONUS_EVERY yeni bölümde +UNLIMITED_BONUS_HINTS.
 import { useEffect, useState } from 'react';
 import { UNLIMITED_BONUS_EVERY, UNLIMITED_BONUS_HINTS } from '../data/constants';
-import { loadStats, saveStats } from './progress';
+import { loadStats, saveStats, dayKey } from './progress';
 
 export const HINTS_EVENT = 'evolvo-stats-changed';
 // Eski sürümlerin (1.8 öncesi) ayrı tuttuğu anahtarlar → tek seferlik taşıma
@@ -59,6 +59,14 @@ export const recordUnlimitedSolved = () => {
     }
   });
   return bonus;
+};
+
+/** Günde bir kez (ilk açılışta) +1 hediye ipucu. Verildiyse 1, bugün zaten verildiyse 0 döner. */
+export const claimDailyHintGift = () => {
+  const today = dayKey();
+  if (loadStats().lastHintGift === today) return 0;
+  update((s) => { s.lastHintGift = today; s.hintsEarned = (s.hintsEarned || 0) + 1; });
+  return 1;
 };
 
 export const useHintWallet = () => {

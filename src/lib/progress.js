@@ -44,6 +44,7 @@ export const DEFAULT_STATS = {
   hintsEarned: UNLIMITED_START_HINTS,
   hintsSpent: 0,
   unlimitedSolved: 0,
+  lastHintGift: null, // günlük hediye ipucunun en son verildiği gün (YYYY-MM-DD)
   shares: 0,
   avatarChanges: 0,
   uniqueWords: 0,
@@ -257,6 +258,7 @@ export const mergeStats = (local, cloud) => {
     lastNoLossDate: newerNoLoss.lastNoLossDate,
     lastLossDate: later('lastLossDate'),
     lastSaturday: later('lastSaturday'),
+    lastHintGift: later('lastHintGift'),
     achievements: { ...(c.achievements || {}), ...local.achievements },
     updatedAt: Date.now(),
   };

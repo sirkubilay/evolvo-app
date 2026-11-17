@@ -963,3 +963,50 @@ exports.claimUsername = onCall(async (request) => {
     });
     return { name };
 });
+
+// --- Satın alma doğrulama (Google Play Developer API) ---
+// İstemci ipucu paketini satın aldığında, ipuçlarını eklemeden önce satın alma jetonunu buraya gönderir.
+// Jeton Google'a sorulur: gerçekten ödenmiş (purchaseState 0) ve henüz tüketilmemiş (consumptionState 0)
+// olmalı. Tüketilene kadar aynı jeton tekrar doğrulanabilir (uygulama ipucunu eklemeden kapanırsa
+// bir sonraki açılışta kurtarma için); tüketildikten sonra artık kabul edilmez.
+const { GoogleAuth } = require("google-auth-library");
+const PLAY_PACKAGE = "com.altayinteractive.evolvo";
+const HINT_PRODUCTS = { hints_5: 5, hints_10: 10, hints_20: 20 };
+const playAuth = new GoogleAuth({ scopes: ["https://www.googleapis.com/auth/androidpublisher"] });
+
+exports.verifyHintPurchase = onCall(async (request) => {
+    const productId = String(request.data?.productId || "");
+    const token = String(request.data?.purchaseToken || "");
+    const count = HINT_PRODUCTS[productId];
+    if (!count || token.length < 20 || token.length > 4096) {
+        throw new HttpsError("invalid-argument", "Geçersiz satın alma.");
+    }
+
+    let purchase;
+    try {
+        const client = await playAuth.getClient();
+        const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PLAY_PACKAGE}`
+            + `/purchases/products/${productId}/tokens/${encodeURIComponent(token)}`;
+        purchase = (await client.request({ url })).data;
+    } catch (e) {
+        const status = e?.response?.status;
+        logger.error("Play doğrulama hatası", { productId, status, msg: e?.message });
+        if (status === 400 || status === 404 || status === 410) {
+            throw new HttpsError("not-found", "Satın alma bulunamadı.");
+        }
+        // Yetki/ağ sorunu: istemci satın almayı tüketmeden bekletir, sonra tekrar dener.
+        throw new HttpsError("unavailable", "Doğrulama şu an yapılamıyor.");
+    }
+
+    const ok = purchase.purchaseState === 0 && purchase.consumptionState === 0;
+    const ref = db.collection("purchases").doc(crypto.createHash("sha256").update(token).digest("hex"));
+    await ref.set({
+        productId, orderId: purchase.orderId || null, uid: request.auth?.uid || null,
+        purchaseState: purchase.purchaseState, consumptionState: purchase.consumptionState,
+        verifiedAt: FieldValue.serverTimestamp(), checks: FieldValue.increment(1),
+    }, { merge: true });
+
+    if (purchase.purchaseState === 2) return { ok: false, pending: true };
+    if (!ok) throw new HttpsError("failed-precondition", "Bu satın alma geçerli değil veya zaten kullanılmış.");
+    return { ok: true, count };
+});

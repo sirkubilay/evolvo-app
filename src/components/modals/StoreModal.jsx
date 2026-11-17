@@ -82,7 +82,7 @@ export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, s
             💾 Satın aldığın ipuçları telefon değişse ya da uygulama silinse de kaybolmasın diye menüden <b>İlerlemeyi Kaydet</b> ile giriş yap.
           </p>
         )}
-        <p className="text-[11px] opacity-50 mb-6">İpuçları sınırsız modda kullanılır. Günlük bulmacada sıralama adil kalsın diye her bulmacada 1 ücretsiz ipucu var.</p>
+        <p className="text-[11px] opacity-50 mb-6">İpuçları sınırsız modda kullanılır; her gün ilk girişte +1 hediye ipucu da gelir. Günlük bulmacada sıralama adil kalsın diye her bulmacada 1 ücretsiz ipucu var.</p>
 
         {/* Reklamları kaldır */}
         <h3 className="text-xs font-black uppercase tracking-widest opacity-70 mb-2.5">Reklamları kaldır</h3>

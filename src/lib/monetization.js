@@ -155,20 +155,84 @@ export const getStorePrices = async () => {
   }
 };
 
-/** İpucu paketi satın alır; başarılıysa ipuçlarını cüzdana ekler. 'ok' | 'pending' | 'cancelled' | 'error' */
-export const purchaseHintPack = async (pack) => {
+// Tüketilebilir ipucu paketleri şu sırayla teslim edilir:
+//   1) Google Play satın almayı tamamlar (henüz onaylanmaz/tüketilmez)
+//   2) Sunucu (verifyHintPurchase) jetonu Google'a sorar: gerçekten ödendi mi, daha önce kullanıldı mı
+//   3) İpuçları cüzdana eklenir, ardından satın alma tüketilir (tekrar alınabilir olur)
+// Uygulama arada kapanırsa ya da ödeme sonradan onaylanırsa (havale, operatör faturası),
+// tüketilmemiş satın almalar her açılışta ve uygulamaya her dönüşte tekrar işlenir; ödeme kaybolmaz.
+// Google, 3 gün içinde onaylanmayan satın almayı iade eder; bu yüzden tekrar deneme sürekli yapılır.
+
+const HINT_PACK_BY_ID = Object.fromEntries(HINT_PACKS.map((p) => [p.id, p]));
+const inFlight = new Set();
+
+/** 'ok' | 'pending' | 'retry' | 'invalid' */
+const deliverHintPurchase = async (tx) => {
+  const pack = HINT_PACK_BY_ID[tx.productIdentifier];
+  const token = tx.purchaseToken || tx.transactionId;
+  if (!pack || !token) return 'invalid';
+  if (tx.purchaseState === '0') return 'pending';
+  if (inFlight.has(token)) return 'retry';
+  inFlight.add(token);
   try {
-    const tx = await NativePurchases.purchaseProduct({
+    const { getFunctions, httpsCallable } = await import('firebase/functions');
+    const { getApp } = await import('firebase/app');
+    const verify = httpsCallable(getFunctions(getApp(), 'europe-west1'), 'verifyHintPurchase');
+    let res;
+    try {
+      res = (await verify({ productId: pack.id, purchaseToken: token })).data;
+    } catch (e) {
+      const code = String(e?.code || '');
+      // Sahte/kullanılmış jeton: ipucu verme, ama kuyrukta takılı kalmasın diye tüket
+      if (code.includes('not-found') || code.includes('failed-precondition')) {
+        NativePurchases.consumePurchase({ purchaseToken: token }).catch(() => {});
+        return 'invalid';
+      }
+      return 'retry'; // ağ/sunucu sorunu → tüketme, sonra tekrar dene
+    }
+    if (res?.pending) return 'pending';
+    if (!res?.ok) return 'retry';
+    addHints(res.count || pack.count);
+    await NativePurchases.consumePurchase({ purchaseToken: token }).catch(() => {});
+    return 'ok';
+  } finally {
+    inFlight.delete(token);
+  }
+};
+
+/**
+ * Bekleyen/yarım kalmış ipucu satın almalarını teslim eder. Teslim edilen toplam ipucu sayısını döner.
+ * Açılışta ve uygulamaya geri dönüldüğünde çağrılır.
+ */
+export const recoverHintPurchases = async () => {
+  if (!isNative()) return 0;
+  let delivered = 0;
+  try {
+    const { purchases } = await NativePurchases.getPurchases({ productType: PURCHASE_TYPE.INAPP });
+    for (const tx of purchases || []) {
+      if (!HINT_PACK_BY_ID[tx.productIdentifier]) continue;
+      if ((await deliverHintPurchase(tx)) === 'ok') delivered += HINT_PACK_BY_ID[tx.productIdentifier].count;
+    }
+  } catch { /* çevrimdışı: sonra tekrar */ }
+  return delivered;
+};
+
+/** İpucu paketi satın alır; doğrulanınca ipuçlarını cüzdana ekler. 'ok' | 'pending' | 'cancelled' | 'error' */
+export const purchaseHintPack = async (pack) => {
+  let tx;
+  try {
+    tx = await NativePurchases.purchaseProduct({
       productIdentifier: pack.id,
       productType: PURCHASE_TYPE.INAPP,
-      isConsumable: true,
-      autoAcknowledgePurchases: true,
+      isConsumable: false,          // tüketmeyi sunucu doğrulamasından sonra kendimiz yapıyoruz
+      autoAcknowledgePurchases: false,
     });
-    if (tx.purchaseState === '0') return 'pending';
-    addHints(pack.count);
-    return 'ok';
   } catch (e) {
     const msg = String(e?.message || e).toLowerCase();
     return msg.includes('cancel') ? 'cancelled' : 'error';
   }
+  const r = await deliverHintPurchase({ ...tx, productIdentifier: tx.productIdentifier || pack.id });
+  if (r === 'ok') return 'ok';
+  if (r === 'invalid') return 'error';
+  return 'pending'; // ödeme onayı ya da doğrulama bekleniyor → açılışta otomatik teslim edilir
 };
