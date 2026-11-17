@@ -64,6 +64,8 @@ const App = () => {
     }
   });
   const isNative = Capacitor.isNativePlatform();
+  // Geliştirme ortamında (tarayıcı) da uygulama menüsü telefondaki gibi görünsün
+  const showAppUi = isNative || import.meta.env.DEV;
   const [offlineProgress, setOfflineProgress] = useState(() => {
     try {
       const saved = localStorage.getItem('evolvo_offline_progress');
@@ -749,16 +751,16 @@ const handleStartUnlimited = async (length, level) => {
               <Play fill="currentColor" size={18} /> GÜNÜN BULMACASI
             </button>
             <div className="grid grid-cols-2 gap-2.5">
-              {(isNative || import.meta.env.DEV) && (
+              {showAppUi && (
                 <button onClick={() => setCurrentPage('unlimited_menu')} className="py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white active:scale-[0.97] transition-all shadow-md shadow-purple-900/30">
                   <InfinityIcon size={16} /> Sınırsız
                 </button>
               )}
-              <button onClick={() => toggleModal('leaderboard', true)} className={`${isNative ? '' : 'col-span-2'} py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-white/10 border border-white/10 active:scale-[0.97] transition-all`}>
+              <button onClick={() => toggleModal('leaderboard', true)} className={`${showAppUi ? '' : 'col-span-2'} py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-white/10 border border-white/10 active:scale-[0.97] transition-all`}>
                 <Trophy size={16} className="text-yellow-400" /> Sıralama
               </button>
             </div>
-            {isNative && (
+            {showAppUi && (
               <button onClick={() => toggleModal('store', true)} className="py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-yellow-400/10 border border-yellow-400/40 text-yellow-200 active:scale-[0.97] transition-all">
                 <ShoppingBag size={16} className="text-yellow-400" /> Mağaza
               </button>
