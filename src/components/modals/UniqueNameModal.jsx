@@ -3,7 +3,7 @@ import { getApp } from 'firebase/app';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Loader2 } from 'lucide-react';
 
-export const UniqueNameModal = ({ isOpen, onComplete, theme, colors }) => {
+export const UniqueNameModal = ({ isOpen, onComplete, onCancel, theme, colors, rename = false }) => {
   const [chosenName, setChosenName] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState(null);
@@ -44,8 +44,8 @@ export const UniqueNameModal = ({ isOpen, onComplete, theme, colors }) => {
           <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto flex items-center justify-center text-white mb-4 shadow-lg shadow-green-500/20">
             <span className="text-3xl">👑</span>
           </div>
-          <h2 className="text-2xl font-black italic uppercase tracking-tighter">Efsaneler Arasına Katıl</h2>
-          <p className="opacity-60 text-sm mt-2 font-medium">Bu senin kalıcı ve eşsiz ismin olacak. Liderlik tablosunda herkes bu ismi görecek!</p>
+          <h2 className="text-2xl font-black italic uppercase tracking-tighter">{rename ? 'İsmini Değiştir' : 'Efsaneler Arasına Katıl'}</h2>
+          <p className="opacity-60 text-sm mt-2 font-medium">{rename ? 'Yeni ismin sıralamada ve arkadaşlarında görünecek. Eski ismin serbest kalır.' : 'Bu senin kalıcı ve eşsiz ismin olacak. Liderlik tablosunda herkes bu ismi görecek!'}</p>
         </div>
 
         <form onSubmit={handleSaveName} className="space-y-4">
@@ -69,8 +69,11 @@ export const UniqueNameModal = ({ isOpen, onComplete, theme, colors }) => {
             disabled={isChecking}
             className={`w-full ${colors.btnPrimary} py-4 rounded-2xl font-black text-lg transition-all active:scale-95 flex items-center justify-center shadow-xl`}
           >
-            {isChecking ? <Loader2 className="animate-spin" /> : "BU İSMİ BANA REZERVE ET!"}
+            {isChecking ? <Loader2 className="animate-spin" /> : (rename ? "İSMİ KAYDET" : "BU İSMİ BANA REZERVE ET!")}
           </button>
+          {onCancel && (
+            <button type="button" onClick={() => { setError(null); setChosenName(''); onCancel(); }} disabled={isChecking} className="w-full py-2 text-sm font-bold opacity-60 hover:opacity-100">Vazgeç</button>
+          )}
         </form>
       </div>
     </div>

@@ -21,6 +21,7 @@ import { SideMenu } from './components/modals/SideMenu';
 import { LeaderboardModal } from './components/modals/LeaderboardModal';
 import { HowToPlayModal } from './components/modals/HowToPlayModal';
 import { UniqueNameModal } from './components/modals/UniqueNameModal';
+import { ProfileModal } from './components/modals/ProfileModal';
 import { CalendarModal } from './components/modals/CalendarModal';
 import { DefinitionModal } from './components/modals/DefinitionModal';
 import { PrivacyModal } from './components/modals/PrivacyModal';
@@ -170,6 +171,7 @@ const handleStartUnlimited = async (length, level) => {
   const [isPuzzleLoading, setIsPuzzleLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [showUniqueNameModal, setShowUniqueNameModal] = useState(false);
+  const [showRenameModal, setShowRenameModal] = useState(false);
   const [tempUser, setTempUser] = useState(null); 
   
   useEffect(() => {
@@ -243,7 +245,7 @@ const handleStartUnlimited = async (length, level) => {
   };
   
   const [modalState, setModalState] = useState({
-    leaderboard: false, howToPlay: false, calendar: false, stats: false, achievements: false, definition: null, avatar: false, challenge: false, privacy: false, contact: false
+    leaderboard: false, howToPlay: false, calendar: false, stats: false, achievements: false, definition: null, avatar: false, profile: false, challenge: false, privacy: false, contact: false
   });
 
   const theme = darkMode ? THEMES.dark : THEMES.standard;
@@ -695,6 +697,33 @@ const handleStartUnlimited = async (length, level) => {
           showFeedback(`Tapu alındı! Hoş geldin, ${finalName}!`, "success");
         }} 
       />
+      <UniqueNameModal
+        isOpen={showRenameModal}
+        rename
+        theme={theme}
+        colors={currentColors}
+        onCancel={() => setShowRenameModal(false)}
+        onComplete={(finalName) => {
+          setUsername(finalName);
+          setShowRenameModal(false);
+          showFeedback(`İsmin artık ${finalName}!`, "success");
+        }}
+      />
+      <ProfileModal
+        isOpen={!!modalState.profile}
+        onClose={() => toggleModal('profile', false)}
+        theme={theme}
+        user={user}
+        username={username}
+        userAvatar={userAvatar}
+        onSelectAvatar={setUserAvatar}
+        stats={stats}
+        onLogin={() => { toggleModal('profile', false); handleGoogleLogin(); }}
+        onLogout={() => { toggleModal('profile', false); handleLogout(); }}
+        onRename={() => setShowRenameModal(true)}
+        onOpenFriends={() => { toggleModal('profile', false); toggleModal('friends', true); }}
+        onOpenAchievements={() => { toggleModal('profile', false); toggleModal('achievements', true); }}
+      />
       <PrivacyModal isOpen={modalState.privacy} onClose={() => toggleModal('privacy', false)} theme={theme} />
       <ContactModal isOpen={modalState.contact} onClose={() => toggleModal('contact', false)} theme={theme} />  
       <nav className={`fixed top-0 w-full z-50 py-4 ${darkMode ? 'bg-black/90' : 'bg-[#001f3f]/90'} backdrop-blur-md shadow-sm transition-all`}>
@@ -708,7 +737,7 @@ const handleStartUnlimited = async (length, level) => {
             
             {user ? (
               <div className="flex items-center gap-4">
-                <div onClick={() => toggleModal('avatar', true)} className="flex items-center gap-2 cursor-pointer hover:bg-white/10 px-3 py-1.5 rounded-full transition-colors">
+                <div onClick={() => toggleModal('profile', true)} className="flex items-center gap-2 cursor-pointer hover:bg-white/10 px-3 py-1.5 rounded-full transition-colors">
                   <div className="text-xl">{userAvatar.icon}</div>
                   <span className="font-bold text-sm text-green-400">{username}</span>
                 </div>
@@ -722,9 +751,20 @@ const handleStartUnlimited = async (length, level) => {
               </button>
             )}
           </div>
-          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={() => toggleModal('profile', true)}
+              aria-label="Profil"
+              className="flex items-center gap-1.5 pl-1 pr-3 py-1 rounded-full bg-white/10 border border-white/15 active:scale-95 transition-transform max-w-[150px]"
+            >
+              <span className="w-8 h-8 rounded-full bg-black/30 flex items-center justify-center text-lg flex-none">{userAvatar.icon}</span>
+              <span className="text-xs font-bold truncate">{user ? username : 'Profil'}</span>
+              {!user && <span className="w-2 h-2 rounded-full bg-yellow-400 flex-none" aria-label="İlerleme kaydedilmedi" />}
+            </button>
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Menü">
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
       </nav>
 
