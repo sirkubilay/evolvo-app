@@ -81,7 +81,6 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
         setCurrentGuess(p => p.slice(0, -1));
       } else if (history.length > 0) {
         if (rowDeleteGuard.current.confirm()) setHistory(p => p.slice(0, -1));
-        else showFeedback("Önceki satırı silmek için tekrar bas", "info");
       }
     } else if (currentGuess.length < wordLength && /^[A-ZÇĞİÖŞÜ]$/.test(key)) {
       rowDeleteGuard.current.touch();

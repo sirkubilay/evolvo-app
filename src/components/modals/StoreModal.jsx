@@ -3,6 +3,7 @@ import { X, Ban, Loader2, Lightbulb, ShoppingBag, Check } from 'lucide-react';
 import { getStorePrices, purchaseRemoveAds, purchaseHintPack } from '../../lib/monetization';
 import { useHintWallet } from '../../lib/hints';
 import { HINT_PACKS, REMOVE_ADS_PRODUCT_ID } from '../../data/constants';
+import { StarterOfferCard } from '../StarterOffer';
 
 const PACK_STYLE = {
   hints_5: { label: '5 İpucu', tag: null },
@@ -57,6 +58,9 @@ export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, s
           <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-2"><ShoppingBag size={22} className="text-yellow-400" /> Mağaza</h2>
           <button onClick={onClose} disabled={!!busy} aria-label="Kapat" className="p-1.5 hover:bg-white/10 rounded-full"><X size={20} /></button>
         </div>
+
+        {/* Başlangıç paketi (ipuçları ilk bittiğinde 48 saat) */}
+        <StarterOfferCard className="mb-6" disabled={!!busy} onResult={(r) => { if (r === 'ok') onAdsRemoved(); report(r, '+25 ipucu eklendi, reklamlar kaldırıldı! 💛'); }} />
 
         {/* İpucu paketleri */}
         <div className="flex items-center justify-between mb-2.5">

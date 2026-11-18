@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getApp } from 'firebase/app';
 import { createRowDeleteGuard } from '../lib/rowDeleteGuard';
+import { StarterOfferCard, starterOfferActive } from '../components/StarterOffer';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Menu, X, Star, BarChart2, HelpCircle, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
@@ -19,7 +20,7 @@ import { drawShareCard } from '../lib/shareCard';
 import { watchRewardedAd } from '../lib/monetization';
 import { PLAY_STORE_LIVE, PLAY_STORE_URL, SHARE_URL, MAX_BONUS_HINTS, DAILY_HINTS } from '../data/constants';
 import { dayKey } from '../lib/progress';
-import { useHintWallet, spendHint, addHints } from '../lib/hints';
+import { useHintWallet, spendHint, addHints, startStarterOffer } from '../lib/hints';
 
 export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
   const [history, setHistory] = useState([puzzleData.start]);
@@ -253,6 +254,7 @@ const handleHint = async (e) => {
     }
     if (isGameOver) return;
     if (hintsLeft <= 0) {
+      if (isUnlimited) startStarterOffer();
       if (canEarnHint || isUnlimited) setRewardSheetOpen(true);
       else showFeedback("Bu bulmacadaki ipucu hakkın bitti.", "info");
       return;
@@ -431,11 +433,7 @@ const handleHint = async (e) => {
         if (history.length > 1) {
           const lastIdx = history.length - 1;
           if (!lockedIndices.includes(lastIdx)) {
-            if (rowDeleteGuard.current.confirm()) {
-              setHistory(p => p.slice(0, -1));
-            } else {
-              showFeedback("Önceki satırı silmek için tekrar bas", "info");
-            }
+            if (rowDeleteGuard.current.confirm()) setHistory(p => p.slice(0, -1));
           } else {
             showFeedback("Bu satır kilitli", "info");
             setRowAnimation('shake');
@@ -769,6 +767,13 @@ Sen de dene 👇`;
               <button disabled={rewardLoading} onClick={handleEarnHint} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60">
                 {rewardLoading ? <Loader2 className="animate-spin" /> : '🎬 İZLE, +1 İPUCU'}
               </button>
+            )}
+            {isUnlimited && starterOfferActive() && (
+              <StarterOfferCard className="mt-5 mb-1" disabled={rewardLoading} onResult={(r) => {
+                if (r === 'ok') { setRewardSheetOpen(false); showFeedback('+25 ipucu eklendi, reklamlar kaldırıldı! 💛', 'success'); }
+                else if (r === 'pending') showFeedback('Ödeme onay bekliyor; onaylanınca eklenecek.', 'info');
+                else if (r === 'error') showFeedback('Satın alma tamamlanamadı.', 'error');
+              }} />
             )}
             {isUnlimited && isNative() && (
               <button disabled={rewardLoading} onClick={() => { setRewardSheetOpen(false); toggleModal('store', true); }} className="w-full mt-2.5 py-3.5 rounded-xl font-black text-base bg-yellow-400 text-black flex items-center justify-center gap-2 active:scale-95">

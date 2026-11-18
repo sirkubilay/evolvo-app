@@ -162,3 +162,6 @@ export const HINT_PACKS = [
 ];
 // Play Console > Para kazanma > Ürünler > Uygulama içi ürünler'de bu kimlikle oluşturulmalı
 export const REMOVE_ADS_PRODUCT_ID = 'remove_ads';
+// Başlangıç paketi: 25 ipucu + reklamsız. Tek seferlik (tüketilmez) ürün; ipuçları bitince 48 saat sunulur.
+export const STARTER_PACK = { id: 'starter_pack', count: 25 };
+export const STARTER_OFFER_HOURS = 48;

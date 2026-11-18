@@ -971,7 +971,9 @@ exports.claimUsername = onCall(async (request) => {
 // bir sonraki açılışta kurtarma için); tüketildikten sonra artık kabul edilmez.
 const { GoogleAuth } = require("google-auth-library");
 const PLAY_PACKAGE = "com.altayinteractive.evolvo";
-const HINT_PRODUCTS = { hints_5: 5, hints_10: 10, hints_20: 20 };
+const HINT_PRODUCTS = { hints_5: 5, hints_10: 10, hints_20: 20, starter_pack: 25 };
+// Tek seferlik (tüketilmeyen) ürünler: ipuçları jeton başına yalnızca bir kez verilir, reklamları da kaldırır.
+const ONE_TIME_PRODUCTS = new Set(["starter_pack"]);
 const playAuth = new GoogleAuth({ scopes: ["https://www.googleapis.com/auth/androidpublisher"] });
 
 exports.verifyHintPurchase = onCall(async (request) => {
@@ -998,8 +1000,25 @@ exports.verifyHintPurchase = onCall(async (request) => {
         throw new HttpsError("unavailable", "Doğrulama şu an yapılamıyor.");
     }
 
-    const ok = purchase.purchaseState === 0 && purchase.consumptionState === 0;
+    const oneTime = ONE_TIME_PRODUCTS.has(productId);
+    const ok = purchase.purchaseState === 0 && (oneTime || purchase.consumptionState === 0);
     const ref = db.collection("purchases").doc(crypto.createHash("sha256").update(token).digest("hex"));
+
+    if (oneTime && ok) {
+        // Aynı jetonla ikinci kez ipucu verilmesin: teslimi işlem içinde işaretle.
+        const granted = await db.runTransaction(async (t) => {
+            const snap = await t.get(ref);
+            const first = !snap.exists || !snap.data().delivered;
+            t.set(ref, {
+                productId, orderId: purchase.orderId || null, uid: request.auth?.uid || null,
+                purchaseState: purchase.purchaseState, delivered: true,
+                verifiedAt: FieldValue.serverTimestamp(), checks: FieldValue.increment(1),
+            }, { merge: true });
+            return first;
+        });
+        return { ok: true, count: granted ? count : 0 };
+    }
+
     await ref.set({
         productId, orderId: purchase.orderId || null, uid: request.auth?.uid || null,
         purchaseState: purchase.purchaseState, consumptionState: purchase.consumptionState,

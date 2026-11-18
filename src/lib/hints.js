@@ -3,7 +3,7 @@
 // uygulama silinse veya telefon değişse de satın alınan ipuçları kaybolmaz.
 // Başlangıç UNLIMITED_START_HINTS; her UNLIMITED_BONUS_EVERY yeni bölümde +UNLIMITED_BONUS_HINTS.
 import { useEffect, useState } from 'react';
-import { UNLIMITED_BONUS_EVERY, UNLIMITED_BONUS_HINTS } from '../data/constants';
+import { UNLIMITED_BONUS_EVERY, UNLIMITED_BONUS_HINTS, STARTER_OFFER_HOURS } from '../data/constants';
 import { loadStats, saveStats, dayKey } from './progress';
 
 export const HINTS_EVENT = 'evolvo-stats-changed';
@@ -67,6 +67,22 @@ export const claimDailyHintGift = () => {
   if (loadStats().lastHintGift === today) return 0;
   update((s) => { s.lastHintGift = today; s.hintsEarned = (s.hintsEarned || 0) + 1; });
   return 1;
+};
+
+// ---------- Başlangıç paketi teklifi ----------
+// İpuçları ilk kez bittiğinde başlar, STARTER_OFFER_HOURS sürer; hesap başına bir kez (buluta yedeklenir).
+
+/** İpuçları bittiğinde çağrılır; teklif daha önce başlamadıysa şimdi başlatır. */
+export const startStarterOffer = () => {
+  if (loadStats().starterOfferAt) return;
+  update((s) => { s.starterOfferAt = Date.now(); });
+};
+
+/** Teklifin kalan süresi (ms); teklif yoksa ya da bittiyse 0. */
+export const starterOfferRemaining = (now = Date.now()) => {
+  const at = loadStats().starterOfferAt;
+  if (!at) return 0;
+  return Math.max(0, at + STARTER_OFFER_HOURS * 3600 * 1000 - now);
 };
 
 export const useHintWallet = () => {

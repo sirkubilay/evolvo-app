@@ -2,7 +2,7 @@
 import { AdMob, AdmobConsentStatus } from '@capacitor-community/admob';
 import { NativePurchases, PURCHASE_TYPE } from '@capgo/native-purchases';
 import { isNative } from './native';
-import { ADMOB, INTERSTITIAL_EVERY, REMOVE_ADS_PRODUCT_ID, HINT_PACKS } from '../data/constants';
+import { ADMOB, INTERSTITIAL_EVERY, REMOVE_ADS_PRODUCT_ID, HINT_PACKS, STARTER_PACK } from '../data/constants';
 import { addHints } from './hints';
 
 const ADS_REMOVED_KEY = 'evolvo_ads_removed';
@@ -96,8 +96,14 @@ export const maybeShowInterstitial = async () => {
 
 // ---------- Reklamları Kaldır ----------
 
-const ownsRemoveAds = (purchases) =>
-  purchases.some((p) => p.productIdentifier === REMOVE_ADS_PRODUCT_ID && (p.purchaseState === undefined || p.purchaseState === '1'));
+// Başlangıç paketi de reklamları kaldırır.
+const AD_FREE_PRODUCTS = new Set([REMOVE_ADS_PRODUCT_ID, STARTER_PACK.id]);
+const owned = (p) => p.purchaseState === undefined || p.purchaseState === '1';
+const ownsRemoveAds = (purchases) => purchases.some((p) => AD_FREE_PRODUCTS.has(p.productIdentifier) && owned(p));
+
+const STARTER_OWNED_KEY = 'evolvo_starter_owned';
+/** Bu Google hesabı başlangıç paketini aldı mı (son bilinen durum). */
+export const starterOwned = () => pref.get(STARTER_OWNED_KEY) === '1';
 
 /** Play'den mevcut satın almaları okur (yeni cihaz, iade vb. durumlar için). */
 export const refreshPurchaseState = async () => {
@@ -105,6 +111,7 @@ export const refreshPurchaseState = async () => {
   try {
     const { purchases } = await NativePurchases.getPurchases({ productType: PURCHASE_TYPE.INAPP });
     setAdsRemoved(ownsRemoveAds(purchases));
+    pref.set(STARTER_OWNED_KEY, purchases.some((p) => p.productIdentifier === STARTER_PACK.id && owned(p)) ? '1' : '0');
   } catch { /* çevrimdışı: son bilinen durumu koru */ }
   return adsRemoved();
 };
@@ -146,7 +153,7 @@ export const restoreRemoveAds = async () => {
 /** { [ürünKimliği]: '₺29,90' } — Play'den güncel yerel fiyatlar. */
 export const getStorePrices = async () => {
   if (!isNative()) return {};
-  const ids = [REMOVE_ADS_PRODUCT_ID, ...HINT_PACKS.map((p) => p.id)];
+  const ids = [REMOVE_ADS_PRODUCT_ID, STARTER_PACK.id, ...HINT_PACKS.map((p) => p.id)];
   try {
     const { products } = await NativePurchases.getProducts({ productIdentifiers: ids, productType: PURCHASE_TYPE.INAPP });
     return Object.fromEntries((products || []).map((p) => [p.identifier || p.productIdentifier, p.priceString]));
@@ -163,7 +170,9 @@ export const getStorePrices = async () => {
 // tüketilmemiş satın almalar her açılışta ve uygulamaya her dönüşte tekrar işlenir; ödeme kaybolmaz.
 // Google, 3 gün içinde onaylanmayan satın almayı iade eder; bu yüzden tekrar deneme sürekli yapılır.
 
-const HINT_PACK_BY_ID = Object.fromEntries(HINT_PACKS.map((p) => [p.id, p]));
+// Başlangıç paketi de aynı sunucu doğrulamasından geçer, ama tüketilmez: onaylanır (acknowledge) ve sonsuza dek sahiplenilir.
+const HINT_PACK_BY_ID = Object.fromEntries([...HINT_PACKS, STARTER_PACK].map((p) => [p.id, p]));
+const isOneTime = (id) => id === STARTER_PACK.id;
 const inFlight = new Set();
 
 /** 'ok' | 'pending' | 'retry' | 'invalid' */
@@ -185,13 +194,21 @@ const deliverHintPurchase = async (tx) => {
       const code = String(e?.code || '');
       // Sahte/kullanılmış jeton: ipucu verme, ama kuyrukta takılı kalmasın diye tüket
       if (code.includes('not-found') || code.includes('failed-precondition')) {
-        NativePurchases.consumePurchase({ purchaseToken: token }).catch(() => {});
+        if (!isOneTime(pack.id)) NativePurchases.consumePurchase({ purchaseToken: token }).catch(() => {});
         return 'invalid';
       }
       return 'retry'; // ağ/sunucu sorunu → tüketme, sonra tekrar dene
     }
     if (res?.pending) return 'pending';
     if (!res?.ok) return 'retry';
+    if (isOneTime(pack.id)) {
+      // Sunucu jeton başına ipuçlarını bir kez verir (tekrar denemede count 0 gelir).
+      if (res.count > 0) addHints(res.count);
+      if (!tx.isAcknowledged) await NativePurchases.acknowledgePurchase({ purchaseToken: token }).catch(() => {});
+      setAdsRemoved(true);
+      pref.set(STARTER_OWNED_KEY, '1');
+      return 'ok';
+    }
     addHints(res.count || pack.count);
     await NativePurchases.consumePurchase({ purchaseToken: token }).catch(() => {});
     return 'ok';
@@ -211,6 +228,8 @@ export const recoverHintPurchases = async () => {
     const { purchases } = await NativePurchases.getPurchases({ productType: PURCHASE_TYPE.INAPP });
     for (const tx of purchases || []) {
       if (!HINT_PACK_BY_ID[tx.productIdentifier]) continue;
+      // Tek seferlik ürün onaylandıysa teslim edilmiştir; sadece onaylanmamışları işle.
+      if (isOneTime(tx.productIdentifier) && tx.isAcknowledged) continue;
       if ((await deliverHintPurchase(tx)) === 'ok') delivered += HINT_PACK_BY_ID[tx.productIdentifier].count;
     }
   } catch { /* çevrimdışı: sonra tekrar */ }
@@ -236,3 +255,6 @@ export const purchaseHintPack = async (pack) => {
   if (r === 'invalid') return 'error';
   return 'pending'; // ödeme onayı ya da doğrulama bekleniyor → açılışta otomatik teslim edilir
 };
+
+/** Başlangıç paketini satın alır: 25 ipucu + reklamsız. 'ok' | 'pending' | 'cancelled' | 'error' */
+export const purchaseStarterPack = () => purchaseHintPack(STARTER_PACK);

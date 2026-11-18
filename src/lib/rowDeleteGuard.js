@@ -5,7 +5,7 @@
  * basarsa, harfler bittiğinde fazladan gelen basışlar önceki satırı da
  * siliyordu. Artık önceki satırı silmek için satır boşken ayrı, bilinçli
  * ikinci bir basış gerekir:
- *   - Boş satırdaki ilk basış sadece "kurar" (oyuncuya uyarı gösterilir).
+ *   - Boş satırdaki ilk basış sadece "kurar" (sessizce, uyarı gösterilmez).
  *   - Kurulduktan sonra en az GAP_MS bekleyip MAX_MS içinde gelen basış siler.
  *   - Arka arkaya hızlı gelen (GAP_MS'den kısa) basışlar silmez, sadece kurar.
  */
