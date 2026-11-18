@@ -74,7 +74,7 @@ export const HowToPlayModal = ({ isOpen, onClose, theme }) => {
         <div className="border-t border-white/10 pt-4 space-y-3 text-sm">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-yellow-400 flex items-center justify-center shrink-0"><Lightbulb size={18} className="text-black" fill="currentColor" /></div>
-            <p className="opacity-85 text-xs"><b>İpucu:</b> Takılırsan ampule dokun. Günlük bulmacada 1 ipucu hakkın var, sınırsız modda ipucu cüzdanın kullanılır (her 10 yeni bölümde +3). Her ipucu <b>150 puan</b> düşürür.</p>
+            <p className="opacity-85 text-xs"><b>İpucu:</b> Takılırsan ampule dokun. Günlük bulmacada 1 ipucu hakkın var, Evrim Yolu'nda ipucu cüzdanın kullanılır (her 10 yeni bölümde +3). Her ipucu <b>150 puan</b> düşürür.</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0"><Book size={16} /></div>

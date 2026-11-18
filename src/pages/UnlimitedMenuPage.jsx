@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ZoneSceneBg, ZoneBannerArt, ZoneArtStyles } from '../components/ZoneArt';
-import { Play, X, Star, HelpCircle, CheckCircle2, ChevronLeft, Infinity as InfinityIcon, Lock } from 'lucide-react';
+import { Play, X, Star, HelpCircle, CheckCircle2, ChevronLeft, Route as RouteIcon, Lock } from 'lucide-react';
 
 export const UnlimitedMenuPage = ({ onBack, progress, scores, userAvatar, setUserAvatar, onPlay }) => {
     const [selectedLen, setSelectedLen] = useState(() => parseInt(localStorage.getItem('evolvo_offline_tab')) || 5);
@@ -84,7 +84,7 @@ export const UnlimitedMenuPage = ({ onBack, progress, scores, userAvatar, setUse
                     <button onClick={() => setShowInfo(true)} className="p-1 hover:bg-white/20 rounded-full text-white/50 transition-colors"><HelpCircle size={18} /></button>
                 </div>
                 <div className="flex flex-col items-center leading-tight">
-                    <span className="text-base font-black italic text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">SINIRSIZ MOD</span>
+                    <span className="text-base font-black italic text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">EVRİM YOLU</span>
                 </div>
                 <button onClick={() => setShowAvatarSelect(true)} className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 border border-white/20 text-2xl hover:scale-105 transition-transform">
                     {userAvatar.icon}
@@ -96,7 +96,7 @@ export const UnlimitedMenuPage = ({ onBack, progress, scores, userAvatar, setUse
                 <div className="absolute inset-0 bg-black/85 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
                     <div className="bg-gray-900 rounded-3xl p-6 w-full max-w-sm border border-white/20 shadow-2xl">
                         <div className="flex justify-between items-center mb-5">
-                            <h3 className="font-black text-xl flex items-center gap-2"><InfinityIcon size={20} className="text-purple-400" /> Nasıl Oynanır?</h3>
+                            <h3 className="font-black text-xl flex items-center gap-2"><RouteIcon size={20} className="text-purple-400" /> Nasıl Oynanır?</h3>
                             <button onClick={() => setShowInfo(false)} className="p-1 hover:bg-white/10 rounded-full"><X size={20}/></button>
                         </div>
                         <div className="space-y-3 mb-5 text-sm text-white/80">

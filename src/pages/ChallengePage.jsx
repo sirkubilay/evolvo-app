@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { createRowDeleteGuard } from '../lib/rowDeleteGuard';
 import { X, Delete, Swords, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, Plus, Minus, Copy, MessageCircle, Settings } from 'lucide-react';
 
 export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
@@ -10,6 +11,7 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
   const [wordLength, setWordLength] = useState(5);
   const [history, setHistory] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");
+  const rowDeleteGuard = useRef(createRowDeleteGuard());
   const [finalizeOpen, setFinalizeOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rowAnimation, setRowAnimation] = useState(null);
@@ -75,11 +77,14 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
 
     } else if (key === 'Delete' || key === 'Backspace') {
       if (currentGuess.length > 0) {
+        rowDeleteGuard.current.touch();
         setCurrentGuess(p => p.slice(0, -1));
       } else if (history.length > 0) {
-        setHistory(p => p.slice(0, -1));
+        if (rowDeleteGuard.current.confirm()) setHistory(p => p.slice(0, -1));
+        else showFeedback("Önceki satırı silmek için tekrar bas", "info");
       }
     } else if (currentGuess.length < wordLength && /^[A-ZÇĞİÖŞÜ]$/.test(key)) {
+      rowDeleteGuard.current.touch();
       setCurrentGuess(p => p + key);
     }
   }, [currentGuess, history, finalizeOpen, isLoading, wordLength, checkTDK]);

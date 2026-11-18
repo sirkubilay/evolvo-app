@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getApp } from 'firebase/app';
+import { createRowDeleteGuard } from '../lib/rowDeleteGuard';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Menu, X, Star, BarChart2, HelpCircle, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
@@ -23,6 +24,7 @@ import { useHintWallet, spendHint, addHints } from '../lib/hints';
 export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
   const [history, setHistory] = useState([puzzleData.start]);
   const [currentGuess, setCurrentGuess] = useState("");
+  const rowDeleteGuard = useRef(createRowDeleteGuard());
   const [winningRowAnimation, setWinningRowAnimation] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isWon, setIsWon] = useState(false);
@@ -423,12 +425,17 @@ const handleHint = async (e) => {
 
     } else if (key === 'Delete' || key === 'Backspace') {
       if (currentGuess.length > 0) {
+        rowDeleteGuard.current.touch();
         setCurrentGuess(p => p.slice(0, -1));
       } else {
         if (history.length > 1) {
           const lastIdx = history.length - 1;
           if (!lockedIndices.includes(lastIdx)) {
-            setHistory(p => p.slice(0, -1));
+            if (rowDeleteGuard.current.confirm()) {
+              setHistory(p => p.slice(0, -1));
+            } else {
+              showFeedback("Önceki satırı silmek için tekrar bas", "info");
+            }
           } else {
             showFeedback("Bu satır kilitli", "info");
             setRowAnimation('shake');
@@ -438,6 +445,7 @@ const handleHint = async (e) => {
       }
     } else if (currentGuess.length < wordLength && /^[A-ZÇĞİÖŞÜ]$/.test(key)) {
       hapticTap();
+      rowDeleteGuard.current.touch();
       setCurrentGuess(p => p + key);
     }
   }, [currentGuess, history, isGameOver, isLoading, winningRowAnimation, lockedIndices, maxMoves, timer, hintsLeft, bonusHints, wordLength]);

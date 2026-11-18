@@ -82,7 +82,7 @@ export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, s
             💾 Satın aldığın ipuçları telefon değişse ya da uygulama silinse de kaybolmasın diye menüden <b>İlerlemeyi Kaydet</b> ile giriş yap.
           </p>
         )}
-        <p className="text-[11px] opacity-50 mb-6">İpuçları sınırsız modda kullanılır; her gün ilk girişte +1 hediye ipucu da gelir. Günlük bulmacada sıralama adil kalsın diye her bulmacada 1 ücretsiz ipucu var.</p>
+        <p className="text-[11px] opacity-50 mb-6">İpuçları Evrim Yolu'nda kullanılır; her gün ilk girişte +1 hediye ipucu da gelir. Günlük bulmacada sıralama adil kalsın diye her bulmacada 1 ücretsiz ipucu var.</p>
 
         {/* Reklamları kaldır */}
         <h3 className="text-xs font-black uppercase tracking-widest opacity-70 mb-2.5">Reklamları kaldır</h3>
@@ -90,8 +90,8 @@ export const StoreModal = ({ isOpen, onClose, adsRemoved, onAdsRemoved, theme, s
           <div className="flex items-start gap-3 mb-3">
             <div className="w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-600 text-black flex items-center justify-center"><Ban size={22} /></div>
             <div>
-              <p className="font-black">Reklamsız sınırsız mod</p>
-              <p className="text-xs opacity-70">Sınırsız modda bölümler arasında çıkan reklamlar tamamen kalkar. Tek seferlik ödeme, abonelik yok.</p>
+              <p className="font-black">Reklamsız Evrim Yolu</p>
+              <p className="text-xs opacity-70">Evrim Yolu'nda bölümler arasında çıkan reklamlar tamamen kalkar. Tek seferlik ödeme, abonelik yok.</p>
             </div>
           </div>
           {adsRemoved ? (

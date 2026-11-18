@@ -6,7 +6,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import { getAuth, signInWithPopup, signInWithCredential, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Capacitor } from '@capacitor/core';
-import { Play, Trophy, Menu, X, Star, ShoppingBag, CheckCircle2, AlertCircle, Loader2, Infinity as InfinityIcon } from 'lucide-react';
+import { Play, Trophy, Menu, X, Star, ShoppingBag, CheckCircle2, AlertCircle, Loader2, Route as RouteIcon } from 'lucide-react';
 import { AVATARS, generateRandomName, THEMES, COLOR_BLIND_THEME, GOOGLE_WEB_CLIENT_ID } from './data/constants';
 import { app } from './firebase';
 import { MountainMini } from './components/MountainMini';
@@ -793,7 +793,7 @@ const handleStartUnlimited = async (length, level) => {
             <div className="grid grid-cols-2 gap-2.5">
               {showAppUi && (
                 <button onClick={() => setCurrentPage('unlimited_menu')} className="py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white active:scale-[0.97] transition-all shadow-md shadow-purple-900/30">
-                  <InfinityIcon size={16} /> Sınırsız
+                  <RouteIcon size={16} /> Evrim Yolu
                 </button>
               )}
               <button onClick={() => toggleModal('leaderboard', true)} className={`${showAppUi ? '' : 'col-span-2'} py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-white/10 border border-white/10 active:scale-[0.97] transition-all`}>
