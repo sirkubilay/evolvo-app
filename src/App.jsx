@@ -774,7 +774,7 @@ const handleStartUnlimited = async (length, level) => {
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full mb-5 md:mb-8">
             <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" /><span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" /></span>
-            <span className="text-[11px] font-bold tracking-widest uppercase opacity-90">Günün kelime zinciri hazır</span>
+            <span className="inline-block text-[11px] font-bold tracking-widest uppercase opacity-90 animate-bounce">Günün kelime zinciri hazır</span>
           </div>
 
           <h1 className="text-[2.6rem] md:text-6xl lg:text-8xl font-black mb-4 md:mb-6 tracking-tighter uppercase italic leading-[0.95]">
