@@ -708,6 +708,9 @@ Sen de dene 👇`;
     >
       <Share2 size={20} /> SKORUNU PAYLAŞ
     </button>
+    <button onClick={() => toggleModal('friends', 'invite')} className="w-full mt-2 py-2 text-[13px] font-bold text-pink-300 flex items-center justify-center gap-1.5 active:scale-95">
+      🎁 Arkadaşını davet et, ikiniz de +3 ipucu kazanın
+    </button>
     {puzzleData.type === 'daily' && (
       <button onClick={() => toggleModal('stats', true)} className="w-full mt-2.5 py-3 rounded-xl font-bold text-sm bg-white/10 border border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all">
         <BarChart2 size={18} /> İSTATİSTİKLER

@@ -1,4 +1,5 @@
-import { X, Pencil, Users, Award, LogOut, Cloud } from 'lucide-react';
+import { X, Pencil, Users, Award, LogOut, Cloud, Gift, ChevronRight } from 'lucide-react';
+import { INVITE_REWARD } from '../../lib/invite';
 import { AVATARS } from '../../data/constants';
 import { effectiveStreak } from '../../lib/progress';
 import { useHintWallet } from '../../lib/hints';
@@ -82,11 +83,26 @@ export const ProfileModal = ({ isOpen, onClose, theme, user, username, userAvata
                 <li>✓ Serin, istatistiklerin ve ipuçların yedeklenir</li>
                 <li>✓ Telefon değişse de kaldığın yerden devam</li>
                 <li>✓ Sıralamada kendi seçtiğin isimle görün</li>
+                <li>✓ Arkadaşlarını davet et, ikiniz de +{INVITE_REWARD} ipucu kazanın</li>
               </ul>
               <button onClick={onLogin} className="mt-3 w-full bg-white text-slate-800 rounded-xl py-3 font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
                 <GoogleG /> Google ile giriş yap
               </button>
             </div>
+          )}
+
+          {/* Davet */}
+          {loggedIn ? (
+            <button onClick={onOpenFriends} className="mt-5 w-full text-left rounded-2xl p-4 border border-pink-400/30 bg-gradient-to-br from-pink-500/15 to-purple-600/10 flex items-center gap-3 active:scale-[0.98] transition-transform">
+              <Gift size={26} className="text-pink-300 flex-none" />
+              <span className="flex-1">
+                <span className="block font-black">Arkadaşını davet et</span>
+                <span className="block text-[12px] opacity-80">Arkadaşın kodunu ekleyince ikiniz de +{INVITE_REWARD} ipucu kazanırsınız.</span>
+              </span>
+              <ChevronRight size={20} className="opacity-60" />
+            </button>
+          ) : (
+            <p className="mt-3 text-[11px] opacity-60 text-center">🎁 Giriş yapınca arkadaşlarını davet edip ipucu kazanabilirsin.</p>
           )}
 
           {/* Avatar */}

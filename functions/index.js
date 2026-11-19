@@ -770,6 +770,10 @@ exports.apiDailyPuzzle = onRequest({ cors: true }, async (req, res) => {
 const crypto = require("crypto");
 const FRIEND_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 0/O, 1/I karışmasın
 const FRIEND_CODE_LEN = 6;
+// Davet ödülü: bir oyuncu İLK KEZ birinin arkadaş kodunu eklediğinde ikisi de +INVITE_REWARD ipucu alır.
+// Ekleyen taraf ödülü hesap başına bir kez alır; kod sahibi en fazla INVITE_MAX_REWARDED kez.
+const INVITE_REWARD = 3;
+const INVITE_MAX_REWARDED = 20;
 const MAX_FRIENDS = 50;
 
 function normalizeFriendCode(input) {
@@ -835,9 +839,13 @@ exports.addFriend = onCall(async (request) => {
 
     const meRef = db.doc(`users/${uid}`);
     const friendRef = db.doc(`users/${friendUid}`);
+    const myInviteRef = db.doc(`invites/${uid}`);
+    const theirInviteRef = db.doc(`invites/${friendUid}`);
 
     return db.runTransaction(async (tx) => {
-        const [me, friend] = await Promise.all([tx.get(meRef), tx.get(friendRef)]);
+        const [me, friend, myInv, theirInv] = await Promise.all([
+            tx.get(meRef), tx.get(friendRef), tx.get(myInviteRef), tx.get(theirInviteRef),
+        ]);
         const myName = me.exists ? me.data().username : null;
         const friendName = friend.exists ? friend.data().username : null;
         if (!myName) throw new HttpsError("failed-precondition", "Önce bir kullanıcı adı seçmelisin.");
@@ -856,7 +864,22 @@ exports.addFriend = onCall(async (request) => {
         if (!theirFriends.some((f) => f.uid === uid)) {
             tx.set(friendRef, { friends: [...theirFriends, { uid, username: myName }] }, { merge: true });
         }
-        return { status: "added", friend: { uid: friendUid, username: friendName } };
+
+        // Davet ödülü: bu hesap daha önce kimsenin kodunu ekleyerek ödül almadıysa
+        let reward = 0;
+        if (!(myInv.exists && myInv.data().invitedBy)) {
+            reward = INVITE_REWARD;
+            tx.set(myInviteRef, {
+                invitedBy: friendUid, invitedAt: FieldValue.serverTimestamp(),
+                pendingHints: FieldValue.increment(INVITE_REWARD),
+            }, { merge: true });
+            const count = (theirInv.exists && theirInv.data().inviteCount) || 0;
+            tx.set(theirInviteRef, {
+                inviteCount: FieldValue.increment(1),
+                ...(count < INVITE_MAX_REWARDED ? { pendingHints: FieldValue.increment(INVITE_REWARD) } : {}),
+            }, { merge: true });
+        }
+        return { status: "added", friend: { uid: friendUid, username: friendName }, reward };
     });
 });
 
@@ -1028,4 +1051,21 @@ exports.verifyHintPurchase = onCall(async (request) => {
     if (purchase.purchaseState === 2) return { ok: false, pending: true };
     if (!ok) throw new HttpsError("failed-precondition", "Bu satın alma geçerli değil veya zaten kullanılmış.");
     return { ok: true, count };
+});
+
+// ---------- Arkadaş daveti ödülü (bkz. addFriend) ----------
+// Ödüller sadece sunucunun yazabildiği "invites/{uid}" belgelerinde "pendingHints" olarak birikir;
+// istemci claimInviteHints ile alıp cüzdanına ekler.
+
+/** Biriken davet ipuçlarını teslim eder (sıfırlar) ve miktarını döner. */
+exports.claimInviteHints = onCall(async (request) => {
+    if (!request.auth) return { hints: 0 };
+    const ref = db.collection("invites").doc(request.auth.uid);
+    const hints = await db.runTransaction(async (tx) => {
+        const s = await tx.get(ref);
+        const n = (s.exists && s.data().pendingHints) || 0;
+        if (n > 0) tx.set(ref, { pendingHints: 0, claimedHints: FieldValue.increment(n) }, { merge: true });
+        return n;
+    });
+    return { hints };
 });

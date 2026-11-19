@@ -21,6 +21,7 @@ import { SideMenu } from './components/modals/SideMenu';
 import { LeaderboardModal } from './components/modals/LeaderboardModal';
 import { HowToPlayModal } from './components/modals/HowToPlayModal';
 import { UniqueNameModal } from './components/modals/UniqueNameModal';
+import { claimPendingInviteHints } from './lib/invite';
 import { ProfileModal } from './components/modals/ProfileModal';
 import { CalendarModal } from './components/modals/CalendarModal';
 import { DefinitionModal } from './components/modals/DefinitionModal';
@@ -180,6 +181,7 @@ const handleStartUnlimited = async (length, level) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        setTimeout(() => claimPendingInviteHints().then((n) => { if (n) showFeedback(`🎁 Arkadaş davetinden +${n} ipucu kazandın!`, 'success'); }), 3000);
         const db = getFirestore(app);
         const userDocRef = doc(db, 'users', currentUser.uid);
         try {
@@ -217,7 +219,12 @@ const handleStartUnlimited = async (length, level) => {
     // Onayı geciken ya da yarım kalan ipucu satın almalarını teslim et (açılışta ve uygulamaya her dönüşte)
     const recover = () => recoverHintPurchases().then((n) => { if (n) showFeedback(`💡 Satın aldığın ${n} ipucu hesabına eklendi!`, 'success'); });
     setTimeout(recover, 2500);
-    const onVisible = () => { if (document.visibilityState === 'visible') { recover(); gift(800); } };
+    // Arkadaşları bu oyuncunun kodunu eklediyse biriken davet ipuçları
+    const inviteGift = () => {
+      if (!getAuth().currentUser) return;
+      claimPendingInviteHints().then((n) => { if (n) showFeedback(`🎁 Arkadaş davetinden +${n} ipucu kazandın!`, 'success'); });
+    };
+    const onVisible = () => { if (document.visibilityState === 'visible') { recover(); gift(800); inviteGift(); } };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, []);
@@ -521,6 +528,7 @@ const handleStartUnlimited = async (length, level) => {
       {achievementToast}
       <FriendsModal
         isOpen={!!modalState.friends}
+        openTab={modalState.friends === 'invite' ? 'friends' : null}
         onClose={() => toggleModal('friends', false)}
         theme={theme}
         user={user}
@@ -721,7 +729,7 @@ const handleStartUnlimited = async (length, level) => {
         onLogin={() => { toggleModal('profile', false); handleGoogleLogin(); }}
         onLogout={() => { toggleModal('profile', false); handleLogout(); }}
         onRename={() => setShowRenameModal(true)}
-        onOpenFriends={() => { toggleModal('profile', false); toggleModal('friends', true); }}
+        onOpenFriends={() => { toggleModal('profile', false); toggleModal('friends', 'invite'); }}
         onOpenAchievements={() => { toggleModal('profile', false); toggleModal('achievements', true); }}
       />
       <PrivacyModal isOpen={modalState.privacy} onClose={() => toggleModal('privacy', false)} theme={theme} />

@@ -21,7 +21,7 @@ export const PENDING_FRIEND_KEY = 'evolvo_pending_friend';
 /** Davet linki: açan kişi giriş yapınca otomatik eklenir. */
 export const inviteLink = (code) => `${WEB_URL}/?arkadas=${encodeURIComponent(code)}`;
 export const inviteText = (code) =>
-  `Evolvo'da arkadaşım ol, günlük bulmacada yarışalım! 🧩\nArkadaş kodum: ${code}\n${inviteLink(code)}`;
+  `Evolvo'da arkadaşım ol, günlük bulmacada yarışalım! 🧩\n🎁 Arkadaşlar ekranında kodumu ekle, ikimiz de +3 ipucu kazanalım: ${code}\n${inviteLink(code)}`;
 
 /** URL'de ?arkadas=KOD varsa alır ve adres çubuğundan temizler. */
 export const takeFriendCodeFromUrl = () => {

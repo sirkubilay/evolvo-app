@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { X, Users, Copy, Share2, UserPlus, Trash2, Loader2, Trophy } from 'lucide-react';
+import { X, Users, Copy, Share2, UserPlus, Trash2, Loader2, Trophy, Gift } from 'lucide-react';
+import { claimPendingInviteHints, INVITE_REWARD } from '../../lib/invite';
 import {
   addFriend, friendErrorMessage, getFriends, getFriendsLeaderboard, inviteText, removeFriend,
 } from '../../lib/friends';
@@ -15,7 +16,7 @@ const PERIODS = [
  * Arkadaşlar: kendi kodun, kodla ekleme, liste ve sadece arkadaşlar arası sıralama.
  * Giriş yapmamış oyuncuya giriş butonu gösterir.
  */
-export const FriendsModal = ({ isOpen, onClose, theme, user, username, puzzleId, onLogin, showFeedback, initialCode, onRecordShare }) => {
+export const FriendsModal = ({ isOpen, onClose, theme, user, username, puzzleId, onLogin, showFeedback, initialCode, onRecordShare, openTab }) => {
   // Davet linkiyle gelindiyse kod kutusu dolu ve "Arkadaşlarım" sekmesi açık başlar
   const [tab, setTab] = useState(() => (initialCode ? 'friends' : 'ranking'));
   const [period, setPeriod] = useState('daily');
@@ -40,6 +41,14 @@ export const FriendsModal = ({ isOpen, onClose, theme, user, username, puzzleId,
     return () => { alive = false; };
   }, [isOpen, user, period, puzzleId, boardKey]);
 
+  // Profildeki "Arkadaşını davet et" kartından açılınca doğrudan kod sekmesine geç
+  // (React'in önerdiği "render sırasında durum ayarlama" kalıbı: pencere her açılışta bir kez)
+  const [wasOpen, setWasOpen] = useState(isOpen);
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
+    if (isOpen && openTab) setTab(openTab);
+  }
+
   const reload = () => setReloadKey((k) => k + 1);
 
   if (!isOpen) return null;
@@ -50,7 +59,12 @@ export const FriendsModal = ({ isOpen, onClose, theme, user, username, puzzleId,
     setBusy(true);
     try {
       const res = await addFriend(codeInput.trim());
-      showFeedback(res.status === 'exists' ? `${res.friend.username} zaten arkadaşın.` : `${res.friend.username} eklendi! 🎉`, 'success');
+      if (res.reward > 0) {
+        const got = await claimPendingInviteHints();
+        showFeedback(`${res.friend.username} eklendi! 🎁 İkiniz de +${got || res.reward} ipucu kazandınız`, 'success');
+      } else {
+        showFeedback(res.status === 'exists' ? `${res.friend.username} zaten arkadaşın.` : `${res.friend.username} eklendi! 🎉`, 'success');
+      }
       setCodeInput('');
       reload();
     } catch (err) {
@@ -142,6 +156,10 @@ export const FriendsModal = ({ isOpen, onClose, theme, user, username, puzzleId,
               </div>
             ) : (
               <div className="overflow-y-auto space-y-4 pr-1 scrollbar-thin">
+                <div className="rounded-xl px-3 py-2.5 bg-gradient-to-r from-pink-500/20 to-purple-600/15 border border-pink-400/30 text-[12px] flex items-center gap-2">
+                  <Gift size={18} className="text-pink-300 flex-none" />
+                  <span>Arkadaşın senin kodunu eklerse <b>ikiniz de +{INVITE_REWARD} ipucu</b> kazanırsınız. İlk eklediğin kodda sen de kazanırsın.</span>
+                </div>
                 <div className="bg-black/20 rounded-2xl p-4 border border-white/5 text-center">
                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-50 mb-1">Senin Kodun</p>
                   <p className="text-3xl font-black tracking-widest text-pink-300 mb-3">{me?.code || '······'}</p>
