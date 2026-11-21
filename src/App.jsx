@@ -33,6 +33,7 @@ import { useProgress } from './lib/useProgress';
 import { loadStats, dayKey } from './lib/progress';
 import { FriendsModal } from './components/modals/FriendsModal';
 import { takeFriendCodeFromUrl } from './lib/friends';
+import { existsInTdk } from './lib/tdk';
 import { StoreModal } from './components/modals/StoreModal';
 import { recordUnlimitedSolved, claimDailyHintGift } from './lib/hints';
 import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial, recoverHintPurchases } from './lib/monetization';
@@ -284,8 +285,10 @@ const handleStartUnlimited = async (length, level) => {
   }, []);
 
   const checkTDK = async (word) => {
-    if (sozlukSeti.size === 0) return true; 
-    return sozlukSeti.has(word.toLocaleUpperCase('tr-TR'));
+    if (sozlukSeti.size === 0) return true;
+    if (sozlukSeti.has(word.toLocaleUpperCase('tr-TR'))) return true;
+    // Yerel listede eksik olabilir (ör. DART): canlı TDK'ya sor
+    return existsInTdk(word);
   };
 
   const fetchLeaderboard = async (period = 'daily') => {

@@ -19,6 +19,26 @@ admin.initializeApp();
 const db = admin.firestore();
 const { botsForDay, botsForPeriod, mergeWithBots, isBotName } = require("./bots");
 
+// Sözlük dosyalarında eksik olan kelimeler (ör. "dart") için canlı TDK kontrolü.
+// İstemci de aynı yedeği kullanıyor; burada da sormazsak skor kaydı reddedilir.
+const tdkCache = new Map(); // kelime -> true/false (instance ömrü boyunca)
+async function tdkdeVarMi(word) {
+    const lower = String(word).toLocaleLowerCase('tr-TR');
+    if (tdkCache.has(lower)) return tdkCache.get(lower);
+    try {
+        const res = await fetch(`https://sozluk.gov.tr/gts?ara=${encodeURIComponent(lower)}`, { signal: AbortSignal.timeout(4000) });
+        const data = await res.json();
+        const ok = Array.isArray(data) && data.some(e => e && e.ozel_mi !== '1' &&
+            String(e.madde_duz || e.madde || '').toLocaleLowerCase('tr-TR') === lower);
+        tdkCache.set(lower, ok);
+        if (ok) logger.info(`TDK yedeği kabul etti (sözlük dosyasında yok): ${lower}`);
+        return ok;
+    } catch (e) {
+        logger.warn(`TDK sorgusu başarısız: ${lower}`, e);
+        return false;
+    }
+}
+
 function getWeekId(date) {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const dayNum = d.getUTCDay() || 7;
@@ -107,7 +127,7 @@ exports.saveScore = onCall(async (request) => {
 
     for (let i = 0; i < wordHistory.length; i++) {
         const currentWord = wordHistory[i].toLowerCase();
-        if (!sozluk.has(currentWord)) {
+        if (!sozluk.has(currentWord) && !(await tdkdeVarMi(currentWord))) {
             throw new HttpsError("invalid-argument", `Geçersiz kelime: ${currentWord}`);
         }
         if (i > 0) {
@@ -655,7 +675,7 @@ exports.createChallengeV2 = onCall(async (request) => {
         const word = puzzlePath[i].toLowerCase();
         
         // A. Sözlükte var mı?
-        if (!sozluk.has(word)) {
+        if (!sozluk.has(word) && !(await tdkdeVarMi(word))) {
             throw new HttpsError("invalid-argument", `"${word}" kelimesi sözlükte yok! Hile yapma.`);
         }
 
