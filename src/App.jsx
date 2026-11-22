@@ -9,6 +9,7 @@ import { Capacitor } from '@capacitor/core';
 import { Play, Trophy, Menu, X, Star, ShoppingBag, CheckCircle2, AlertCircle, Loader2, Route as RouteIcon } from 'lucide-react';
 import { AVATARS, generateRandomName, THEMES, COLOR_BLIND_THEME, GOOGLE_WEB_CLIENT_ID } from './data/constants';
 import { app } from './firebase';
+import { setAnalyticsUser } from './lib/analytics';
 import { MountainMini } from './components/MountainMini';
 import { SplashScreen } from './components/SplashScreen';
 import { GamePage } from './pages/GamePage';
@@ -182,6 +183,7 @@ const handleStartUnlimited = async (length, level) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        setAnalyticsUser(currentUser.uid);
         setTimeout(() => claimPendingInviteHints().then((n) => { if (n) showFeedback(`🎁 Arkadaş davetinden +${n} ipucu kazandın!`, 'success'); }), 3000);
         const db = getFirestore(app);
         const userDocRef = doc(db, 'users', currentUser.uid);
@@ -195,6 +197,7 @@ const handleStartUnlimited = async (length, level) => {
         }
       } else {
         setUser(null);
+        setAnalyticsUser(null);
       }
     });
     return () => unsubscribe();

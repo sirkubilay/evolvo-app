@@ -133,6 +133,8 @@ export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com
 // Uygulama Play'de herkese açık (üretim) olunca true yap: paylaşımlara Play linki eklenir.
 // Kapalı testteyken link testçi olmayanlara "bulunamadı" gösterir.
 export const PLAY_STORE_LIVE = false;
+// Kapalı teste katılım (opt-in) sayfası
+export const PLAY_TEST_OPTIN_URL = 'https://play.google.com/apps/testing/com.altayinteractive.evolvo';
 
 // --- Reklam (AdMob) ---
 // Gerçek AdMob kimlikleri (yayıncı pub-1031567725841036, uygulama ~8989987517).

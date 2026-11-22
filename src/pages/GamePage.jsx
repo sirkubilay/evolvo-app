@@ -20,6 +20,7 @@ import { drawShareCard } from '../lib/shareCard';
 import { watchRewardedAd } from '../lib/monetization';
 import { PLAY_STORE_LIVE, PLAY_STORE_URL, SHARE_URL, MAX_BONUS_HINTS, DAILY_HINTS } from '../data/constants';
 import { dayKey } from '../lib/progress';
+import { trackEvent } from '../lib/analytics';
 import { useHintWallet, spendHint, addHints, startStarterOffer } from '../lib/hints';
 
 export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
@@ -216,6 +217,12 @@ useEffect(() => {
       ? `unlimited_${puzzleData.length}_${puzzleData.level}`
       : (puzzleData?.date || new Date().toLocaleDateString('tr-TR'));
 
+    trackEvent('game_end', {
+      mode: puzzleData?.type === 'unlimited' ? 'unlimited' : 'daily',
+      win: didWin ? 1 : 0,
+      hints: hintsUsed,
+      score: score,
+    });
     localStorage.setItem(`evolvo_played_${saveKey}`, didWin ? 'won' : 'lost');
     localStorage.setItem(`evolvo_history_${saveKey}`, JSON.stringify(finalHistory));
     const todayStats = {
