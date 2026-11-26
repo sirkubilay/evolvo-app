@@ -57,3 +57,17 @@ for (let n = 3; n <= 9; n++) {
   console.log(`functions/sozluk_${n}harfli.txt: +${add.length}`);
 }
 console.log(`Sunucu: toplam +${addedServer} kelime`);
+
+// 3. Bulmaca üreticisinin KULLANMAYACAĞI kelimeler: sunucu sözlüğünde olup TDK'da cins isim olarak
+// geçmeyenler (özel adlar: ADANA, KİĞI; eski/kaldırılmış maddeler). Oyuncu yine yazabilir, ama
+// günlük bulmacanın başlangıcı/bitişi/çözüm yolu bunlardan seçilmez.
+const tdkFlat = new Set([...tdkSet].map(flat));
+const excluded = [];
+for (let n = 3; n <= 9; n++) {
+  const file = path.join(root, 'functions', `sozluk_${n}harfli.txt`);
+  fs.readFileSync(file, 'utf8').split(/\r?\n/).map((w) => w.trim()).filter(Boolean)
+    .forEach((w) => { if (!tdkFlat.has(flat(lower(w)))) excluded.push(flat(lower(w))); });
+}
+const exclFile = path.join(root, 'functions', 'bulmaca_disi.txt');
+fs.writeFileSync(exclFile, [...new Set(excluded)].sort((a, b) => a.localeCompare(b, 'tr')).join('\n') + '\n');
+console.log(`functions/bulmaca_disi.txt: ${new Set(excluded).size} kelime üreticiden hariç`);

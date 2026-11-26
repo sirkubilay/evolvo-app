@@ -537,9 +537,24 @@ const DAILY_DIFFICULTIES = {
 const BONUS_HAK = 5;
 const ALFABE = 'abcçdefgğhıijklmnoöprsştuüvyzâîû';
 
+let bulmacaDisiCache = null;
+function bulmacaDisi() {
+    if (!bulmacaDisiCache) {
+        try {
+            bulmacaDisiCache = new Set(fs.readFileSync(path.join(__dirname, "bulmaca_disi.txt"), "utf-8").split(/\r?\n/).map((k) => duz(k.trim())).filter(Boolean));
+        } catch (e) {
+            logger.warn("bulmaca_disi.txt okunamadı; özel ad filtresi yok.", e);
+            bulmacaDisiCache = new Set();
+        }
+    }
+    return bulmacaDisiCache;
+}
+
 function sozlukYukle(harfSayisi) {
     const sozlukYolu = path.join(__dirname, `sozluk_${harfSayisi}harfli.txt`);
-    const sozluk = new Set(fs.readFileSync(sozlukYolu, 'utf-8').split(/\r?\n/).map(k => duz(k.trim())).filter(k => k.length === harfSayisi));
+    // Özel adlar ve TDK'da cins isim olmayanlar (bulmaca_disi.txt) bulmacada kullanılmaz; oyuncu yine yazabilir
+    const haric = bulmacaDisi();
+    const sozluk = new Set(fs.readFileSync(sozlukYolu, 'utf-8').split(/\r?\n/).map(k => duz(k.trim())).filter(k => k.length === harfSayisi && !haric.has(k)));
     if (sozluk.size === 0) throw new Error(`sozluk_${harfSayisi}harfli.txt boş veya okunamadı.`);
     return sozluk;
 }
