@@ -1,4 +1,4 @@
-import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye, Bell, Users, ShieldCheck } from 'lucide-react';
+import { Trophy, X, BarChart2, HelpCircle, Calendar as CalendarIcon, Medal, Swords, Moon, Eye, Bell, Users, ShieldCheck, Volume2, VolumeX } from 'lucide-react';
 import { isNative } from '../../lib/native';
 import { Logo } from '../Logo';
 
@@ -57,6 +57,12 @@ export const SideMenu = ({ isOpen, onClose, toggleModal, settings, theme, user, 
                <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>
                  <div className="flex items-center gap-3"><Bell size={18} /><span className="font-bold text-sm text-white">Günlük Hatırlatma</span></div>
                  <Toggle on={settings.notificationsOn} onToggle={() => settings.setNotifications(!settings.notificationsOn)} />
+               </div>
+             )}
+             {settings.setSoundOn && (
+               <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>
+                 <div className="flex items-center gap-3">{settings.soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}<span className="font-bold text-sm text-white">Ses</span></div>
+                 <Toggle on={settings.soundOn} onToggle={() => settings.setSoundOn(!settings.soundOn)} />
                </div>
              )}
              <div className={`flex items-center justify-between p-4 ${theme.key} rounded-xl shadow-inner`}>

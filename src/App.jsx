@@ -1,5 +1,5 @@
 import './styles/injectStyles';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import { getFunctions, httpsCallable } from 'firebase/functions';
@@ -32,9 +32,12 @@ import { Logo } from './components/Logo';
 import { AchievementToast } from './components/AchievementToast';
 import { useProgress } from './lib/useProgress';
 import { loadStats, dayKey } from './lib/progress';
+import { DIFFICULTIES, DIFFICULTY_ORDER, dailyPuzzleId, toDailyPuzzle, puzzleIdOf } from './lib/daily';
+import { getCachedPuzzle, cachePuzzle } from './lib/dailyCache';
 import { FriendsModal } from './components/modals/FriendsModal';
 import { takeFriendCodeFromUrl } from './lib/friends';
-import { existsInTdk } from './lib/tdk';
+import { existsInTdk, flattenTr } from './lib/tdk';
+import { soundEnabled, setSoundEnabled } from './lib/sound';
 import { StoreModal } from './components/modals/StoreModal';
 import { recordUnlimitedSolved, claimDailyHintGift } from './lib/hints';
 import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial, recoverHintPurchases } from './lib/monetization';
@@ -45,6 +48,7 @@ import {
 
 const readPref = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const writePref = (k, v) => { try { localStorage.setItem(k, v); } catch { /* depolama kapalı */ } };
+const DAILY_API_URL = "https://europe-west1-evolvogame-21a23.cloudfunctions.net/apiDailyPuzzle";
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(() => Capacitor.isNativePlatform());
@@ -170,7 +174,10 @@ const handleStartUnlimited = async (length, level) => {
   const [leaderboardData, setLeaderboardData] = useState({ daily: [], weekly: [], monthly: [], daily_user: null, weekly_user: null, monthly_user: null });
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
   const [gameKey, setGameKey] = useState(0);
-  const [activePuzzle, setActivePuzzle] = useState(null); 
+  const [activePuzzle, setActivePuzzle] = useState(null);
+  // Bugünün iki günlük bulmacası (null = yükleniyor); kolay bulmaca henüz üretilmediyse kolay: null
+  const [dailyPuzzles, setDailyPuzzles] = useState(null);
+  const leaderboardDifficulty = activePuzzle?.type === 'daily' ? (activePuzzle.difficulty || 'zor') : 'zor';
   const [isPuzzleLoading, setIsPuzzleLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [showUniqueNameModal, setShowUniqueNameModal] = useState(false);
@@ -270,7 +277,7 @@ const handleStartUnlimited = async (length, level) => {
     }
     setModalState(prev => ({ ...prev, [modalName]: isOpen }));
     if (modalName === 'leaderboard' && isOpen) {
-      fetchLeaderboard('daily');
+      fetchLeaderboard('daily', leaderboardDifficulty);
     }
   };
 
@@ -279,7 +286,8 @@ const handleStartUnlimited = async (length, level) => {
       try {
         const response = await fetch('/sozluk.json'); 
         const data = await response.json();
-        setSozlukSeti(new Set(data)); 
+        // Şapkalı kelimeler düz haliyle de bulunsun (KÂĞIT → KAĞIT): klavyede Â/Î/Û yok
+        setSozlukSeti(new Set(data.map(flattenTr)));
       } catch (error) {
         console.error("Sözlük yüklenemedi:", error);
       }
@@ -289,21 +297,25 @@ const handleStartUnlimited = async (length, level) => {
 
   const checkTDK = async (word) => {
     if (sozlukSeti.size === 0) return true;
-    if (sozlukSeti.has(word.toLocaleUpperCase('tr-TR'))) return true;
+    if (sozlukSeti.has(flattenTr(word.toLocaleUpperCase('tr-TR')))) return true;
     // Yerel listede eksik olabilir (ör. DART): canlı TDK'ya sor
     return existsInTdk(word);
   };
 
-  const fetchLeaderboard = async (period = 'daily') => {
+  const fetchLeaderboard = async (period = 'daily', difficulty = leaderboardDifficulty) => {
+    const reqId = ++leaderboardReq.current; // geç gelen eski cevap yenisinin üstüne yazmasın
     setIsLoadingLeaderboard(true);
     try {
       const functions = getFunctions(getApp(), 'europe-west1');
 
       if (period === 'daily') {
         const getLeaderboardFn = httpsCallable(functions, 'getLeaderboard');
-        const todayStr = new Date().toISOString().split('T')[0];
-        const currentPuzzleId = activePuzzle ? activePuzzle.date : todayStr;
-        const result = await getLeaderboardFn({ puzzleId: currentPuzzleId, currentPlayerName: username });
+        // Açık bulmaca geçmiş bir günlükse o günün tablosu, değilse bugünün
+        const date = activePuzzle?.type === 'daily' ? activePuzzle.date : dayKey();
+        // Zorluk değişince eski zorluğun listesi bir an bile görünmesin
+        setLeaderboardData(prev => ({ ...prev, daily: [], daily_user: null }));
+        const result = await getLeaderboardFn({ puzzleId: dailyPuzzleId(date, difficulty), currentPlayerName: username });
+        if (reqId !== leaderboardReq.current) return;
         setLeaderboardData(prev => ({
           ...prev,
           daily: result.data.topScores || [],
@@ -312,6 +324,7 @@ const handleStartUnlimited = async (length, level) => {
       } else {
         const getAggregateFn = httpsCallable(functions, 'getAggregateLeaderboard');
         const result = await getAggregateFn({ period, currentPlayerName: username });
+        if (reqId !== leaderboardReq.current) return;
         setLeaderboardData(prev => ({
           ...prev,
           [period]: result.data.topScores || [],
@@ -321,9 +334,20 @@ const handleStartUnlimited = async (length, level) => {
     } catch (error) {
       console.error("Liderlik tablosu çekilemedi:", error);
     } finally {
-      setIsLoadingLeaderboard(false);
+      if (reqId === leaderboardReq.current) setIsLoadingLeaderboard(false);
     }
   };
+  const leaderboardReq = useRef(0);
+  // İsim değişince eski isimle çekilmiş tablolar atılır; açık tablo yeni isimle yeniden çekilir
+  // (sunucu skorları yeni isme taşıdığı için değişiklik hemen görünür).
+  const prevUsername = useRef(username);
+  useEffect(() => {
+    if (prevUsername.current === username) return;
+    prevUsername.current = username;
+    setLeaderboardData({ daily: [], weekly: [], monthly: [], daily_user: null, weekly_user: null, monthly_user: null });
+    if (modalState.leaderboard) fetchLeaderboard('daily');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   const handleGoogleLogin = async () => {
     const auth = getAuth();
@@ -407,35 +431,131 @@ const handleStartUnlimited = async (length, level) => {
     }
   };
 
-  const loadPastPuzzle = async (dateStr) => {
+  // Ağ hatası / sunucu soğuk başlangıcı için kısa aralıklarla yeniden dener. 404 (bulmaca yok) tekrar denenmez.
+  const fetchDaily = async (dateStr, difficulty, attempts = 3) => {
+    let lastError;
+    for (let i = 0; i < attempts; i++) {
+      if (i > 0) await new Promise((r) => setTimeout(r, 1000 * i));
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 10000);
+      try {
+        const response = await fetch(`${DAILY_API_URL}?date=${dailyPuzzleId(dateStr, difficulty)}`, { signal: ctrl.signal });
+        if (response.status === 404) throw Object.assign(new Error('Bulmaca yok'), { notFound: true });
+        if (!response.ok) throw new Error(`Sunucu cevap vermedi (${response.status})`);
+        return toDailyPuzzle(await response.json(), dateStr, difficulty);
+      } catch (error) {
+        lastError = error;
+        if (error.notFound) break;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+    throw lastError;
+  };
+
+  // Bugünün bulmacaları. Yüklenemezse SAHTE bir yedek bulmaca gösterilmez (önceden EVRAK→KONAK
+  // açılıyordu; ipucu ve skor gerçek bulmacaya göre çalıştığı için oyun bozuluyordu):
+  // ana sayfada "tekrar dene" çıkar.
+  const [dailyError, setDailyError] = useState(false);
+  const dailyRetry = useRef(null);
+  const tomorrowKey = () => { const d = new Date(); d.setDate(d.getDate() + 1); return dayKey(d); };
+
+  // Bugünün bulmacaları: önce cihazdaki kopya (anında), sonra sunucudan tazelenir. Hiçbiri yoksa
+  // arka planda giderek seyrelen aralıklarla tekrar denenir; "tekrar dene" ancak birkaç denemeden sonra çıkar.
+  const loadTodayPuzzles = async ({ keepActive = false, attempt = 0 } = {}) => {
+    clearTimeout(dailyRetry.current);
+    const todayStr = dayKey();
+    const keep = [todayStr, tomorrowKey()];
+    const cached = {};
+    DIFFICULTY_ORDER.forEach((d) => { cached[d] = getCachedPuzzle(dailyPuzzleId(todayStr, d)); });
+    const showPuzzles = (set) => {
+      setDailyError(false);
+      setDailyPuzzles(set);
+      if (!keepActive) setActivePuzzle((cur) => (cur && cur.type !== 'daily' ? cur : (set.zor || set.kolay)));
+    };
+    const hadCache = !!(cached.zor || cached.kolay);
+    if (hadCache) showPuzzles(cached);
+    else if (attempt === 0) setDailyPuzzles(null);
+
+    const [kolay, zor] = await Promise.all(DIFFICULTY_ORDER.map((d) => fetchDaily(todayStr, d)
+      .then((p) => { cachePuzzle(p, keep); return p; })
+      .catch((error) => { console.warn(`${d} bulmaca yüklenemedi:`, error); return null; })));
+    if (dayKey() !== todayStr) return; // bu arada gün değiştiyse yeni çağrı halleder
+
+    if (kolay || zor) {
+      const merged = { kolay: kolay || cached.kolay, zor: zor || cached.zor };
+      if (hadCache) setDailyPuzzles(merged); // oyuncunun açık bulmacasına dokunma, sadece eksik zorluğu tamamla
+      else showPuzzles(merged);
+      return;
+    }
+    if (hadCache) return; // ağ yok ama cihazdaki bulmaca oynanabiliyor
+    // İlk denemelerde butonlar "yükleniyor" kalır; ancak birkaç başarısız denemeden sonra hata gösterilir
+    if (attempt >= 2) {
+      setDailyPuzzles({ kolay: null, zor: null });
+      setDailyError(true);
+    }
+    dailyRetry.current = setTimeout(() => loadTodayPuzzles({ keepActive, attempt: attempt + 1 }), Math.min(30000, 3000 * 2 ** attempt));
+  };
+
+  // Yarının bulmacaları sunucuda 23:30'da hazır: o saatten sonra önceden indirilir, gece yarısı anında açılır.
+  const prefetchTomorrow = () => {
+    const now = new Date();
+    if (now.getHours() * 60 + now.getMinutes() < 23 * 60 + 32) return;
+    const t = tomorrowKey();
+    DIFFICULTY_ORDER.forEach((d) => {
+      if (getCachedPuzzle(dailyPuzzleId(t, d))) return;
+      fetchDaily(t, d, 2).then((p) => cachePuzzle(p, [dayKey(), t])).catch(() => { /* gece yarısı yine denenir */ });
+    });
+  };
+
+  // Gün değişimi: uygulama öne gelince, 23:32'de (yarını önceden indir) ve gece yarısında (yeni güne geç)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible' || !dailyPuzzles) return;
+      prefetchTomorrow();
+      const loadedDate = (dailyPuzzles.zor || dailyPuzzles.kolay)?.date;
+      if (dailyError || (loadedDate && loadedDate !== dayKey())) loadTodayPuzzles({ keepActive: currentPage === 'game' });
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    const now = new Date();
+    const at = (h, m, s = 0) => new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s) - now;
+    const prefetchIn = at(23, 32);
+    const prefetch = setTimeout(prefetchTomorrow, Math.max(0, prefetchIn));
+    const midnight = setTimeout(() => loadTodayPuzzles({ keepActive: currentPage === 'game' }), at(24, 0, 1));
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      clearTimeout(prefetch);
+      clearTimeout(midnight);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dailyPuzzles, dailyError, currentPage]);
+
+  const loadPastPuzzle = async (dateStr, difficulty = 'zor') => {
     setIsPuzzleLoading(true);
     try {
-      const LIVE_API_URL = "https://europe-west1-evolvogame-21a23.cloudfunctions.net/apiDailyPuzzle";
-      const response = await fetch(`${LIVE_API_URL}?date=${dateStr}`);
-      
-      if (!response.ok) throw new Error('Sunucu cevap vermedi');
-      
-      const data = await response.json();
-      
-      setActivePuzzle({
-        type: 'daily',
-        date: dateStr,
-        start: data.baslangic.toLocaleUpperCase('tr-TR'),
-        target: data.bitis.toLocaleUpperCase('tr-TR'),
-        solution: null,
-        optimalSteps: data.optimal_adim || 5
-      });
+      setActivePuzzle(await fetchDaily(dateStr, difficulty));
       setGameKey(prev => prev + 1); // Sayfayı zorla yeniletme tetikleyicisi
       setCurrentPage('game');
-      setCurrentPage('game');
       toggleModal('calendar', false);
-      showFeedback(`Zaman yolculuğu başarılı! ${dateStr} bulmacası yüklendi.`, "success");
+      showFeedback(`Zaman yolculuğu başarılı! ${dateStr} ${DIFFICULTIES[difficulty].label.toLocaleLowerCase('tr-TR')} bulmacası yüklendi.`, "success");
     } catch (error) {
       console.error("Geçmiş bulmaca hatası:", error);
-      showFeedback("O güne ait bulmaca bulunamadı!", "error");
+      showFeedback(difficulty === 'kolay' ? "O güne ait kolay bulmaca yok!" : "O güne ait bulmaca bulunamadı!", "error");
     } finally {
       setIsPuzzleLoading(false);
     }
+  };
+
+  /** Ana sayfadan / oyun sonundan bugünün kolay veya zor bulmacasını açar. */
+  const playDaily = (difficulty) => {
+    const puzzle = dailyPuzzles?.[difficulty];
+    if (!puzzle) {
+      showFeedback(!dailyPuzzles ? 'Bulmaca yükleniyor…' : dailyError ? 'Bulmaca yüklenemedi, tekrar dene.' : `${DIFFICULTIES[difficulty].label} bulmaca henüz hazır değil.`, "info");
+      return;
+    }
+    setActivePuzzle(puzzle);
+    setGameKey(prev => prev + 1);
+    setCurrentPage('game');
   };
 
   useEffect(() => {
@@ -443,6 +563,7 @@ const handleStartUnlimited = async (length, level) => {
       const urlParams = new URLSearchParams(window.location.search);
       const challengeData = urlParams.get('challenge');
 
+      let challengeOpened = false;
       if (challengeData) {
         try {
           const decoded = JSON.parse(decodeURIComponent(escape(atob(challengeData))));
@@ -450,40 +571,14 @@ const handleStartUnlimited = async (length, level) => {
           setCurrentPage('game');
           setIsPuzzleLoading(false);
           window.history.replaceState({}, document.title, window.location.pathname);
-          return;
+          challengeOpened = true;
         } catch (e) {
           console.error("Geçersiz veya bozuk meydan okuma linki", e);
         }
       }
 
       try {
-        const today = new Date();
-        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        const LIVE_API_URL = "https://europe-west1-evolvogame-21a23.cloudfunctions.net/apiDailyPuzzle";
-        const response = await fetch(`${LIVE_API_URL}?date=${todayStr}`);
-        
-        if (!response.ok) throw new Error('Sunucu cevap vermedi');
-        
-        const data = await response.json();
-        
-        setActivePuzzle({
-          type: 'daily',
-          date: todayStr,
-          start: data.baslangic.toLocaleUpperCase('tr-TR'),
-          target: data.bitis.toLocaleUpperCase('tr-TR'),
-          solution: null,
-          optimalSteps: data.optimal_adim || 5
-        });
-      } catch (error) {
-        console.warn("API Hatası, yedek bulmaca yükleniyor:", error);
-        setActivePuzzle({
-          type: 'daily',
-          date: new Date().toISOString().split('T')[0],
-          start: "EVRAK",
-          target: "KONAK",
-          solution: ["AVRAT", "KANAT", "KONAT", "KONAK"],
-          optimalSteps: 5
-        });
+        await loadTodayPuzzles({ keepActive: challengeOpened });
       } finally {
         setIsPuzzleLoading(false);
       }
@@ -503,6 +598,9 @@ const handleStartUnlimited = async (length, level) => {
   };
 
   const [notificationsOn, setNotificationsOn] = useState(notificationsEnabled);
+  // Doğru/yanlış cevap sesleri (menüdeki "Ses"); oyun sesleri her çalışta bu ayara bakar
+  const [soundOn, setSoundOnState] = useState(soundEnabled);
+  const setSoundOn = (on) => { setSoundEnabled(on); setSoundOnState(on); };
   const setNotifications = async (on) => {
     if (on) setNotificationsOn(await enableNotifications(stats));
     else { await disableNotifications(stats); setNotificationsOn(false); }
@@ -539,7 +637,7 @@ const handleStartUnlimited = async (length, level) => {
         theme={theme}
         user={user}
         username={username}
-        puzzleId={activePuzzle?.type === 'daily' ? activePuzzle.date : dayKey()}
+        puzzleId={activePuzzle?.type === 'daily' ? puzzleIdOf(activePuzzle) : dayKey()}
         onLogin={handleGoogleLogin}
         showFeedback={showFeedback}
         initialCode={pendingFriendCode}
@@ -647,7 +745,8 @@ const handleStartUnlimited = async (length, level) => {
     );
   }
 
-  if (currentPage === 'game') {
+  // Bulmaca yoksa (ör. yüklenemediyse) oyun ekranı açılmaz; ana sayfa "tekrar dene" gösterir
+  if (currentPage === 'game' && activePuzzle) {
     return (
       <>
         {globalDefinitionModal}
@@ -661,7 +760,7 @@ const handleStartUnlimited = async (length, level) => {
           colors={currentColors}
           toggleModal={toggleModal}
           modalState={modalState}
-          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onOpenStore: () => toggleModal('store', true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }}
+          settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, stats, notificationsOn, setNotifications, soundOn, setSoundOn, adsRemoved: adsRemovedState, onOpenStore: () => toggleModal('store', true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }}
           updateStats={updateStats}
           puzzleData={activePuzzle} 
           leaderboardData={leaderboardData}
@@ -677,6 +776,8 @@ const handleStartUnlimited = async (length, level) => {
           onNextLevel={(len, lvl) => handleStartUnlimited(len, lvl)}
           offlineProgress={offlineProgress}
           fetchLeaderboard={fetchLeaderboard}
+          leaderboardDifficulty={leaderboardDifficulty}
+          onPlayDaily={playDaily}
         />
       </>
     );
@@ -691,9 +792,9 @@ const handleStartUnlimited = async (length, level) => {
         </div>
       )}
 
-      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={currentColors} leaderboardData={leaderboardData} userAvatar={userAvatar} username={username} isLoading={isLoadingLeaderboard} onTabChange={fetchLeaderboard} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
+      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={currentColors} leaderboardData={leaderboardData} userAvatar={userAvatar} username={username} isLoading={isLoadingLeaderboard} onTabChange={fetchLeaderboard} defaultDifficulty={leaderboardDifficulty} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={currentColors} />
-      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} />
+      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} defaultDifficulty={leaderboardDifficulty} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={currentColors} stats={stats} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={currentColors} stats={stats} />
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={currentColors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
@@ -782,7 +883,7 @@ const handleStartUnlimited = async (length, level) => {
         </div>
       </nav>
 
-      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, notificationsOn, setNotifications, adsRemoved: adsRemovedState, onOpenStore: () => toggleModal('store', true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
+      <SideMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} toggleModal={toggleModal} settings={{ darkMode, setDarkMode, colorBlindMode, setColorBlindMode, notificationsOn, setNotifications, soundOn, setSoundOn, adsRemoved: adsRemovedState, onOpenStore: () => toggleModal('store', true), onPrivacyOptions: privacyOptions ? showPrivacyOptions : null }} theme={theme} user={user} onLogout={handleLogout} onLogin={handleGoogleLogin} />
 
       <section className="flex-1 flex flex-col justify-center pb-12 md:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -801,9 +902,32 @@ const handleStartUnlimited = async (length, level) => {
           </p>
 
           <div className="w-full max-w-xs sm:max-w-sm mx-auto flex flex-col gap-2.5">
-            <button onClick={() => setCurrentPage('game')} className={`${currentColors.btnPrimary} w-full py-3.5 rounded-2xl font-black text-base tracking-wide flex items-center justify-center gap-2 transition-all active:scale-[0.97] shadow-lg shadow-green-900/30`}>
-              <Play fill="currentColor" size={18} /> GÜNÜN BULMACASI
-            </button>
+            <p className="text-[11px] font-bold uppercase tracking-widest opacity-60 -mb-0.5">Günün bulmacası</p>
+            <div className="grid grid-cols-2 gap-2.5">
+              {DIFFICULTY_ORDER.map((d) => {
+                const puzzle = dailyPuzzles?.[d];
+                const loading = !dailyPuzzles;
+                const played = puzzle && readPref(`evolvo_played_${puzzle.puzzleId}`);
+                return (
+                  <button
+                    key={d}
+                    onClick={() => playDaily(d)}
+                    disabled={!puzzle && !loading}
+                    className={`${d === 'zor' ? currentColors.btnPrimary : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'} w-full py-3 rounded-2xl font-black text-base tracking-wide flex flex-col items-center justify-center leading-tight transition-all active:scale-[0.97] shadow-lg shadow-green-900/30 disabled:opacity-40`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {played ? <CheckCircle2 size={16} /> : <Play fill="currentColor" size={15} />} {DIFFICULTIES[d].label.toLocaleUpperCase('tr-TR')}
+                    </span>
+                    <span className="text-[10px] font-bold opacity-80 normal-case tracking-normal">{puzzle || loading ? DIFFICULTIES[d].hint : dailyError ? 'Yüklenemedi' : 'Yarın hazır'}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {dailyError && (
+              <button onClick={() => loadTodayPuzzles()} className="py-2.5 rounded-2xl font-bold text-sm bg-red-500/15 border border-red-400/40 text-red-200 active:scale-[0.97] transition-all">
+                Bulmaca yüklenemedi — tekrar dene
+              </button>
+            )}
             <div className="grid grid-cols-2 gap-2.5">
               {showAppUi && (
                 <button onClick={() => setCurrentPage('unlimited_menu')} className="py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white active:scale-[0.97] transition-all shadow-md shadow-purple-900/30">

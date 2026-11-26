@@ -1,7 +1,7 @@
 import { X, Pencil, Users, Award, LogOut, Cloud, Gift, ChevronRight } from 'lucide-react';
 import { INVITE_REWARD } from '../../lib/invite';
 import { AVATARS } from '../../data/constants';
-import { effectiveStreak } from '../../lib/progress';
+import { StatsPanel } from './StatsModal';
 import { useHintWallet } from '../../lib/hints';
 
 const maskEmail = (email) => {
@@ -21,7 +21,7 @@ const GoogleG = () => (
 );
 
 /**
- * Profil: avatar seçimi, kullanıcı adı, Google ile giriş / çıkış ve kısa özet.
+ * Profil: avatar seçimi, kullanıcı adı, Google ile giriş / çıkış ve istatistikler.
  * Ana menüdeki profil düğmesinden açılır.
  */
 export const ProfileModal = ({ isOpen, onClose, theme, user, username, userAvatar, onSelectAvatar, stats = {}, onLogin, onLogout, onRename, onOpenFriends, onOpenAchievements }) => {
@@ -29,8 +29,6 @@ export const ProfileModal = ({ isOpen, onClose, theme, user, username, userAvata
   if (!isOpen) return null;
 
   const loggedIn = !!user;
-  const played = stats.dailyPlayed || 0;
-  const winRate = played > 0 ? Math.round(((stats.dailyWins || 0) / played) * 100) : 0;
 
   return (
     <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-md" onClick={onClose}>
@@ -124,11 +122,13 @@ export const ProfileModal = ({ isOpen, onClose, theme, user, username, userAvata
             })}
           </div>
 
-          {/* Özet */}
-          <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-            <div className="rounded-xl bg-white/5 py-2"><div className="text-xl font-black">🔥 {effectiveStreak(stats)}</div><div className="text-[10px] opacity-60">Seri</div></div>
-            <div className="rounded-xl bg-white/5 py-2"><div className="text-xl font-black">{winRate}%</div><div className="text-[10px] opacity-60">Galibiyet</div></div>
-            <div className="rounded-xl bg-white/5 py-2"><div className="text-xl font-black">💡 {wallet}</div><div className="text-[10px] opacity-60">İpucu</div></div>
+          {/* İstatistikler (günlük bulmaca) */}
+          <div className="mt-5 flex items-center justify-between mb-3">
+            <h3 className="text-xs font-black uppercase tracking-widest opacity-60">İstatistikler</h3>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-yellow-400/15 text-yellow-200">💡 {wallet} ipucu</span>
+          </div>
+          <div className="rounded-2xl bg-white/5 border border-white/10 px-4 pt-4 pb-4">
+            <StatsPanel stats={stats} compact />
           </div>
 
           {loggedIn && (

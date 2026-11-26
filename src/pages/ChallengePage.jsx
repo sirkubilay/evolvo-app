@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { createRowDeleteGuard } from '../lib/rowDeleteGuard';
-import { X, Delete, Swords, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, Plus, Minus, Copy, MessageCircle, Settings } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Trash2, X, Delete, Swords, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, Plus, Minus, Copy, MessageCircle, Settings } from 'lucide-react';
 
 export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) => {
   // Kitap ikonuna basınca kelimenin TDK anlamını göster (önceden tanımsızdı → çökme)
@@ -11,7 +10,19 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
   const [wordLength, setWordLength] = useState(5);
   const [history, setHistory] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");
-  const rowDeleteGuard = useRef(createRowDeleteGuard());
+  // Boş satırda "Sil"e basınca son satırın altında "Satırı sil" onayı açılır
+  const [pendingDelete, setPendingDelete] = useState(false);
+  // Onay, açıldığı andaki satır sayısına bağlı: satır eklenir/silinirse kendiliğinden kaybolur
+  const showDeleteConfirm = pendingDelete === history.length;
+  useEffect(() => {
+    if (!showDeleteConfirm) return undefined;
+    const close = (e) => {
+      if (e.target.closest?.('[data-delete-confirm],[data-game-keyboard]')) return;
+      setPendingDelete(false);
+    };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, [showDeleteConfirm]);
   const [finalizeOpen, setFinalizeOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rowAnimation, setRowAnimation] = useState(null);
@@ -30,6 +41,7 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
 
   const handleKeyPress = useCallback(async (key) => {
     if (finalizeOpen || isLoading) return;
+    setPendingDelete(false); // "Sil" dışındaki her tuş silme butonunu kapatır
 
     if (key === 'Enter') {
       if (currentGuess.length !== wordLength) {
@@ -77,13 +89,11 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
 
     } else if (key === 'Delete' || key === 'Backspace') {
       if (currentGuess.length > 0) {
-        rowDeleteGuard.current.touch();
         setCurrentGuess(p => p.slice(0, -1));
       } else if (history.length > 0) {
-        if (rowDeleteGuard.current.confirm()) setHistory(p => p.slice(0, -1));
+        setPendingDelete(history.length);
       }
     } else if (currentGuess.length < wordLength && /^[A-ZÇĞİÖŞÜ]$/.test(key)) {
-      rowDeleteGuard.current.touch();
       setCurrentGuess(p => p + key);
     }
   }, [currentGuess, history, finalizeOpen, isLoading, wordLength, checkTDK]);
@@ -180,6 +190,19 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
                         </div>
                      ))}
                   </div>
+                  {showDeleteConfirm && idx === history.length - 1 && (
+                     <div className="absolute right-full mr-2 z-20 flex items-center h-full">
+                        <button
+                           data-delete-confirm
+                           onClick={() => { setHistory(p => p.slice(0, -1)); setPendingDelete(false); }}
+                           aria-label="Satırı sil"
+                           title="Satırı sil"
+                           className="p-2 rounded-lg bg-red-600 border-2 border-red-400 text-white shadow-lg animate-in zoom-in duration-150 active:scale-90"
+                        >
+                           <Trash2 size={16} />
+                        </button>
+                     </div>
+                  )}
                   <div className="absolute left-full ml-2 z-20 flex items-center h-full">
                      <button onClick={() => handleDictClick(word)} className={`p-2 rounded-lg opacity-40 hover:opacity-100 transition-opacity ${theme.emptyCell}`} title="Anlamını Gör"><Book size={16} /></button>
                   </div>
@@ -215,7 +238,7 @@ export const ChallengePage = ({ onBack, theme, colors, checkTDK, toggleModal }) 
          </div>
       </main>
 
-      <div className={`fixed bottom-0 left-0 w-full bg-black/40 backdrop-blur-xl p-1 pb-4 border-t ${theme.panelBorder} z-30 animate-in slide-in-from-bottom-8`}>
+      <div data-game-keyboard className={`fixed bottom-0 left-0 w-full bg-black/40 backdrop-blur-xl p-1 pb-4 border-t ${theme.panelBorder} z-30 animate-in slide-in-from-bottom-8`}>
          <div className="max-w-xl mx-auto space-y-1">
             {keyboardRows.map((row, i) => (
                <div key={i} className="flex justify-center gap-1">

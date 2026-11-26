@@ -120,14 +120,15 @@ export const applyGameEnd = (prev, game, now = new Date()) => {
     } else {
       s.lastDailyExtra = null;
     }
+    // Her gün iki günlük bulmaca (kolay/zor) var: o gün en az birini kazanmak seriyi sürdürür.
+    // Kayıp seriyi hemen sıfırlamaz (aynı gün diğer bulmaca hâlâ kazanılabilir); hiç kazanılmayan
+    // gün geçince effectiveStreak 0 gösterir, sonraki galibiyet de seriyi 1'den başlatır.
     if (game.win) {
       if (s.lastDailyWinDate !== today) {
         s.currentStreak = isYesterday(s.lastDailyWinDate, today) ? s.currentStreak + 1 : 1;
         s.lastDailyWinDate = today;
       }
       s.maxStreak = Math.max(s.maxStreak, s.currentStreak);
-    } else {
-      s.currentStreak = 0;
     }
   }
 

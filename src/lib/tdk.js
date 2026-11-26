@@ -3,7 +3,7 @@
 // kelime için tekrar istek atılmaz ve sonra çevrimdışıyken de kabul edilir.
 
 const CACHE_KEY = 'evolvo_tdk_words';
-const TIMEOUT_MS = 3000;
+const TIMEOUT_MS = 6000; // TDK sunucusu zaman zaman yavaş; 3 sn'de geçerli kelimeler reddediliyordu
 
 const missCache = new Set(); // bu oturumda TDK'nın "yok" dediği kelimeler
 
@@ -26,11 +26,22 @@ const saveHit = (word) => {
   } catch { /* depolama yoksa sadece bellekte kalsın */ }
 };
 
-/** TDK cevabında, aranan kelimenin kendisi (özel isim olmayan) bir madde var mı? */
-export const isTdkEntryFor = (data, lowerWord) =>
-  Array.isArray(data) &&
-  data.some(e => e && e.ozel_mi !== '1' &&
-    String(e.madde_duz || e.madde || '').toLocaleLowerCase('tr-TR') === lowerWord);
+/**
+ * Şapkalı harfleri düzleştirir (klavyede Â/Î/Û yok): KÂĞIT → KAĞIT, ADEDÎ → ADEDİ.
+ * Büyük/küçük harfi korur; sözlük ve bulmaca kelimeleri hep bununla karşılaştırılır.
+ */
+export const flattenTr = (w) => String(w ?? '')
+  .replace(/â/g, 'a').replace(/Â/g, 'A')
+  .replace(/î/g, 'i').replace(/Î/g, 'İ')
+  .replace(/û/g, 'u').replace(/Û/g, 'U');
+
+/** TDK cevabında, aranan kelimenin kendisi (özel isim olmayan) bir madde var mı? Şapka fark etmez. */
+export const isTdkEntryFor = (data, lowerWord) => {
+  const want = flattenTr(lowerWord);
+  return Array.isArray(data) &&
+    data.some(e => e && e.ozel_mi !== '1' &&
+      [e.madde, e.madde_duz].some(m => m && flattenTr(String(m).toLocaleLowerCase('tr-TR')) === want));
+};
 
 /**
  * @param {string} word Büyük ya da küçük harf, Türkçe.

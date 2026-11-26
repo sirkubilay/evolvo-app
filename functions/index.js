@@ -22,14 +22,17 @@ const { botsForDay, botsForPeriod, mergeWithBots, isBotName } = require("./bots"
 // Sözlük dosyalarında eksik olan kelimeler (ör. "dart") için canlı TDK kontrolü.
 // İstemci de aynı yedeği kullanıyor; burada da sormazsak skor kaydı reddedilir.
 const tdkCache = new Map(); // kelime -> true/false (instance ömrü boyunca)
+// Şapkalı harfler düz kabul edilir (klavyede Â/Î/Û yok): KÂĞIT = KAĞIT. Tüm kelime karşılaştırmaları bununla.
+const duz = (w) => String(w ?? "").toLocaleLowerCase("tr-TR").replace(/â/g, "a").replace(/î/g, "i").replace(/û/g, "u");
+
 async function tdkdeVarMi(word) {
-    const lower = String(word).toLocaleLowerCase('tr-TR');
+    const lower = duz(word);
     if (tdkCache.has(lower)) return tdkCache.get(lower);
     try {
         const res = await fetch(`https://sozluk.gov.tr/gts?ara=${encodeURIComponent(lower)}`, { signal: AbortSignal.timeout(4000) });
         const data = await res.json();
         const ok = Array.isArray(data) && data.some(e => e && e.ozel_mi !== '1' &&
-            String(e.madde_duz || e.madde || '').toLocaleLowerCase('tr-TR') === lower);
+            (duz(e.madde) === lower || duz(e.madde_duz) === lower));
         tdkCache.set(lower, ok);
         if (ok) logger.info(`TDK yedeği kabul etti (sözlük dosyasında yok): ${lower}`);
         return ok;
@@ -39,20 +42,7 @@ async function tdkdeVarMi(word) {
     }
 }
 
-function getWeekId(date) {
-    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
-}
-
-function getMonthId(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-}
+const { parsePuzzleId, puzzleIdFor, weekIdOf, monthIdOf, trToday, daysOfPeriod, periodIdOf } = require("./puzzleIds");
 
 // --- saveScore Fonksiyonu (YENİ YAPI) ---
 // Oyuncunun skorunu "scores" koleksiyonuna kaydeder.
@@ -63,6 +53,9 @@ exports.saveScore = onCall(async (request) => {
     const data = request.data;
     // hintsUsed parametresini ekledik
     const { playerName, uid, wordHistory, time, puzzleId, dateString, avatar, recaptchaToken, hintsUsed } = data;
+    if (typeof playerName !== "string" || !playerName.trim() || playerName.length > 30) {
+        throw new HttpsError("invalid-argument", "Geçersiz oyuncu adı.");
+    }
 
     // --- 1. reCAPTCHA DOĞRULAMASI ---
     if (!recaptchaToken) {
@@ -94,6 +87,11 @@ exports.saveScore = onCall(async (request) => {
     if (!wordHistory || !Array.isArray(wordHistory) || wordHistory.length < 2) {
         throw new HttpsError("invalid-argument", "Geçersiz oyun verisi.");
     }
+    // Skor, oynanan bulmacanın kimliğine yazılır (istemcinin ayrıca gönderdiği puzzleId'ye güvenilmez).
+    const parsedId = parsePuzzleId(dateString);
+    if (!parsedId) throw new HttpsError("invalid-argument", "Geçersiz bulmaca kimliği.");
+    if (puzzleId && puzzleId !== dateString) logger.warn(`puzzleId (${puzzleId}) ile dateString (${dateString}) farklı; dateString kullanıldı.`);
+    const scorePuzzleId = dateString;
 
     const puzzleRef = db.collection("puzzles").doc(dateString);
     const puzzleDoc = await puzzleRef.get();
@@ -104,10 +102,10 @@ exports.saveScore = onCall(async (request) => {
     const puzzleData = puzzleDoc.data();
 
     // A. Başlangıç ve Bitiş Kontrolü
-    const playerStart = wordHistory[0].toLowerCase();
-    const playerEnd = wordHistory[wordHistory.length - 1].toLowerCase();
-    const dbStart = puzzleData.baslangic.toLowerCase();
-    const dbEnd = puzzleData.bitis.toLowerCase();
+    const playerStart = duz(wordHistory[0]);
+    const playerEnd = duz(wordHistory[wordHistory.length - 1]);
+    const dbStart = duz(puzzleData.baslangic);
+    const dbEnd = duz(puzzleData.bitis);
 
     if (playerStart !== dbStart || playerEnd !== dbEnd) {
          throw new HttpsError("failed-precondition", "Başlangıç veya bitiş kelimesi hatalı.");
@@ -120,18 +118,18 @@ exports.saveScore = onCall(async (request) => {
         const sozlukDosyasi = `sozluk_${harfSayisi}harfli.txt`;
         const sozlukYolu = path.join(__dirname, sozlukDosyasi);
         const sozlukData = fs.readFileSync(sozlukYolu, 'utf-8');
-        sozluk = new Set(sozlukData.split(/\r?\n/).map(k => k.trim().toLowerCase()));
+        sozluk = new Set(sozlukData.split(/\r?\n/).map(k => duz(k.trim())));
     } catch (e) {
         throw new HttpsError("internal", "Sunucu sözlük hatası.");
     }
 
     for (let i = 0; i < wordHistory.length; i++) {
-        const currentWord = wordHistory[i].toLowerCase();
+        const currentWord = duz(wordHistory[i]);
         if (!sozluk.has(currentWord) && !(await tdkdeVarMi(currentWord))) {
             throw new HttpsError("invalid-argument", `Geçersiz kelime: ${currentWord}`);
         }
         if (i > 0) {
-            const prevWord = wordHistory[i - 1].toLowerCase();
+            const prevWord = duz(wordHistory[i - 1]);
             let diffCount = 0;
             for (let j = 0; j < harfSayisi; j++) {
                 if (currentWord[j] !== prevWord[j]) diffCount++;
@@ -172,7 +170,7 @@ exports.saveScore = onCall(async (request) => {
     const userAvatar = avatar || '👤';
     const scoresCol = db.collection("scores");
 
-    const q = scoresCol.where("puzzleId", "==", puzzleId).where("lowerCaseName", "==", lowerCasePlayerName).limit(1);
+    const q = scoresCol.where("puzzleId", "==", scorePuzzleId).where("lowerCaseName", "==", lowerCasePlayerName).limit(1);
     const querySnapshot = await q.get();
 
     if (!querySnapshot.empty) {
@@ -180,24 +178,10 @@ exports.saveScore = onCall(async (request) => {
         return { status: "exists", message: `Zaten skorun var (${existingScore}).`, realScore: existingScore };
     }
 
-    await scoresCol.add({
-        name: playerName,
-        lowerCaseName: lowerCasePlayerName,
-        uid: uid, 
-        avatar: userAvatar,
-        steps: steps,
-        time: time,
-        score: calculatedScore, 
-        puzzleId: puzzleId,
-        hintsUsed: hintsUsed || 0, // İpucu bilgisini de kaydet
-        createdAt: FieldValue.serverTimestamp(), 
-    });
-
-    // Liderlik tablosu güncelleme (Aynı kalıyor)
-    const weekId = getWeekId(new Date()); 
-    const monthId = getMonthId(new Date());
+    // Günlük skor + haftalık/aylık toplamlar tek seferde (atomik) yazılır: biri yazılıp diğeri
+    // yazılamazsa tablolar birbirini tutmaz. Dönem, bulmacanın tarihinden hesaplanır.
     const aggregateData = {
-        score: FieldValue.increment(calculatedScore), // İŞTE BÜTÜN DÜĞÜMÜ ÇÖZEN SATIR!
+        score: FieldValue.increment(calculatedScore),
         gamesPlayed: FieldValue.increment(1),
         name: playerName,
         lowerCaseName: lowerCasePlayerName,
@@ -205,8 +189,21 @@ exports.saveScore = onCall(async (request) => {
         avatar: userAvatar
     };
     const batch = db.batch();
-    batch.set(db.doc(`leaderboards/${weekId}/players/${lowerCasePlayerName}`), aggregateData, { merge: true });
-    batch.set(db.doc(`leaderboards/${monthId}/players/${lowerCasePlayerName}`), aggregateData, { merge: true });
+    batch.set(scoresCol.doc(), {
+        name: playerName,
+        lowerCaseName: lowerCasePlayerName,
+        uid: uid,
+        avatar: userAvatar,
+        steps: steps,
+        time: time,
+        score: calculatedScore,
+        puzzleId: scorePuzzleId,
+        difficulty: parsedId.difficulty,
+        hintsUsed: hintsUsed || 0,
+        createdAt: FieldValue.serverTimestamp(),
+    });
+    batch.set(db.doc(`leaderboards/${weekIdOf(parsedId.date)}/players/${lowerCasePlayerName}`), aggregateData, { merge: true });
+    batch.set(db.doc(`leaderboards/${monthIdOf(parsedId.date)}/players/${lowerCasePlayerName}`), aggregateData, { merge: true });
     await batch.commit();
 
     return { status: "success", message: "Skor kaydedildi.", realScore: calculatedScore };
@@ -236,15 +233,23 @@ exports.getHint = onCall(async (request) => {
             throw new HttpsError("data-loss", "Bu bulmacanın çözüm verisi eksik.");
         }
 
-        const cozumYolu = puzzleData.cozum_yolu;
-        
+        const cozumYolu = puzzleData.cozum_yolu.map(duz);
+
+        // Oyuncunun başlangıç kelimesi bu bulmacanınkiyle aynı değilse başka bir bulmacaya ipucu
+        // istenmiştir (ör. istemcide tarih kayması): alakasız bir kelime vermek yerine reddet.
+        const ilkKelime = Array.isArray(wordHistory) ? duz(wordHistory[0]) : "";
+        if (ilkKelime && ilkKelime !== cozumYolu[0]) {
+            logger.warn(`getHint: ${dateString} başlangıcı ${cozumYolu[0]}, istemci ${ilkKelime} gönderdi.`);
+            throw new HttpsError("failed-precondition", "Bu bulmaca güncel değil. Uygulamayı yeniden aç.");
+        }
+
         // Kullanıcının en son doğru bildiği yeri bul
         let lastValidIndex = 0; 
         
         if (wordHistory && Array.isArray(wordHistory)) {
             // Sondan başa doğru tara, ilk eşleşen kelime bizim referans noktamızdır
             for (let i = wordHistory.length - 1; i >= 0; i--) {
-                const guess = (wordHistory[i] || "").toLowerCase();
+                const guess = duz(wordHistory[i]);
                 const foundIndex = cozumYolu.indexOf(guess);
                 
                 if (foundIndex !== -1) {
@@ -268,6 +273,7 @@ exports.getHint = onCall(async (request) => {
         };
 
     } catch (error) {
+        if (error instanceof HttpsError) throw error; // bilinçli hatalar (eksik veri, uyuşmayan bulmaca) olduğu gibi
         logger.error("getHint Fonksiyonunda Kritik Hata:", error);
         // İstemciye temiz hata gönder
         throw new HttpsError("internal", "İpucu üretilirken sunucu hatası oluştu.");
@@ -380,6 +386,24 @@ exports.getLeaderboard = onCall(async (request) => {
         );
     }
 });
+// Var olan günlük bulmaca kimlikleri (kolay bulmacalar sonradan eklendiği için her gün iki tane yok).
+// Botların haftalık/aylık toplamı yalnızca gerçekten var olan bulmacalardan hesaplanır.
+const knownPuzzleIds = new Set(); // instance ömrü boyunca; bulmacalar silinmez
+async function existingDailyIds(days) {
+    const ids = days.flatMap((d) => [puzzleIdFor(d, "zor"), puzzleIdFor(d, "kolay")]);
+    const unknown = ids.filter((id) => !knownPuzzleIds.has(id));
+    if (unknown.length) {
+        try {
+            const snaps = await db.getAll(...unknown.map((id) => db.collection("puzzles").doc(id)), { fieldMask: ["harf_sayisi"] });
+            snaps.forEach((snap) => { if (snap.exists) knownPuzzleIds.add(snap.id); });
+        } catch (e) {
+            logger.warn("Bulmaca varlık kontrolü başarısız; yalnızca zor bulmacalar sayılıyor.", e);
+            return days;
+        }
+    }
+    return ids.filter((id) => knownPuzzleIds.has(id));
+}
+
 // 'leaderboards' koleksiyonundan haftalık/aylık toplamları çeker.
 exports.getAggregateLeaderboard = onCall(async (request) => {
     const data = request.data;
@@ -392,15 +416,9 @@ exports.getAggregateLeaderboard = onCall(async (request) => {
         throw new HttpsError("invalid-argument", "Period ('weekly' veya 'monthly') gereklidir.");
     }
 
-    const now = new Date();
-    let periodId;
-
-    // 1. Hangi dönemin ID'sini alacağımıza karar ver
-    if (period === 'weekly') {
-        periodId = getWeekId(now);
-    } else {
-        periodId = getMonthId(now);
-    }
+    // 1. Dönem kimliği Türkiye saatindeki bugüne göre (skorlar da bulmaca tarihine göre yazılıyor)
+    const today = trToday();
+    const periodId = periodIdOf(period, today);
 
     // 2. İlgili koleksiyonun referansı
     // (örn: leaderboards/2025-W46/players)
@@ -462,7 +480,7 @@ exports.getAggregateLeaderboard = onCall(async (request) => {
         }
         
         logger.info(`Aggregate Liderlik Tablosu (${period}) başarıyla çekildi.`);
-        return mergeWithBots(topScores, userScore, botsForPeriod(period));
+        return mergeWithBots(topScores, userScore, botsForPeriod(await existingDailyIds(daysOfPeriod(period, today))));
 
     } catch (error) {
         // Bu sorgu için de index gerekebilir:
@@ -509,142 +527,110 @@ exports.getPuzzle = onCall(async (request) => {
     }
 });
 
-// --- YENİ: Otomatik Günlük Bulmaca Üretici Fonksiyon ---
-// motor.py'nin Node.js (JavaScript) versiyonu
-// Cloud Scheduler ile her gün 00:01'de çalışacak şekilde ayarlandı (zaman dilimi Turkey)
-// --- functions/index.js İÇİNDEKİ DEĞİŞECEK KISIM ---
+// --- Otomatik Günlük Bulmaca Üretici ---
+// Her gün iki bulmaca: KOLAY (en kısa çözüm 3–4 adım) ve ZOR (en kısa çözüm 5–6 adım).
+// Zor bulmaca eski kimlikte (`YYYY-MM-DD`) durur; eski uygulama sürümleri onu oynamaya devam eder.
+const DAILY_DIFFICULTIES = {
+    kolay: { minAdim: 3, maxAdim: 4 },
+    zor: { minAdim: 5, maxAdim: 6 },
+};
+const BONUS_HAK = 5;
+const ALFABE = 'abcçdefgğhıijklmnoöprsştuüvyzâîû';
 
-// ESKİ KOD: exports.generateDailyPuzzle = onSchedule("every 24 hours", async (event) => {
-// YENİ KOD (Aşağıdakini kopyalayıp eskisinin yerine yapıştırın):
+function sozlukYukle(harfSayisi) {
+    const sozlukYolu = path.join(__dirname, `sozluk_${harfSayisi}harfli.txt`);
+    const sozluk = new Set(fs.readFileSync(sozlukYolu, 'utf-8').split(/\r?\n/).map(k => duz(k.trim())).filter(k => k.length === harfSayisi));
+    if (sozluk.size === 0) throw new Error(`sozluk_${harfSayisi}harfli.txt boş veya okunamadı.`);
+    return sozluk;
+}
 
-exports.generateDailyPuzzle = onSchedule({
-    schedule: "30 23 * * *",       // Her gün saat 23:30'da çalışır
-    timeZone: "Europe/Istanbul",   // Türkiye saat dilimi
-    retryConfig: { retryCount: 3 } // Hata olursa 3 kez daha dene
-}, async (event) => {
-    
-    logger.info("Otomatik günlük bulmaca üretici tetiklendi (Ön-Üretim Modu).");
-
-    // --- TARİH HESAPLAMA (YARIN İÇİN) ---
-    // Şu an 5 Ocak 23:30 ise, biz 6 Ocak için bulmaca üretmeliyiz.
-    const now = new Date();
-    // Türkiye saati UTC+3 olduğu için ve sunucu UTC olabileceği için güvenli yol:
-    // Mevcut zamana 25 saat ekle (24 saat + 1 saat güvenlik payı).
-    // Böylece kesinlikle "Yarın"a geçeriz.
-    const tomorrow = new Date(now.getTime() + (25 * 60 * 60 * 1000));
-    
-    const tarihStr = tomorrow.toISOString().split('T')[0]; // YYYY-MM-DD (Örn: 2026-01-06)
-    
-    logger.info(`Hedef Tarih (Yarın): ${tarihStr}`);
-
-    // --- AYARLAR VE ÜRETİM (BURASI AYNI KALIYOR) ---
-    const MIN_ADIM = 3;
-    const MAX_ADIM = 6;
-    const BONUS_HAK = 5;
-    const harfSayisi = Math.floor(Math.random() * 3) + 4; // 4, 5, veya 6
-
-    let sozluk;
-    const sozlukDosyasi = `sozluk_${harfSayisi}harfli.txt`;
-
-    try {
-        const sozlukYolu = path.join(__dirname, sozlukDosyasi);
-        const sozlukData = fs.readFileSync(sozlukYolu, 'utf-8');
-        sozluk = new Set(sozlukData.split(/\r?\n/).map(k => k.trim()).filter(k => k.length === harfSayisi));
-        
-        if (sozluk.size === 0) {
-            throw new Error(`Sözlük dosyası '${sozlukDosyasi}' boş veya okunamadı.`);
-        }
-    } catch (e) {
-        logger.error(`Sözlük yüklenirken HATA: ${sozlukDosyasi}`, e);
-        return null;
-    }
-
-    const sozluk_listesi = Array.from(sozluk);
-    let denemeSayisi = 0;
-    let uretilenBulmaca = null;
-
-    // --- BFS ALGORİTMASI (AYNI KALIYOR) ---
-    while (denemeSayisi < 20 && uretilenBulmaca === null) {
-        denemeSayisi++;
-        const baslangicKelimesi = sozluk_listesi[Math.floor(Math.random() * sozluk_listesi.length)];
-        const kuyruk = [[baslangicKelimesi, 0]];
-        const ebeveynHaritasi = new Map();
-        ebeveynHaritasi.set(baslangicKelimesi, [null, 0]);
+/**
+ * BFS ile başlangıçtan en kısa uzaklığı [minAdim, maxAdim] aralığında olan bir hedef seçer.
+ * BFS uzaklığı = optimal adım sayısı (daha kısa bir yol olamaz).
+ */
+function bulmacaUret(sozluk, harfSayisi, minAdim, maxAdim, maxDeneme = 30) {
+    const sozlukListesi = Array.from(sozluk);
+    for (let deneme = 1; deneme <= maxDeneme; deneme++) {
+        const baslangic = sozlukListesi[Math.floor(Math.random() * sozlukListesi.length)];
+        const kuyruk = [[baslangic, 0]];
+        const ebeveyn = new Map([[baslangic, null]]);
         const adimGruplari = {};
-        const alfabe = 'abcçdefgğhıijklmnoöprsştuüvyzâîû';
-        let aramaIndex = 0;
-
-        while (aramaIndex < kuyruk.length) {
-            const [mevcutKelime, mevcutAdim] = kuyruk[aramaIndex];
-            aramaIndex++;
-            if (mevcutAdim >= MAX_ADIM) continue;
-            const mevcutKelimeList = mevcutKelime.split('');
-            for (let i = 0; i < mevcutKelimeList.length; i++) {
-                const orijinalHarf = mevcutKelimeList[i];
-                for (const harf of alfabe) {
-                    if (orijinalHarf === harf) continue;
-                    mevcutKelimeList[i] = harf;
-                    const potansiyelKomsu = mevcutKelimeList.join('');
-                    if (sozluk.has(potansiyelKomsu) && !ebeveynHaritasi.has(potansiyelKomsu)) {
-                        const yeniAdim = mevcutAdim + 1;
-                        ebeveynHaritasi.set(potansiyelKomsu, [mevcutKelime, yeniAdim]);
-                        kuyruk.push([potansiyelKomsu, yeniAdim]);
-                        if (!adimGruplari[yeniAdim]) adimGruplari[yeniAdim] = [];
-                        adimGruplari[yeniAdim].push(potansiyelKomsu);
+        for (let i = 0; i < kuyruk.length; i++) {
+            const [kelime, adim] = kuyruk[i];
+            if (adim >= maxAdim) continue;
+            const harfler = kelime.split('');
+            for (let j = 0; j < harfler.length; j++) {
+                const orijinal = harfler[j];
+                for (const harf of ALFABE) {
+                    if (harf === orijinal) continue;
+                    harfler[j] = harf;
+                    const komsu = harfler.join('');
+                    if (sozluk.has(komsu) && !ebeveyn.has(komsu)) {
+                        ebeveyn.set(komsu, kelime);
+                        kuyruk.push([komsu, adim + 1]);
+                        (adimGruplari[adim + 1] ||= []).push(komsu);
                     }
                 }
-                mevcutKelimeList[i] = orijinalHarf;
+                harfler[j] = orijinal;
             }
         }
-        
         const gecerliAdimlar = [];
-        for (let adim = MIN_ADIM; adim <= MAX_ADIM; adim++) {
-            if (adimGruplari[adim] && adimGruplari[adim].length > 0) gecerliAdimlar.push(adim);
-        }
-        
-        if (gecerliAdimlar.length > 0) {
-            const secilenOptimalAdim = gecerliAdimlar[Math.floor(Math.random() * gecerliAdimlar.length)];
-            const bitisKelimesi = adimGruplari[secilenOptimalAdim][Math.floor(Math.random() * adimGruplari[secilenOptimalAdim].length)];
-            const hakSayisi = secilenOptimalAdim + BONUS_HAK;
-            const cozumYolu = [];
-            let gecerliKelime = bitisKelimesi;
-            while (gecerliKelime !== null) {
-                cozumYolu.push(gecerliKelime);
-                const ebeveyn = ebeveynHaritasi.get(gecerliKelime);
-                gecerliKelime = ebeveyn[0];
-            }
-            cozumYolu.reverse();
-            uretilenBulmaca = {
-                baslangic: baslangicKelimesi,
-                bitis: bitisKelimesi,
-                harf_sayisi: harfSayisi,
-                optimal_adim: secilenOptimalAdim,
-                hak_sayisi: hakSayisi,
-                cozum_yolu: cozumYolu,
-                createdAt: admin.firestore.FieldValue.serverTimestamp()
-            };
-        }
+        for (let adim = minAdim; adim <= maxAdim; adim++) if (adimGruplari[adim]?.length) gecerliAdimlar.push(adim);
+        if (!gecerliAdimlar.length) continue;
+
+        const optimal = gecerliAdimlar[Math.floor(Math.random() * gecerliAdimlar.length)];
+        const bitis = adimGruplari[optimal][Math.floor(Math.random() * adimGruplari[optimal].length)];
+        const cozumYolu = [];
+        for (let k = bitis; k !== null; k = ebeveyn.get(k)) cozumYolu.push(k);
+        cozumYolu.reverse();
+        return {
+            baslangic,
+            bitis,
+            harf_sayisi: harfSayisi,
+            optimal_adim: optimal,
+            hak_sayisi: optimal + BONUS_HAK,
+            cozum_yolu: cozumYolu,
+        };
     }
+    return null;
+}
 
-    // --- KAYIT KISMI (DÜZENLENDİ) ---
-    if (uretilenBulmaca) {
-        try {
-            // YARININ TARİHİ İLE KAYDET (tarihStr yukarıda hesaplandı)
-            const puzzleRef = db.collection("puzzles").doc(tarihStr);
-            await puzzleRef.set(uretilenBulmaca);
-            logger.info(`BAŞARILI: Yarının (${tarihStr}) bulmacası şimdiden hazırlandı: ${uretilenBulmaca.baslangic} -> ${uretilenBulmaca.bitis}`);
-
-            // 'latest' kısmını sildik çünkü 'latest' mantığı "şu an oynanan" demektir. 
-            // Biz yarınkini ürettiğimiz için 'latest'ı güncellersek oyun yarına geçer.
-            // O yüzden sadece tarihli ID ile kaydediyoruz.
-
-        } catch (e) {
-            logger.error(`Bulmaca (${tarihStr}) kaydedilirken HATA:`, e);
-        }
-    } else {
-        logger.error(`${denemeSayisi} denemede uygun bulmaca üretilemedi!`);
+/** Verilen tarih için bir zorlukta bulmaca üretip kaydeder (varsa dokunmaz). */
+async function gunlukBulmacaHazirla(tarihStr, difficulty, { overwrite = false } = {}) {
+    const ref = db.collection("puzzles").doc(puzzleIdFor(tarihStr, difficulty));
+    if (!overwrite && (await ref.get()).exists) return { id: ref.id, status: "exists" };
+    const { minAdim, maxAdim } = DAILY_DIFFICULTIES[difficulty];
+    // Önce rastgele harf sayısı; bulunamazsa diğerlerini dene
+    const harfSirasi = [4, 5, 6].sort(() => Math.random() - 0.5);
+    for (const harfSayisi of harfSirasi) {
+        let sozluk;
+        try { sozluk = sozlukYukle(harfSayisi); } catch (e) { logger.error(e.message); continue; }
+        const bulmaca = bulmacaUret(sozluk, harfSayisi, minAdim, maxAdim);
+        if (!bulmaca) continue;
+        await ref.set({ ...bulmaca, zorluk: difficulty, createdAt: FieldValue.serverTimestamp() });
+        logger.info(`BAŞARILI: ${ref.id} (${difficulty}, ${bulmaca.optimal_adim} adım): ${bulmaca.baslangic} -> ${bulmaca.bitis}`);
+        return { id: ref.id, status: "created" };
     }
+    logger.error(`${ref.id} için uygun ${difficulty} bulmaca üretilemedi!`);
+    return { id: ref.id, status: "failed" };
+}
+
+// Her gün 23:30'da (Türkiye) YARININ iki bulmacasını hazırlar. Bugünün kolay bulmacası yoksa
+// (ör. bu sürüm gün ortasında yayına alındıysa) onu da üretir.
+exports.generateDailyPuzzle = onSchedule({
+    schedule: "30 23 * * *",
+    timeZone: "Europe/Istanbul",
+    retryConfig: { retryCount: 3 }
+}, async () => {
+    const bugun = trToday();
+    const yarin = trToday(Date.now() + 24 * 3600 * 1000);
+    logger.info(`Günlük bulmaca üretici: yarın = ${yarin}`);
+    for (const difficulty of Object.keys(DAILY_DIFFICULTIES)) {
+        await gunlukBulmacaHazirla(yarin, difficulty, { overwrite: true });
+    }
+    await gunlukBulmacaHazirla(bugun, "kolay");
 });
+
 exports.createChallengeV2 = onCall(async (request) => {
     const { puzzlePath } = request.data;
     
@@ -662,7 +648,7 @@ exports.createChallengeV2 = onCall(async (request) => {
         const sozlukDosyasi = `sozluk_${harfSayisi}harfli.txt`;
         const sozlukYolu = path.join(__dirname, sozlukDosyasi);
         const sozlukData = fs.readFileSync(sozlukYolu, 'utf-8');
-        sozluk = new Set(sozlukData.split(/\r?\n/).map(k => k.trim()));
+        sozluk = new Set(sozlukData.split(/\r?\n/).map(k => duz(k.trim())));
     } catch (err) {
         throw new HttpsError("internal", "Sözlük yüklenemedi.");
     }
@@ -672,7 +658,7 @@ exports.createChallengeV2 = onCall(async (request) => {
     // ve bir öncekiyle tek harf farkı olup olmadığını sunucuda tekrar kontrol ediyoruz.
     
     for (let i = 0; i < puzzlePath.length; i++) {
-        const word = puzzlePath[i].toLowerCase();
+        const word = duz(puzzlePath[i]);
         
         // A. Sözlükte var mı?
         if (!sozluk.has(word) && !(await tdkdeVarMi(word))) {
@@ -681,7 +667,7 @@ exports.createChallengeV2 = onCall(async (request) => {
 
         // B. Bir öncekiyle bağlantılı mı?
         if (i > 0) {
-            const prevWord = puzzlePath[i - 1].toLowerCase();
+            const prevWord = duz(puzzlePath[i - 1]);
             let diffCount = 0;
             for (let j = 0; j < harfSayisi; j++) {
                 if (word[j] !== prevWord[j]) diffCount++;
@@ -944,7 +930,7 @@ exports.getFriendsLeaderboard = onCall(async (request) => {
         }
         rows.sort((a, b) => b.score - a.score || a.time - b.time);
     } else {
-        const periodId = period === "weekly" ? getWeekId(new Date()) : getMonthId(new Date());
+        const periodId = periodIdOf(period, trToday());
         const refs = names.map((n) => db.doc(`leaderboards/${periodId}/players/${n}`));
         const docs = refs.length ? await db.getAll(...refs) : [];
         docs.forEach((d) => {
@@ -985,7 +971,7 @@ exports.claimUsername = onCall(async (request) => {
         && d.data().username.toLocaleLowerCase("tr-TR") === lower);
     if (takenByOther) throw new HttpsError("already-exists", "Bu efsanevi isim zaten alınmış. Başka bir tane dene!");
 
-    await db.runTransaction(async (tx) => {
+    const oldName = await db.runTransaction(async (tx) => {
         const lockRef = db.collection("usernames").doc(lower);
         const userRef = db.doc(`users/${uid}`);
         const [lock, user] = await Promise.all([tx.get(lockRef), tx.get(userRef)]);
@@ -1003,9 +989,97 @@ exports.claimUsername = onCall(async (request) => {
             usernameLower: lower,
             ...(user.exists && user.data().createdAt ? {} : { createdAt: new Date().toISOString() }),
         }, { merge: true });
+        return oldName;
     });
+
+    // Eski isimle yazılmış skorları ve toplamları yeni isme taşı: liderlik tablosu hemen güncellensin
+    // (önceden skorlar eski isimde kalıyor, yeni isim ancak ertesi günün tablosunda görünüyordu).
+    if (oldName && oldName !== name) {
+        try {
+            await migratePlayerName(uid, oldName, name);
+        } catch (e) {
+            logger.error(`İsim taşıma hatası (${uid}: ${oldName} -> ${name})`, e);
+        }
+    }
     return { name };
 });
+
+/**
+ * Oyuncunun (uid) skorlarını, haftalık/aylık toplamlarını ve arkadaşlarının listesindeki adını
+ * yeni isme taşır. Skor kayıtlarında anahtar `playerName.toLowerCase()` (saveScore ile aynı).
+ */
+async function migratePlayerName(uid, oldName, newName) {
+    const newLower = newName.toLowerCase();
+    const oldLowers = new Set([oldName.toLowerCase()]);
+    const periodIds = new Set([periodIdOf("weekly", trToday()), periodIdOf("monthly", trToday())]);
+    const writes = []; // (batch) => void
+
+    // 1. Günlük skorlar
+    const scores = await db.collection("scores").where("uid", "==", uid).get();
+    scores.forEach((d) => {
+        const s = d.data();
+        if (s.lowerCaseName) oldLowers.add(s.lowerCaseName);
+        const parsed = parsePuzzleId(s.puzzleId);
+        if (parsed) { periodIds.add(weekIdOf(parsed.date)); periodIds.add(monthIdOf(parsed.date)); }
+        // Eski kayıtlar dönemi kaydedildiği (UTC) güne göre yazılmıştı; o dönemleri de tara
+        const created = s.createdAt?.toDate?.();
+        if (created) {
+            const day = created.toISOString().slice(0, 10);
+            periodIds.add(weekIdOf(day)); periodIds.add(monthIdOf(day));
+        }
+        if (s.name !== newName || s.lowerCaseName !== newLower) {
+            writes.push((b) => b.update(d.ref, { name: newName, lowerCaseName: newLower }));
+        }
+    });
+    oldLowers.delete(newLower);
+
+    // 2. Haftalık / aylık toplamlar: eski isim belgesi yeni isim belgesine eklenip silinir
+    const pairs = [];
+    for (const pid of periodIds) for (const ol of oldLowers) pairs.push({ pid, ol });
+    const oldDocs = pairs.length ? await db.getAll(...pairs.map(({ pid, ol }) => db.doc(`leaderboards/${pid}/players/${ol}`))) : [];
+    const merged = new Map(); // pid -> { score, gamesPlayed, avatar }
+    oldDocs.forEach((snap, i) => {
+        if (!snap.exists) return;
+        const s = snap.data();
+        if (s.uid && s.uid !== uid) return; // isim başka bir oyuncuya geçmiş; ona dokunma
+        const m = merged.get(pairs[i].pid) || { score: 0, gamesPlayed: 0, avatar: s.avatar };
+        m.score += s.score || 0;
+        m.gamesPlayed += s.gamesPlayed || 0;
+        merged.set(pairs[i].pid, m);
+        writes.push((b) => b.delete(snap.ref));
+    });
+    for (const [pid, m] of merged) {
+        writes.push((b) => b.set(db.doc(`leaderboards/${pid}/players/${newLower}`), {
+            score: FieldValue.increment(m.score),
+            gamesPlayed: FieldValue.increment(m.gamesPlayed),
+            name: newName,
+            lowerCaseName: newLower,
+            uid,
+            avatar: m.avatar || '👤',
+        }, { merge: true }));
+    }
+
+    // 3. Arkadaşların listesindeki ad ve arkadaş kodu kaydı (arkadaş sıralaması isimle eşleşiyor)
+    const me = await db.doc(`users/${uid}`).get();
+    const friends = me.exists ? (me.data().friends || []) : [];
+    const friendDocs = friends.length ? await db.getAll(...friends.map((f) => db.doc(`users/${f.uid}`))) : [];
+    friendDocs.forEach((snap) => {
+        if (!snap.exists) return;
+        const list = snap.data().friends || [];
+        if (!list.some((f) => f.uid === uid && f.username !== newName)) return;
+        writes.push((b) => b.update(snap.ref, { friends: list.map((f) => (f.uid === uid ? { ...f, username: newName } : f)) }));
+    });
+    const code = me.exists ? me.data().friendCode : null;
+    if (code) writes.push((b) => b.set(db.doc(`friendCodes/${code}`), { username: newName }, { merge: true }));
+
+    // Firestore toplu yazma sınırı 500 işlem
+    for (let i = 0; i < writes.length; i += 400) {
+        const batch = db.batch();
+        writes.slice(i, i + 400).forEach((w) => w(batch));
+        await batch.commit();
+    }
+    logger.info(`İsim taşındı: ${oldName} -> ${newName} (${scores.size} skor, ${merged.size} dönem)`);
+}
 
 // --- Satın alma doğrulama (Google Play Developer API) ---
 // İstemci ipucu paketini satın aldığında, ipuçlarını eklemeden önce satın alma jetonunu buraya gönderir.

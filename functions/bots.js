@@ -10,9 +10,9 @@ const BOTS_PER_DAY = 14;
 const BOT_NAMES_LOWER = new Set(NAME_POOL.map((n) => n.toLocaleLowerCase("tr-TR")));
 const isBotName = (name) => BOT_NAMES_LOWER.has(String(name || "").toLocaleLowerCase("tr-TR"));
 
-/** O günün bot kadrosu: havuzdan tarih tohumlu, tekrarsız seçim. */
-function botsOfDay(dateStr) {
-  const ranked = NAME_POOL.map((n) => ({ n, r: rand(`${dateStr}|pick|${n}`) })).sort((a, b) => a.r - b.r);
+/** O bulmacanın bot kadrosu: havuzdan bulmaca kimliği tohumlu, tekrarsız seçim. */
+function botsOfDay(puzzleId) {
+  const ranked = NAME_POOL.map((n) => ({ n, r: rand(`${puzzleId}|pick|${n}`) })).sort((a, b) => a.r - b.r);
   return ranked.slice(0, BOTS_PER_DAY).map(({ n }) => ({
     name: n,
     avatar: AVATARS[Math.floor(rand(`${n}|avatar`) * AVATARS.length)],
@@ -34,43 +34,44 @@ const TR_OFFSET_MS = 3 * 3600 * 1000;
 const trNow = () => new Date(Date.now() + TR_OFFSET_MS); // UTC alanları = Türkiye saati
 const ymd = (d) => d.toISOString().slice(0, 10);
 
-/** Bir botun belirli bir gündeki sonucu; o gün oynamadıysa ya da saati gelmediyse null. */
-function botDay(bot, dateStr, now = trNow()) {
+/**
+ * Bir botun belirli bir bulmacadaki sonucu; oynamadıysa ya da saati gelmediyse null.
+ * puzzleId: 'YYYY-MM-DD' (zor — eski kimlik, tohumlar değişmedi) veya 'YYYY-MM-DD-kolay'.
+ */
+function botDay(bot, puzzleId, now = trNow()) {
+  const dateStr = puzzleId.slice(0, 10);
   const today = ymd(now);
   if (dateStr > today) return null;
-  if (rand(`${bot.name}|${dateStr}|play`) > 0.82) return null; // her gün ~%82 oynar
-  const minute = Math.floor(rand(`${bot.name}|${dateStr}|min`) * 1380) + 20; // 00:20–23:20
+  if (rand(`${bot.name}|${puzzleId}|play`) > 0.82) return null; // her gün ~%82 oynar
+  const minute = Math.floor(rand(`${bot.name}|${puzzleId}|min`) * 1380) + 20; // 00:20–23:20
   if (dateStr === today && now.getUTCHours() * 60 + now.getUTCMinutes() < minute) return null;
-  const score = 780 + Math.floor(rand(`${bot.name}|${dateStr}|score`) * 141); // 780–920
-  const time = 35 + Math.floor(rand(`${bot.name}|${dateStr}|time`) * 120);
+  const score = 780 + Math.floor(rand(`${bot.name}|${puzzleId}|score`) * 141); // 780–920
+  const time = 35 + Math.floor(rand(`${bot.name}|${puzzleId}|time`) * 120);
   return { score, time };
 }
 
-/** Günlük bulmaca (puzzleId = YYYY-MM-DD) için bot skorları. */
-function botsForDay(dateStr) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return [];
-  return botsOfDay(dateStr).map((b) => {
-    const r = botDay(b, dateStr);
+const DAILY_ID_RE = /^\d{4}-\d{2}-\d{2}(-kolay)?$/;
+
+/** Günlük bulmaca (puzzleId = YYYY-MM-DD veya YYYY-MM-DD-kolay) için bot skorları. */
+function botsForDay(puzzleId, now = trNow()) {
+  if (!DAILY_ID_RE.test(puzzleId)) return [];
+  return botsOfDay(puzzleId).map((b) => {
+    const r = botDay(b, puzzleId, now);
     return r && { name: b.name, avatar: b.avatar, score: r.score, time: r.time, steps: 0, bot: true };
   }).filter(Boolean);
 }
 
-/** Haftalık (pazartesi başlangıç) / aylık toplamlar — dönemin bugüne kadarki günleri. */
-function botsForPeriod(period) {
-  const now = trNow();
-  const start = new Date(now);
-  if (period === "weekly") start.setUTCDate(now.getUTCDate() - ((now.getUTCDay() + 6) % 7));
-  else start.setUTCDate(1);
-  const days = [];
-  for (const d = new Date(start); ymd(d) <= ymd(now); d.setUTCDate(d.getUTCDate() + 1)) days.push(ymd(d));
+/**
+ * Haftalık / aylık toplamlar: verilen bulmacalardaki (dönemin bugüne kadarki günlerinin
+ * kolay + zor bulmacaları) günlük bot skorlarının toplamı. Günlük tablolarla birebir tutarlı.
+ */
+function botsForPeriod(puzzleIds, now = trNow()) {
   const totals = new Map();
-  for (const day of days) {
-    for (const b of botsOfDay(day)) {
-      const r = botDay(b, day, now);
-      if (!r) continue;
-      const t = totals.get(b.name) || { name: b.name, avatar: b.avatar, score: 0, gamesPlayed: 0, bot: true };
+  for (const id of puzzleIds) {
+    for (const r of botsForDay(id, now)) {
+      const t = totals.get(r.name) || { name: r.name, avatar: r.avatar, score: 0, gamesPlayed: 0, bot: true };
       t.score += r.score; t.gamesPlayed++;
-      totals.set(b.name, t);
+      totals.set(r.name, t);
     }
   }
   return [...totals.values()];

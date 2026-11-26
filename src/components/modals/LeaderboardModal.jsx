@@ -1,12 +1,26 @@
 import { useState } from 'react';
 import { X, Users, Loader2 } from 'lucide-react';
+import { DIFFICULTIES, DIFFICULTY_ORDER } from '../../lib/daily';
 
-export const LeaderboardModal = ({ isOpen, onClose, theme, userAvatar, username, leaderboardData = {}, onTabChange, onOpenFriends, isLoading = false }) => {
+// Günlük sekmesi zorluğa göre ayrı (kolay / zor); haftalık ve aylık ikisinin toplamı.
+export const LeaderboardModal = ({ isOpen, onClose, theme, userAvatar, username, leaderboardData = {}, onTabChange, onOpenFriends, isLoading = false, defaultDifficulty = 'zor' }) => {
   const [activeTab, setActiveTab] = useState('daily');
+  const [difficulty, setDifficulty] = useState(defaultDifficulty);
+
+  // Her açılışta günlük sekme + oynanan bulmacanın zorluğu (açılışta günlük tablo çekiliyor)
+  const [wasOpen, setWasOpen] = useState(isOpen);
+  if (wasOpen !== isOpen) {
+    setWasOpen(isOpen);
+    if (isOpen) { setActiveTab('daily'); setDifficulty(defaultDifficulty); }
+  }
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    if (onTabChange) onTabChange(tab);
+    if (onTabChange) onTabChange(tab, difficulty);
+  };
+  const handleDifficultyChange = (d) => {
+    setDifficulty(d);
+    if (onTabChange) onTabChange('daily', d);
   };
 
   const currentScores = Array.isArray(leaderboardData)
@@ -38,6 +52,24 @@ export const LeaderboardModal = ({ isOpen, onClose, theme, userAvatar, username,
               </button>
             ))}
           </div>
+
+          {activeTab === 'daily' ? (
+            <div className="flex justify-center gap-2 mb-3">
+              {DIFFICULTY_ORDER.map((d) => (
+                <button
+                  key={d}
+                  onClick={() => handleDifficultyChange(d)}
+                  className={`px-4 py-1 rounded-full text-[11px] font-black uppercase tracking-wider border transition-all ${difficulty === d
+                    ? (d === 'kolay' ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200' : 'bg-amber-500/20 border-amber-400/50 text-amber-200')
+                    : 'border-white/10 text-white/40 hover:text-white/70'}`}
+                >
+                  {DIFFICULTIES[d].label}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-[11px] opacity-40 mb-3">Kolay ve zor bulmacaların toplam puanı</p>
+          )}
 
           <div className="space-y-1.5 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/20">
              {isLoading && currentScores.length === 0 ? (

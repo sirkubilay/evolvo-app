@@ -27,12 +27,23 @@ describe('günlük seri', () => {
     expect(s.maxStreak).toBe(2);
   });
 
-  it('günlük bulmacayı kaybedince sıfırlanır; sınırsız mod/geçmiş bulmaca seriyi etkilemez', () => {
+  it('o gün hiçbir günlük bulmaca kazanılmazsa seri biter; sınırsız mod/geçmiş bulmaca seriyi etkilemez', () => {
     let s = applyGameEnd(fresh(), daily(true), day(2026, 11, 10));
     s = applyGameEnd(s, daily(false, { isTodaysDaily: false }), day(2026, 11, 11));
     expect(s.currentStreak).toBe(1);
     s = applyGameEnd(s, daily(false), day(2026, 11, 11));
-    expect(s.currentStreak).toBe(0);
+    expect(effectiveStreak(s, '2026-11-12')).toBe(0);
+    s = applyGameEnd(s, daily(true), day(2026, 11, 12));
+    expect(s.currentStreak).toBe(1);
+  });
+
+  it('aynı gün kolayı kaybedip ortayı kazanan oyuncunun serisi sürer', () => {
+    let s = applyGameEnd(fresh(), daily(true), day(2026, 11, 10));
+    s = applyGameEnd(s, daily(false), day(2026, 11, 11));
+    s = applyGameEnd(s, daily(true), day(2026, 11, 11));
+    expect(s.currentStreak).toBe(2);
+    s = applyGameEnd(s, daily(true), day(2026, 11, 11)); // aynı gün ikinci galibiyet seriyi artırmaz
+    expect(s.currentStreak).toBe(2);
   });
 
   it('ay ve yıl geçişlerinde "dün" doğru hesaplanır', () => {

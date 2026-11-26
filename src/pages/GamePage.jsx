@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getApp } from 'firebase/app';
-import { createRowDeleteGuard } from '../lib/rowDeleteGuard';
+import { loadProgress, saveProgress, clearProgress, progressId } from '../lib/gameProgress';
+import { DIFFICULTIES, DIFFICULTY_ORDER, dailyPuzzleId, difficultyOfSteps, puzzleIdOf } from '../lib/daily';
+import { playSuccessSound, playErrorSound, playPopSound } from '../lib/sound';
 import { StarterOfferCard, starterOfferActive } from '../components/StarterOffer';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { Menu, X, Star, BarChart2, HelpCircle, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
+import { Trash2, Trophy, Menu, X, Star, BarChart2, HelpCircle, Lightbulb, Delete, CheckCircle2, AlertCircle, Loader2, Book, ChevronLeft, ChevronRight as ChevronRightIcon, Copy, Share2, Twitter, MessageCircle, Download } from 'lucide-react';
 import { AchievementsModal } from '../components/modals/AchievementsModal';
 import { AvatarModal } from '../components/modals/AvatarModal';
 import { StatsModal } from '../components/modals/StatsModal';
@@ -23,10 +25,13 @@ import { dayKey } from '../lib/progress';
 import { trackEvent } from '../lib/analytics';
 import { useHintWallet, spendHint, addHints, startStarterOffer } from '../lib/hints';
 
-export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard }) => {
-  const [history, setHistory] = useState([puzzleData.start]);
+export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard, onPlayDaily, leaderboardDifficulty }) => {
+  // Yarım kalan oyun varsa kaldığı yerden başla (hamleler, ipuçları, kilitli satırlar)
+  const [initialProgress] = useState(() => loadProgress(puzzleData));
+  const [history, setHistory] = useState(() => initialProgress?.history || [puzzleData.start]);
   const [currentGuess, setCurrentGuess] = useState("");
-  const rowDeleteGuard = useRef(createRowDeleteGuard());
+  // Boş satırda "Sil"e basınca son satırın altında "Satırı sil" onayı açılır
+  const [pendingDelete, setPendingDelete] = useState(false);
   const [winningRowAnimation, setWinningRowAnimation] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isWon, setIsWon] = useState(false);
@@ -36,14 +41,14 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   // İpuçları: günlük bulmacada bulmaca başına DAILY_HINTS (+ reklamla en fazla MAX_BONUS_HINTS),
   // sınırsız modda oyuncunun ortak cüzdanı (lib/hints.js).
   const isUnlimited = puzzleData.type === 'unlimited';
-  const [hintsUsedCount, setHintsUsedCount] = useState(0);
-  const [bonusHints, setBonusHints] = useState(0);
+  const [hintsUsedCount, setHintsUsedCount] = useState(() => initialProgress?.hintsUsed || 0);
+  const [bonusHints, setBonusHints] = useState(() => initialProgress?.bonusHints || 0);
   const wallet = useHintWallet();
   const hintsLeft = isUnlimited ? wallet : Math.max(0, DAILY_HINTS + bonusHints - hintsUsedCount);
   const [rewardSheetOpen, setRewardSheetOpen] = useState(false);
   const [rewardLoading, setRewardLoading] = useState(false);
   const canEarnHint = isNative() && puzzleData.type !== 'custom' && (isUnlimited || bonusHints < MAX_BONUS_HINTS);
-  const [lockedIndices, setLockedIndices] = useState([0]); 
+  const [lockedIndices, setLockedIndices] = useState(() => initialProgress?.locked || [0]); 
   const [rowAnimation, setRowAnimation] = useState(null);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [scoreDetails, setScoreDetails] = useState(null);
@@ -51,38 +56,21 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
   const [sharePreview, setSharePreview] = useState(null);
   const earnedStars = !scoreDetails?.total ? 0 : scoreDetails.total >= 800 ? 3 : scoreDetails.total >= 500 ? 2 : 1;
   
-  const playSuccessSound = () => { try { new Audio('/success.mp3').play().catch(e=>console.log(e)); } catch(e){} };
-  const playErrorSound = () => { try { new Audio('/error.mp3').play().catch(e=>console.log(e)); } catch(e){} };
+  // Sesler lib/sound.js'te: menüdeki "Ses" kapalıysa çalmaz
   const markInvalid = () => {
     invalidAttemptsRef.current += 1;
     playErrorSound();
     hapticError();
-  };
-  const playPopSound = () => {
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(400, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.1, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.1);
-    } catch(e) {}
   };
   
   const wordLength = puzzleData.start.length;
   const maxMoves = puzzleData.maxMoves || (puzzleData.optimalSteps ? puzzleData.optimalSteps + 5 : 15);
   const { executeRecaptcha } = useGoogleReCaptcha();
   
+  // Günlük bulmacada kolay/zor ayrı kimlikte; sınırsız modda eski anahtar (offline_X_Y) korunur
+  const timerKey = `evolvo_timer_${puzzleData.puzzleId || puzzleData.date}`;
   const [timer, setTimer] = useState(() => {
-    const savedTime = localStorage.getItem(`evolvo_timer_${puzzleData.date}`);
+    const savedTime = localStorage.getItem(timerKey);
     return savedTime ? parseInt(savedTime, 10) : 0;
   });
 
@@ -91,12 +79,12 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
     const interval = setInterval(() => {
       setTimer(prev => {
         const nextTime = prev + 1;
-        localStorage.setItem(`evolvo_timer_${puzzleData.date}`, nextTime);
+        localStorage.setItem(timerKey, nextTime);
         return nextTime;
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [isGameOver, puzzleData.type, puzzleData.date]);
+  }, [isGameOver, puzzleData.type, timerKey]);
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
@@ -111,9 +99,7 @@ export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,usernam
     return diff === 1;
   };
 useEffect(() => {
-    const currentId = puzzleData?.type === 'unlimited'
-        ? `unlimited_${puzzleData.length}_${puzzleData.level}`
-        : (puzzleData?.date || new Date().toLocaleDateString('tr-TR'));
+    const currentId = progressId(puzzleData);
 
     const playStatus = localStorage.getItem(`evolvo_played_${currentId}`);
     const savedHistoryStr = localStorage.getItem(`evolvo_history_${currentId}`);
@@ -140,19 +126,47 @@ useEffect(() => {
         localStorage.removeItem(`evolvo_today_stats_${currentId}`);
         localStorage.removeItem(`evolvo_timer_${currentId}`);
       }
-    } else if (!playStatus && savedHistoryStr && puzzleData?.type === 'unlimited') {
-      // Sınırsız modda yarım kalan oyun — history'yi restore et, devam etsin
-      try {
-        const parsedHistory = JSON.parse(savedHistoryStr);
-        if (parsedHistory[0] === puzzleData?.start && parsedHistory.length > 1) {
-          setHistory(parsedHistory);
-        }
-      } catch (_) {}
     }
+    // Yarım kalan oyun ilk state'te loadProgress ile yükleniyor.
   }, [puzzleData]);
+
+  // Her değişiklikte ilerlemeyi kaydet: uygulama kapanınca hamleler ve ipucu hakkı kaybolmaz
+  useEffect(() => {
+    if (isGameOver || puzzleData.type === 'custom') return;
+    if (localStorage.getItem(`evolvo_played_${progressId(puzzleData)}`)) return;
+    saveProgress(puzzleData, { history, hintsUsed: hintsUsedCount, bonusHints, locked: lockedIndices });
+  }, [history, hintsUsedCount, bonusHints, lockedIndices, isGameOver, puzzleData]);
+
+  // Boş satırda "Sil"e basınca son yazılan satırın SOLUNDA çöp kutusu butonu çıkar; ona basınca
+  // satır silinir. Başka bir yere dokununca ya da bir harfe basınca kaybolur.
+  // Buton, açıldığı andaki satır sayısına bağlı: satır eklenir/silinirse kendiliğinden kaybolur.
+  const showDeleteConfirm = pendingDelete === history.length && !isGameOver;
+  useEffect(() => {
+    if (!showDeleteConfirm) return undefined;
+    const close = (e) => {
+      if (e.target.closest?.('[data-delete-confirm],[data-game-keyboard]')) return;
+      setPendingDelete(false);
+    };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, [showDeleteConfirm]);
+
+  // Günün bulmacası bitince, henüz oynanmamış diğer zorluğa geçiş önerisi
+  const otherDaily = (() => {
+    if (!isGameOver || !onPlayDaily || puzzleData.type !== 'daily' || !puzzleData.difficulty || puzzleData.date !== dayKey()) return null;
+    const other = DIFFICULTY_ORDER.find((d) => d !== puzzleData.difficulty);
+    return localStorage.getItem(`evolvo_played_${dailyPuzzleId(puzzleData.date, other)}`) ? null : other;
+  })();
+
+  const confirmRowDelete = () => {
+    const lastIdx = history.length - 1;
+    if (lastIdx > 0 && !lockedIndices.includes(lastIdx)) setHistory(p => p.slice(0, -1));
+    setPendingDelete(false);
+  };
   // skipSound parametresi eklendi (ikinci kez çalmaması için)
   const calculateAndFinish = async (finalHistory, didWin, skipSound = false) => {
-    localStorage.removeItem(`evolvo_timer_${puzzleData.date}`);
+    localStorage.removeItem(timerKey);
+    clearProgress(puzzleData);
     setIsGameOver(true);
     setIsWon(didWin);
     
@@ -194,8 +208,8 @@ useEffect(() => {
                  uid: user ? user.uid : "guest_" + Date.now(), 
                  wordHistory: guvenliGecmis,
                  time: Number(timer),
-                 puzzleId: puzzleData.date,
-                 dateString: puzzleData.date,
+                 puzzleId: puzzleIdOf(puzzleData),
+                 dateString: puzzleIdOf(puzzleData),
                  avatar: userAvatar.icon,          
                  hintsUsed: hintsUsed,
                  score: score, // Puanı da gönderiyoruz
@@ -212,10 +226,8 @@ useEffect(() => {
         playErrorSound(); 
     }
 
-    // Sınırsız mod için restore key'i useEffect ile tutarlı: unlimited_X_Y
-    const saveKey = puzzleData?.type === 'unlimited'
-      ? `unlimited_${puzzleData.length}_${puzzleData.level}`
-      : (puzzleData?.date || new Date().toLocaleDateString('tr-TR'));
+    // Restore key'i useEffect ile tutarlı: unlimited_X_Y / YYYY-MM-DD / YYYY-MM-DD-kolay
+    const saveKey = progressId(puzzleData);
 
     trackEvent('game_end', {
       mode: puzzleData?.type === 'unlimited' ? 'unlimited' : 'daily',
@@ -296,9 +308,6 @@ const handleHint = async (e) => {
           return [...filtered, backtrackIdx + 1];
         });
         showFeedback("İpucu Kullanıldı (-150 Puan)", "success");
-        if (nextWord !== puzzleData.target) {
-          localStorage.setItem(`evolvo_history_unlimited_${puzzleData.length}_${puzzleData.level}`, JSON.stringify(newHistory));
-        }
         if (nextWord === puzzleData.target) {
           calculateAndFinish(newHistory, true, false);
         }
@@ -315,8 +324,8 @@ const handleHint = async (e) => {
       const getHintFn = httpsCallable(functions, 'getHint');
       const guvenliGecmis = history.map(kelime => kelime.toLocaleLowerCase('tr-TR'));
       const result = await getHintFn({
-        dateString: puzzleData.date,
-        wordHistory: guvenliGecmis 
+        dateString: puzzleIdOf(puzzleData),
+        wordHistory: guvenliGecmis
       });
       
       const { hintWord, keepCount } = result.data;
@@ -334,7 +343,7 @@ const handleHint = async (e) => {
       }
     } catch (error) {
       console.error("İpucu alınamadı:", error);
-      showFeedback("İpucu alınırken bir hata oluştu.", "error");
+      showFeedback(String(error?.code || '').includes('failed-precondition') ? error.message : "İpucu alınırken bir hata oluştu.", "error");
     } finally {
       setIsLoading(false);
     }
@@ -355,6 +364,8 @@ const handleHint = async (e) => {
 
   const handleKeyPress = useCallback(async (key) => {
     if (isGameOver || isLoading || winningRowAnimation) return;
+    // Açık silme butonu: "Sil" dışındaki her tuş onu kapatır
+    setPendingDelete(false);
 
     if (key === 'Enter') {
       if (currentGuess.length !== wordLength) {
@@ -422,11 +433,6 @@ const handleHint = async (e) => {
         setHistory(newHistory);
         setCurrentGuess("");
 
-        // Sınırsız modda yarım kalan oyunu kurtarmak için her hamlede history'yi kaydet
-        if (puzzleData?.type === 'unlimited') {
-          localStorage.setItem(`evolvo_history_unlimited_${puzzleData.length}_${puzzleData.level}`, JSON.stringify(newHistory));
-        }
-
         if (newHistory.length - 1 >= maxMoves) {
           calculateAndFinish(newHistory, false);
         }
@@ -434,13 +440,12 @@ const handleHint = async (e) => {
 
     } else if (key === 'Delete' || key === 'Backspace') {
       if (currentGuess.length > 0) {
-        rowDeleteGuard.current.touch();
         setCurrentGuess(p => p.slice(0, -1));
       } else {
         if (history.length > 1) {
           const lastIdx = history.length - 1;
           if (!lockedIndices.includes(lastIdx)) {
-            if (rowDeleteGuard.current.confirm()) setHistory(p => p.slice(0, -1));
+            setPendingDelete(history.length);
           } else {
             showFeedback("Bu satır kilitli", "info");
             setRowAnimation('shake');
@@ -450,7 +455,6 @@ const handleHint = async (e) => {
       }
     } else if (currentGuess.length < wordLength && /^[A-ZÇĞİÖŞÜ]$/.test(key)) {
       hapticTap();
-      rowDeleteGuard.current.touch();
       setCurrentGuess(p => p + key);
     }
   }, [currentGuess, history, isGameOver, isLoading, winningRowAnimation, lockedIndices, maxMoves, timer, hintsLeft, bonusHints, wordLength]);
@@ -540,9 +544,9 @@ Sen de dene 👇`;
     <div className={`h-screen flex flex-col font-sans overflow-hidden ${theme.bg} ${theme.text}`}>
       <SideMenu isOpen={isSideMenuOpen} onClose={() => setIsSideMenuOpen(false)} toggleModal={toggleModal} settings={settings} theme={theme} user={user} onLogout={onLogout} onLogin={onLogin} />
       <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
-      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} leaderboardData={leaderboardData} onTabChange={fetchLeaderboard} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
+      <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} leaderboardData={leaderboardData} onTabChange={fetchLeaderboard} defaultDifficulty={leaderboardDifficulty} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={colors} />
-      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} onSelectDate={onLoadPastPuzzle} />
+      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} onSelectDate={onLoadPastPuzzle} defaultDifficulty={puzzleData.difficulty} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
@@ -564,8 +568,8 @@ Sen de dene 👇`;
             </button>
 
             <div className="flex items-center z-10">
-               <button onClick={() => toggleModal('stats', true)} aria-label="İstatistikler" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                  <BarChart2 size={22} />
+               <button onClick={() => toggleModal('leaderboard', true)} aria-label="Sıralama" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                  <Trophy size={22} className="text-yellow-400" />
                </button>
                <button onClick={() => setIsSideMenuOpen(true)} aria-label="Menü" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
                   <Menu size={24} />
@@ -590,6 +594,10 @@ Sen de dene 👇`;
               </span>
             ) : (
               <span className="flex gap-6 font-black uppercase tracking-wider text-[11px]">
+                {puzzleData.type === 'daily' && (() => {
+                  const d = difficultyOfSteps(puzzleData.optimalSteps);
+                  return <span className={d === 'kolay' ? 'text-emerald-300' : 'text-amber-300'}>{DIFFICULTIES[d].label}</span>;
+                })()}
                 <span><span className="opacity-50">Hak </span>{history.length - 1} / {maxMoves}</span>
                 <span className="tabular-nums"><span className="opacity-50">Süre </span>{formatTime(timer)}</span>
               </span>
@@ -664,6 +672,19 @@ Sen de dene 👇`;
                         </div>
                      ))}
                   </div>
+                  {showDeleteConfirm && idx === history.length - 1 && idx > 0 && (
+                     <div className="absolute right-full mr-2 z-20 flex items-center h-full">
+                        <button
+                           data-delete-confirm
+                           onClick={confirmRowDelete}
+                           aria-label="Satırı sil"
+                           title="Satırı sil"
+                           className="p-2 rounded-lg bg-red-600 border-2 border-red-400 text-white shadow-lg animate-in zoom-in duration-150 active:scale-90"
+                        >
+                           <Trash2 size={16} />
+                        </button>
+                     </div>
+                  )}
                   <div className="absolute left-full ml-2 z-20 flex items-center h-full">
                      <button onClick={() => handleDictClick(word)} className={`p-2 rounded-lg opacity-40 hover:opacity-100 transition-opacity ${theme.emptyCell}`} title="Anlamını Gör"><Book size={16} /></button>
                   </div>
@@ -727,6 +748,11 @@ Sen de dene 👇`;
   </div>
 )}
                   
+                  {otherDaily && (
+                     <button onClick={() => onPlayDaily(otherDaily)} className={`w-full mt-4 py-3 rounded-xl font-black text-sm border active:scale-95 transition-all ${otherDaily === 'kolay' ? 'bg-emerald-500/15 border-emerald-400/40 text-emerald-200' : 'bg-amber-500/15 border-amber-400/40 text-amber-200'}`}>
+                        Şimdi {DIFFICULTIES[otherDaily].label.toLocaleUpperCase('tr-TR')} bulmacayı çöz ({DIFFICULTIES[otherDaily].hint})
+                     </button>
+                  )}
                   <div className="text-sm opacity-50 mt-4 font-medium leading-relaxed">
                      {puzzleData.type === 'daily' ? "Yarın yeni kelime zinciri için tekrar gel!" : "Arkadaşlarınla paylaşarak onlara meydan oku!"}
                   </div>
@@ -736,7 +762,7 @@ Sen de dene 👇`;
       </main>
 
       {!isGameOver && (
-        <div className={`fixed bottom-0 left-0 w-full ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'} p-1 pb-2 border-t ${theme.panelBorder} z-30`}>
+        <div data-game-keyboard className={`fixed bottom-0 left-0 w-full ${settings.darkMode ? 'bg-black' : 'bg-[#001f3f]'} p-1 pb-2 border-t ${theme.panelBorder} z-30`}>
            <div className="max-w-lg mx-auto space-y-[6px] px-1">
               {keyboardRows.map((row, i) => (
                  <div key={i} className="flex justify-center gap-[5px]">
