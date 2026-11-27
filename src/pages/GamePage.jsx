@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getApp } from 'firebase/app';
 import { loadProgress, saveProgress, clearProgress, progressId } from '../lib/gameProgress';
-import { DIFFICULTIES, DIFFICULTY_ORDER, dailyPuzzleId, difficultyOfSteps, puzzleIdOf } from '../lib/daily';
+import { puzzleIdOf } from '../lib/daily';
 import { playSuccessSound, playErrorSound, playPopSound } from '../lib/sound';
 import { StarterOfferCard, starterOfferActive } from '../components/StarterOffer';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
@@ -25,7 +25,7 @@ import { dayKey } from '../lib/progress';
 import { trackEvent } from '../lib/analytics';
 import { useHintWallet, spendHint, addHints, startStarterOffer } from '../lib/hints';
 
-export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard, onPlayDaily, leaderboardDifficulty }) => {
+export const GamePage = ({ onBack,onBackToMap,onUnlimitedWin,onNextLevel,username,offlineProgress, userAvatar, setUserAvatar, theme, colors, toggleModal, modalState, settings, updateStats, puzzleData, onLoadPastPuzzle, user, onLogout, message, showFeedback, onLogin, checkTDK, leaderboardData, fetchLeaderboard, leaderboardDifficulty }) => {
   // Yarım kalan oyun varsa kaldığı yerden başla (hamleler, ipuçları, kilitli satırlar)
   const [initialProgress] = useState(() => loadProgress(puzzleData));
   const [history, setHistory] = useState(() => initialProgress?.history || [puzzleData.start]);
@@ -151,12 +151,6 @@ useEffect(() => {
     return () => document.removeEventListener('pointerdown', close);
   }, [showDeleteConfirm]);
 
-  // Günün bulmacası bitince, henüz oynanmamış diğer zorluğa geçiş önerisi
-  const otherDaily = (() => {
-    if (!isGameOver || !onPlayDaily || puzzleData.type !== 'daily' || !puzzleData.difficulty || puzzleData.date !== dayKey()) return null;
-    const other = DIFFICULTY_ORDER.find((d) => d !== puzzleData.difficulty);
-    return localStorage.getItem(`evolvo_played_${dailyPuzzleId(puzzleData.date, other)}`) ? null : other;
-  })();
 
   const confirmRowDelete = () => {
     const lastIdx = history.length - 1;
@@ -546,7 +540,7 @@ Sen de dene 👇`;
       <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
       <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} leaderboardData={leaderboardData} onTabChange={fetchLeaderboard} defaultDifficulty={leaderboardDifficulty} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={colors} />
-      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} onSelectDate={onLoadPastPuzzle} defaultDifficulty={puzzleData.difficulty} />
+      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={colors} onSelectDate={onLoadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={colors} stats={settings.stats || {}} />
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={colors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
@@ -594,10 +588,6 @@ Sen de dene 👇`;
               </span>
             ) : (
               <span className="flex gap-6 font-black uppercase tracking-wider text-[11px]">
-                {puzzleData.type === 'daily' && (() => {
-                  const d = difficultyOfSteps(puzzleData.optimalSteps);
-                  return <span className={d === 'kolay' ? 'text-emerald-300' : 'text-amber-300'}>{DIFFICULTIES[d].label}</span>;
-                })()}
                 <span><span className="opacity-50">Hak </span>{history.length - 1} / {maxMoves}</span>
                 <span className="tabular-nums"><span className="opacity-50">Süre </span>{formatTime(timer)}</span>
               </span>
@@ -748,11 +738,6 @@ Sen de dene 👇`;
   </div>
 )}
                   
-                  {otherDaily && (
-                     <button onClick={() => onPlayDaily(otherDaily)} className={`w-full mt-4 py-3 rounded-xl font-black text-sm border active:scale-95 transition-all ${otherDaily === 'kolay' ? 'bg-emerald-500/15 border-emerald-400/40 text-emerald-200' : 'bg-amber-500/15 border-amber-400/40 text-amber-200'}`}>
-                        Şimdi {DIFFICULTIES[otherDaily].label.toLocaleUpperCase('tr-TR')} bulmacayı çöz ({DIFFICULTIES[otherDaily].hint})
-                     </button>
-                  )}
                   <div className="text-sm opacity-50 mt-4 font-medium leading-relaxed">
                      {puzzleData.type === 'daily' ? "Yarın yeni kelime zinciri için tekrar gel!" : "Arkadaşlarınla paylaşarak onlara meydan oku!"}
                   </div>

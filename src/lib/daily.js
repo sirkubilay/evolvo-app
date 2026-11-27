@@ -7,7 +7,9 @@ export const DIFFICULTIES = {
   kolay: { label: 'Kolay', hint: '4 adım ve altı' },
   zor: { label: 'Zor', hint: '5 adım ve üstü' },
 };
-export const DIFFICULTY_ORDER = ['kolay', 'zor'];
+// Güncel düzen: her gün TEK bulmaca (en kısa çözüm 3–5 adım), kimliği 'YYYY-MM-DD' (= 'zor' anahtarı).
+// 'kolay' (YYYY-MM-DD-kolay) yalnızca 27–28 Kasım 2026'daki eski bulmacalar için tanınıyor.
+export const DIFFICULTY_ORDER = ['zor'];
 /** Kolay sayılan en uzun optimal çözüm (adım). */
 export const KOLAY_MAX_STEPS = 4;
 

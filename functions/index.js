@@ -528,11 +528,11 @@ exports.getPuzzle = onCall(async (request) => {
 });
 
 // --- Otomatik Günlük Bulmaca Üretici ---
-// Her gün iki bulmaca: KOLAY (en kısa çözüm 3–4 adım) ve ZOR (en kısa çözüm 5–6 adım).
-// Zor bulmaca eski kimlikte (`YYYY-MM-DD`) durur; eski uygulama sürümleri onu oynamaya devam eder.
+// Her gün TEK günlük bulmaca: en kısa çözümü 3–5 adım (5'ten uzun bulmaca verilmez).
+// Kimliği `YYYY-MM-DD`. (27–28 Kasım 2026'da kısa süre ayrı "kolay" bulmaca da vardı: `YYYY-MM-DD-kolay`;
+// o günlerin kayıtları ve sıralamaları geçerliliğini korur, yenisi üretilmez.)
 const DAILY_DIFFICULTIES = {
-    kolay: { minAdim: 3, maxAdim: 4 },
-    zor: { minAdim: 5, maxAdim: 6 },
+    zor: { minAdim: 3, maxAdim: 5 },
 };
 const BONUS_HAK = 5;
 const ALFABE = 'abcçdefgğhıijklmnoöprsştuüvyzâîû';
@@ -630,20 +630,17 @@ async function gunlukBulmacaHazirla(tarihStr, difficulty, { overwrite = false } 
     return { id: ref.id, status: "failed" };
 }
 
-// Her gün 23:30'da (Türkiye) YARININ iki bulmacasını hazırlar. Bugünün kolay bulmacası yoksa
-// (ör. bu sürüm gün ortasında yayına alındıysa) onu da üretir.
+// Her gün 23:30'da (Türkiye) YARININ bulmacasını hazırlar.
 exports.generateDailyPuzzle = onSchedule({
     schedule: "30 23 * * *",
     timeZone: "Europe/Istanbul",
     retryConfig: { retryCount: 3 }
 }, async () => {
-    const bugun = trToday();
     const yarin = trToday(Date.now() + 24 * 3600 * 1000);
     logger.info(`Günlük bulmaca üretici: yarın = ${yarin}`);
     for (const difficulty of Object.keys(DAILY_DIFFICULTIES)) {
         await gunlukBulmacaHazirla(yarin, difficulty, { overwrite: true });
     }
-    await gunlukBulmacaHazirla(bugun, "kolay");
 });
 
 exports.createChallengeV2 = onCall(async (request) => {

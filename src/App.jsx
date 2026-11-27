@@ -32,12 +32,13 @@ import { Logo } from './components/Logo';
 import { AchievementToast } from './components/AchievementToast';
 import { useProgress } from './lib/useProgress';
 import { loadStats, dayKey } from './lib/progress';
-import { DIFFICULTIES, DIFFICULTY_ORDER, dailyPuzzleId, toDailyPuzzle, puzzleIdOf } from './lib/daily';
+import { DIFFICULTY_ORDER, dailyPuzzleId, toDailyPuzzle, puzzleIdOf } from './lib/daily';
 import { getCachedPuzzle, cachePuzzle } from './lib/dailyCache';
 import { FriendsModal } from './components/modals/FriendsModal';
 import { takeFriendCodeFromUrl } from './lib/friends';
 import { existsInTdk, flattenTr } from './lib/tdk';
 import { soundEnabled, setSoundEnabled } from './lib/sound';
+import { UpdatePrompt } from './components/UpdatePrompt';
 import { StoreModal } from './components/modals/StoreModal';
 import { recordUnlimitedSolved, claimDailyHintGift } from './lib/hints';
 import { initMonetization, adsRemoved, needsPrivacyOptions, showPrivacyOptions, maybeShowInterstitial, recoverHintPurchases } from './lib/monetization';
@@ -477,14 +478,17 @@ const handleStartUnlimited = async (length, level) => {
     if (hadCache) showPuzzles(cached);
     else if (attempt === 0) setDailyPuzzles(null);
 
-    const [kolay, zor] = await Promise.all(DIFFICULTY_ORDER.map((d) => fetchDaily(todayStr, d)
+    const results = await Promise.all(DIFFICULTY_ORDER.map((d) => fetchDaily(todayStr, d)
       .then((p) => { cachePuzzle(p, keep); return p; })
       .catch((error) => { console.warn(`${d} bulmaca yüklenemedi:`, error); return null; })));
     if (dayKey() !== todayStr) return; // bu arada gün değiştiyse yeni çağrı halleder
 
-    if (kolay || zor) {
-      const merged = { kolay: kolay || cached.kolay, zor: zor || cached.zor };
-      if (hadCache) setDailyPuzzles(merged); // oyuncunun açık bulmacasına dokunma, sadece eksik zorluğu tamamla
+    const fresh = {};
+    DIFFICULTY_ORDER.forEach((d, i) => { fresh[d] = results[i]; });
+    if (results.some(Boolean)) {
+      const merged = {};
+      DIFFICULTY_ORDER.forEach((d) => { merged[d] = fresh[d] || cached[d]; });
+      if (hadCache) setDailyPuzzles(merged); // oyuncunun açık bulmacasına dokunma, sadece tazele
       else showPuzzles(merged);
       return;
     }
@@ -537,10 +541,10 @@ const handleStartUnlimited = async (length, level) => {
       setGameKey(prev => prev + 1); // Sayfayı zorla yeniletme tetikleyicisi
       setCurrentPage('game');
       toggleModal('calendar', false);
-      showFeedback(`Zaman yolculuğu başarılı! ${dateStr} ${DIFFICULTIES[difficulty].label.toLocaleLowerCase('tr-TR')} bulmacası yüklendi.`, "success");
+      showFeedback(`Zaman yolculuğu başarılı! ${dateStr} bulmacası yüklendi.`, "success");
     } catch (error) {
       console.error("Geçmiş bulmaca hatası:", error);
-      showFeedback(difficulty === 'kolay' ? "O güne ait kolay bulmaca yok!" : "O güne ait bulmaca bulunamadı!", "error");
+      showFeedback("O güne ait bulmaca bulunamadı!", "error");
     } finally {
       setIsPuzzleLoading(false);
     }
@@ -550,7 +554,7 @@ const handleStartUnlimited = async (length, level) => {
   const playDaily = (difficulty) => {
     const puzzle = dailyPuzzles?.[difficulty];
     if (!puzzle) {
-      showFeedback(!dailyPuzzles ? 'Bulmaca yükleniyor…' : dailyError ? 'Bulmaca yüklenemedi, tekrar dene.' : `${DIFFICULTIES[difficulty].label} bulmaca henüz hazır değil.`, "info");
+      showFeedback(!dailyPuzzles ? 'Bulmaca yükleniyor…' : dailyError ? 'Bulmaca yüklenemedi, tekrar dene.' : 'Bugünün bulmacası henüz hazır değil.', "info");
       return;
     }
     setActivePuzzle(puzzle);
@@ -629,6 +633,7 @@ const handleStartUnlimited = async (length, level) => {
   const globalDefinitionModal = (
     <>
       <DefinitionModal word={modalState.definition} onClose={() => toggleModal('definition', null)} theme={theme} />
+      <UpdatePrompt />
       {achievementToast}
       <FriendsModal
         isOpen={!!modalState.friends}
@@ -777,7 +782,6 @@ const handleStartUnlimited = async (length, level) => {
           offlineProgress={offlineProgress}
           fetchLeaderboard={fetchLeaderboard}
           leaderboardDifficulty={leaderboardDifficulty}
-          onPlayDaily={playDaily}
         />
       </>
     );
@@ -794,7 +798,7 @@ const handleStartUnlimited = async (length, level) => {
 
       <LeaderboardModal isOpen={modalState.leaderboard} onClose={() => toggleModal('leaderboard', false)} theme={theme} colors={currentColors} leaderboardData={leaderboardData} userAvatar={userAvatar} username={username} isLoading={isLoadingLeaderboard} onTabChange={fetchLeaderboard} defaultDifficulty={leaderboardDifficulty} onOpenFriends={() => { toggleModal('leaderboard', false); toggleModal('friends', true); }} />
       <HowToPlayModal isOpen={modalState.howToPlay} onClose={() => toggleModal('howToPlay', false)} theme={theme} colors={currentColors} />
-      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} defaultDifficulty={leaderboardDifficulty} />
+      <CalendarModal isOpen={modalState.calendar} onClose={() => toggleModal('calendar', false)} theme={theme} colors={currentColors} onSelectDate={loadPastPuzzle} />
       <StatsModal isOpen={modalState.stats} onClose={() => toggleModal('stats', false)} theme={theme} colors={currentColors} stats={stats} />
       <AchievementsModal isOpen={modalState.achievements} onClose={() => toggleModal('achievements', false)} theme={theme} colors={currentColors} stats={stats} />
       <AvatarModal isOpen={modalState.avatar} onClose={() => toggleModal('avatar', false)} theme={theme} colors={currentColors} userAvatar={userAvatar} username={username} onSelect={(av) => { setUserAvatar(av); toggleModal('avatar', false); }} />
@@ -888,8 +892,9 @@ const handleStartUnlimited = async (length, level) => {
       <section className="flex-1 flex flex-col justify-center pb-12 md:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3.5 py-1.5 rounded-full mb-5 md:mb-8">
-            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" /><span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" /></span>
-            <span className="inline-block text-[11px] font-bold tracking-widest uppercase opacity-90 animate-bounce">Günün kelime zinciri hazır</span>
+            {/* Yazı sabit; yanındaki yeşil nokta zıplar */}
+            <span className="relative flex h-2 w-2 animate-bounce"><span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" /><span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" /></span>
+            <span className="inline-block text-[11px] font-bold tracking-widest uppercase opacity-90">Günün kelime zinciri hazır</span>
           </div>
 
           <h1 className="text-[2.6rem] md:text-6xl lg:text-8xl font-black mb-4 md:mb-6 tracking-tighter uppercase italic leading-[0.95]">
@@ -902,27 +907,18 @@ const handleStartUnlimited = async (length, level) => {
           </p>
 
           <div className="w-full max-w-xs sm:max-w-sm mx-auto flex flex-col gap-2.5">
-            <p className="text-[11px] font-bold uppercase tracking-widest opacity-60 -mb-0.5">Günün bulmacası</p>
-            <div className="grid grid-cols-2 gap-2.5">
-              {DIFFICULTY_ORDER.map((d) => {
-                const puzzle = dailyPuzzles?.[d];
-                const loading = !dailyPuzzles;
-                const played = puzzle && readPref(`evolvo_played_${puzzle.puzzleId}`);
-                return (
-                  <button
-                    key={d}
-                    onClick={() => playDaily(d)}
-                    disabled={!puzzle && !loading}
-                    className={`${d === 'zor' ? currentColors.btnPrimary : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'} w-full py-3 rounded-2xl font-black text-base tracking-wide flex flex-col items-center justify-center leading-tight transition-all active:scale-[0.97] shadow-lg shadow-green-900/30 disabled:opacity-40`}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      {played ? <CheckCircle2 size={16} /> : <Play fill="currentColor" size={15} />} {DIFFICULTIES[d].label.toLocaleUpperCase('tr-TR')}
-                    </span>
-                    <span className="text-[10px] font-bold opacity-80 normal-case tracking-normal">{puzzle || loading ? DIFFICULTIES[d].hint : dailyError ? 'Yüklenemedi' : 'Yarın hazır'}</span>
-                  </button>
-                );
-              })}
-            </div>
+            {(() => {
+              const puzzle = dailyPuzzles?.zor;
+              const played = puzzle && readPref(`evolvo_played_${puzzle.puzzleId}`);
+              return (
+                <button
+                  onClick={() => playDaily('zor')}
+                  className={`${currentColors.btnPrimary} w-full py-3.5 rounded-2xl font-black text-base tracking-wide flex items-center justify-center gap-2 transition-all active:scale-[0.97] shadow-lg shadow-green-900/30`}
+                >
+                  {played ? <CheckCircle2 size={18} /> : <Play fill="currentColor" size={18} />} HEMEN OYNA
+                </button>
+              );
+            })()}
             {dailyError && (
               <button onClick={() => loadTodayPuzzles()} className="py-2.5 rounded-2xl font-bold text-sm bg-red-500/15 border border-red-400/40 text-red-200 active:scale-[0.97] transition-all">
                 Bulmaca yüklenemedi — tekrar dene
